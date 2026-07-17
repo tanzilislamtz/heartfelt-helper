@@ -65,6 +65,12 @@ function RegisterPage() {
 
   // Step 2: Profile
   const [name, setName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [gender, setGender] = useState("");
+  const [institute, setInstitute] = useState("");
+  const [address, setAddress] = useState("");
+  const [agree, setAgree] = useState(false);
   const [role, setRole] = useState<Role>("student");
   const [avatar, setAvatar] = useState<string | null>(null);
   const [rawAvatar, setRawAvatar] = useState<string | null>(null);
