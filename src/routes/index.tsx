@@ -324,12 +324,11 @@ function Post({
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 24, rotateX: -6 }}
-      whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
-      transition={{ type: "spring", stiffness: 120, damping: 18 }}
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       whileHover={{ y: -3, boxShadow: "0 18px 40px -20px rgba(41,44,117,0.25)" }}
-      style={{ transformStyle: "preserve-3d", perspective: 1000 }}
       className="group rounded-2xl border border-border bg-surface p-5 shadow-sm"
     >
       <header className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 sm:flex sm:items-center">
