@@ -14,6 +14,7 @@ import {
   TrendingUp,
   CheckCircle2,
 } from "lucide-react";
+import { signIn } from "@/lib/session";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -37,6 +38,7 @@ function LoginPage() {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
+      signIn({ email });
       navigate({ to: "/" });
     }, 900);
   };
