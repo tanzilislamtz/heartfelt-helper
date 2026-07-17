@@ -27,6 +27,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { AuthShell, Field, SocialBtn } from "./login";
+import { AvatarCropper } from "@/components/AvatarCropper";
 
 export const Route = createFileRoute("/register")({
   head: () => ({
