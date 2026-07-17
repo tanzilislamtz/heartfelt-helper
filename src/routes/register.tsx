@@ -462,8 +462,9 @@ function RegisterPage() {
                   </div>
                 </div>
               </StepPane>
-            ) : step === 1 ? (
-              <StepPane key="s1" dir={dir}>
+            ) : step === 2 ? (
+              <StepPane key="s-profile" dir={dir}>
+
                 <div className="space-y-5">
                   {/* Avatar upload — polished, drag-and-drop */}
                   <div
