@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -86,9 +86,18 @@ function TopBar({ onMenu }: { onMenu: () => void }) {
           <IconBtn label="Messages">
             <MessageCircle className="h-5 w-5" />
           </IconBtn>
-          <button className="ml-2 hidden items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-95 sm:inline-flex">
-            <Plus className="h-4 w-4" /> Create
-          </button>
+          <Link
+            to="/login"
+            className="ml-2 hidden items-center gap-1.5 rounded-full border border-border px-3 py-2 text-sm font-medium text-foreground/80 transition hover:bg-muted sm:inline-flex"
+          >
+            Sign in
+          </Link>
+          <Link
+            to="/register"
+            className="ml-1 hidden items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-95 sm:inline-flex"
+          >
+            <Plus className="h-4 w-4" /> Join
+          </Link>
           <div className="ml-2 h-9 w-9 overflow-hidden rounded-full border-2 border-accent bg-muted">
             <div className="grid h-full w-full place-items-center bg-primary text-sm font-bold text-primary-foreground">
               A
