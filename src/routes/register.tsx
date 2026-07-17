@@ -404,9 +404,31 @@ function RegisterPage() {
                       type="file"
                       accept="image/*"
                       className="hidden"
-                      onChange={(e) => onPickAvatar(e.target.files?.[0])}
+                      onChange={(e) => {
+                        onPickAvatar(e.target.files?.[0]);
+                        e.target.value = "";
+                      }}
                     />
+
+                    {avatar && (
+                      <button
+                        type="button"
+                        onClick={() => setRawAvatar(avatar)}
+                        className="text-[11px] font-semibold text-primary hover:underline"
+                      >
+                        Re-crop photo
+                      </button>
+                    )}
                   </div>
+
+                  <AvatarCropper
+                    src={rawAvatar}
+                    onCancel={() => setRawAvatar(null)}
+                    onApply={(url) => {
+                      setAvatar(url);
+                      setRawAvatar(null);
+                    }}
+                  />
 
 
 
