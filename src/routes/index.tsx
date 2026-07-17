@@ -419,9 +419,11 @@ function Post({
   title,
   body,
   tag,
+  tags,
   stats,
   verified,
   media,
+  mediaUrl,
 }: {
   author: string;
   role: Role;
@@ -430,9 +432,11 @@ function Post({
   title: string;
   body: string;
   tag: string;
+  tags?: string[];
   stats: { likes: number; comments: number; shares: number };
   verified?: boolean;
   media?: boolean;
+  mediaUrl?: string;
 }) {
   const roleStyles: Record<Role, { badge: string; ring: string; label: string }> = {
     tutor: { badge: "bg-tutor text-tutor-foreground", ring: "ring-tutor", label: "Tutor" },
