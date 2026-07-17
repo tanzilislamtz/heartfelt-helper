@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Mail,
   Lock,
@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { AuthShell, Field, SocialBtn } from "./login";
 import { AvatarCropper } from "@/components/AvatarCropper";
+import { signIn } from "@/lib/session";
 
 export const Route = createFileRoute("/register")({
   head: () => ({
@@ -77,6 +78,13 @@ function RegisterPage() {
     reader.readAsDataURL(file);
   };
 
+  // Step 2: OTP verification (demo — any 4 digits accepted)
+  const [otp, setOtp] = useState<string[]>(["", "", "", ""]);
+  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [resendIn, setResendIn] = useState(0);
+  const otpValue = otp.join("");
+  const otpValid = /^\d{4}$/.test(otpValue);
+
   // Step 3: Interests
   const [topics, setTopics] = useState<string[]>([]);
 
@@ -95,11 +103,14 @@ function RegisterPage() {
   const canNext =
     (step === 0 && email.includes("@") && password.length >= 6) ||
     (step === 1 && name.trim().length > 1 && !!avatar) ||
-    (step === 2 && topics.length >= 1);
+    (step === 2 && otpValid) ||
+    (step === 3 && topics.length >= 1);
 
   const next = () => {
     if (!canNext) return;
-    if (step === 2) return submit();
+    if (step === 3) return submit();
+    // Entering OTP step: start resend cooldown
+    if (step === 1) setResendIn(30);
     setDir(1);
     setStep((s) => s + 1);
   };
@@ -108,11 +119,45 @@ function RegisterPage() {
     setStep((s) => Math.max(0, s - 1));
   };
 
+  // Countdown for OTP resend
+  useEffect(() => {
+    if (resendIn <= 0) return;
+    const t = setTimeout(() => setResendIn((v) => v - 1), 1000);
+    return () => clearTimeout(t);
+  }, [resendIn]);
+
+  const setOtpAt = (i: number, v: string) => {
+    const digit = v.replace(/\D/g, "").slice(-1);
+    setOtp((prev) => {
+      const n = [...prev];
+      n[i] = digit;
+      return n;
+    });
+    if (digit && i < 3) otpRefs.current[i + 1]?.focus();
+  };
+
+  const onOtpKeyDown = (i: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Backspace" && !otp[i] && i > 0) otpRefs.current[i - 1]?.focus();
+    if (e.key === "ArrowLeft" && i > 0) otpRefs.current[i - 1]?.focus();
+    if (e.key === "ArrowRight" && i < 3) otpRefs.current[i + 1]?.focus();
+  };
+
+  const onOtpPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const text = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 4);
+    if (!text) return;
+    e.preventDefault();
+    const next = ["", "", "", ""];
+    for (let i = 0; i < text.length; i++) next[i] = text[i];
+    setOtp(next);
+    otpRefs.current[Math.min(text.length, 3)]?.focus();
+  };
+
   const submit = () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
       setDone(true);
+      signIn({ email, name });
       setTimeout(() => navigate({ to: "/" }), 1400);
     }, 900);
   };
@@ -153,7 +198,7 @@ function RegisterPage() {
         <div className="mt-8 flex items-baseline justify-between gap-3">
           <h1 className="font-display text-2xl font-semibold sm:text-3xl">Create account</h1>
           <span className="shrink-0 text-xs font-medium text-muted-foreground">
-            Step {step + 1} of 3
+            Step {step + 1} of 4
           </span>
         </div>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -171,12 +216,12 @@ function RegisterPage() {
             {/* progress track */}
             <motion.div
               initial={false}
-              animate={{ width: `${(step / 2) * 100}%` }}
+              animate={{ width: `${(step / 3) * 100}%` }}
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               className="absolute left-5 top-1/2 h-0.5 -translate-y-1/2 rounded-full bg-gradient-to-r from-primary to-tutor"
               style={{ maxWidth: "calc(100% - 2.5rem)" }}
             />
-            {["Account", "Profile", "Interests"].map((label, i) => {
+            {["Account", "Profile", "Verify", "Interests"].map((label, i) => {
               const active = step === i;
               const done = step > i;
               return (
@@ -471,8 +516,87 @@ function RegisterPage() {
                   </div>
                 </div>
               </StepPane>
+            ) : step === 2 ? (
+              <StepPane key="s-otp" dir={dir}>
+                <div className="space-y-5">
+                  <div className="rounded-2xl border border-border/70 bg-gradient-to-br from-surface to-muted/40 p-5">
+                    <div className="flex items-start gap-3">
+                      <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
+                        <Mail className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-foreground">
+                          Check your inbox
+                        </p>
+                        <p className="mt-0.5 text-xs text-muted-foreground">
+                          We sent a 4-digit code to{" "}
+                          <span className="font-medium text-foreground">
+                            {email || "your email"}
+                          </span>
+                          . Enter it below to verify.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mt-5 flex items-center justify-center gap-2 sm:gap-3">
+                      {otp.map((d, i) => (
+                        <input
+                          key={i}
+                          ref={(el) => {
+                            otpRefs.current[i] = el;
+                          }}
+                          value={d}
+                          onChange={(e) => setOtpAt(i, e.target.value)}
+                          onKeyDown={(e) => onOtpKeyDown(i, e)}
+                          onPaste={onOtpPaste}
+                          inputMode="numeric"
+                          autoComplete="one-time-code"
+                          maxLength={1}
+                          aria-label={`Digit ${i + 1}`}
+                          className={`h-14 w-12 rounded-xl border-2 bg-surface text-center font-display text-2xl font-semibold tabular-nums text-foreground transition focus:outline-none sm:h-16 sm:w-14 sm:text-3xl ${
+                            d
+                              ? "border-primary shadow-md shadow-primary/20"
+                              : "border-border focus:border-primary/60"
+                          }`}
+                        />
+                      ))}
+                    </div>
+
+                    <div className="mt-4 flex items-center justify-between text-[11px] text-muted-foreground">
+                      <span className="inline-flex items-center gap-1">
+                        <Sparkles className="h-3 w-3 text-accent" />
+                        Demo — any 4 digits work
+                      </span>
+                      {resendIn > 0 ? (
+                        <span>Resend in {resendIn}s</span>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setOtp(["", "", "", ""]);
+                            setResendIn(30);
+                            otpRefs.current[0]?.focus();
+                          }}
+                          className="font-semibold text-primary hover:underline"
+                        >
+                          Resend code
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={back}
+                    className="mx-auto flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground hover:text-foreground"
+                  >
+                    <ArrowLeft className="h-3 w-3" />
+                    Wrong email? Go back
+                  </button>
+                </div>
+              </StepPane>
             ) : (
-              <StepPane key="s2" dir={dir}>
+              <StepPane key="s3" dir={dir}>
                 <div>
                   <p className="text-sm text-muted-foreground">
                     Pick at least one topic —{" "}
@@ -547,7 +671,7 @@ function RegisterPage() {
                   <span className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground/40 border-t-primary-foreground" />
                   Creating…
                 </>
-              ) : step === 2 ? (
+              ) : step === 3 ? (
                 <>
                   Finish <Check className="h-4 w-4" />
                 </>

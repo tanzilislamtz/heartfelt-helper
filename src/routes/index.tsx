@@ -1,5 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Search,
@@ -27,13 +27,36 @@ import {
 } from "lucide-react";
 import { Hero3D } from "@/components/Hero3D";
 import { MobileNav } from "@/components/MobileNav";
+import { hasWelcomed, isAuthed } from "@/lib/session";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
 function Index() {
+  const navigate = useNavigate();
+  const [ready, setReady] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isAuthed()) {
+      navigate({ to: hasWelcomed() ? "/login" : "/welcome", replace: true });
+    } else {
+      setReady(true);
+    }
+  }, [navigate]);
+
+  if (!ready) {
+    return (
+      <div className="grid min-h-[100dvh] place-items-center bg-background text-muted-foreground">
+        <div className="flex items-center gap-2 text-sm">
+          <span className="h-4 w-4 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
+          Loading your space…
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <TopBar onMenu={() => setMenuOpen(true)} />
