@@ -198,7 +198,7 @@ export function AuthShell({
         </div>
 
         {/* Decorative side */}
-        <div className="relative hidden overflow-hidden bg-primary text-primary-foreground lg:block">
+        <div className="relative hidden overflow-hidden bg-primary text-primary-foreground lg:block lg:sticky lg:top-0 lg:h-screen lg:self-start">
           {/* animated gradient orbs */}
           <motion.div
             animate={{ x: [0, 24, 0], y: [0, -18, 0] }}
