@@ -30,7 +30,13 @@ import {
   MapPin,
   Phone as PhoneIcon,
   Building2,
+  Baby,
+  Briefcase,
+  Clock,
+  DollarSign,
+  FileText,
 } from "lucide-react";
+
 import { AuthShell, Field, SocialBtn } from "./login";
 import { AvatarCropper } from "@/components/AvatarCropper";
 import { signIn } from "@/lib/session";
@@ -86,10 +92,27 @@ function RegisterPage() {
   const [institute, setInstitute] = useState("");
   const [address, setAddress] = useState("");
   const [agree, setAgree] = useState(false);
-  const [role, setRole] = useState<Role>("student");
+  const [role, setRole] = useState<Role | "">("");
   const [avatar, setAvatar] = useState<string | null>(null);
   const [rawAvatar, setRawAvatar] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // Student-specific
+  const [grade, setGrade] = useState("");
+  const [guardianPhone, setGuardianPhone] = useState("");
+
+  // Tutor-specific
+  const [qualification, setQualification] = useState("");
+  const [experience, setExperience] = useState("");
+  const [subjectsTaught, setSubjectsTaught] = useState("");
+  const [hourlyRate, setHourlyRate] = useState("");
+  const [bio, setBio] = useState("");
+
+  // Parent-specific
+  const [childName, setChildName] = useState("");
+  const [childGrade, setChildGrade] = useState("");
+  const [relation, setRelation] = useState("");
+
 
   const onPickAvatar = (file?: File) => {
     if (!file) return;
@@ -121,25 +144,45 @@ function RegisterPage() {
     return s;
   }, [password]);
 
-  const canNext =
-    (step === 0 && email.includes("@") && password.length >= 6) ||
-    (step === 1 &&
-      name.trim().length > 1 &&
-      lastName.trim().length > 0 &&
-      /^01\d{9}$/.test(phone) &&
-      !!gender &&
+  const profileBaseValid =
+    name.trim().length > 1 &&
+    lastName.trim().length > 0 &&
+    /^01\d{9}$/.test(phone) &&
+    !!gender &&
+    address.trim().length > 3 &&
+    agree &&
+    !!avatar;
+
+  const profileRoleValid =
+    (role === "student" &&
       institute.trim().length > 1 &&
-      address.trim().length > 3 &&
-      agree &&
-      !!avatar) ||
-    (step === 2 && otpValid) ||
-    (step === 3 && topics.length >= 1);
+      grade.trim().length > 0 &&
+      /^01\d{9}$/.test(guardianPhone)) ||
+    (role === "tutor" &&
+      institute.trim().length > 1 &&
+      qualification.trim().length > 1 &&
+      experience.trim().length > 0 &&
+      subjectsTaught.trim().length > 1 &&
+      hourlyRate.trim().length > 0 &&
+      bio.trim().length > 10) ||
+    (role === "parent" &&
+      childName.trim().length > 1 &&
+      childGrade.trim().length > 0 &&
+      !!relation);
+
+  const canNext =
+    (step === 0 && !!role) ||
+    (step === 1 && email.includes("@") && password.length >= 6) ||
+    (step === 2 && profileBaseValid && profileRoleValid) ||
+    (step === 3 && otpValid) ||
+    (step === 4 && topics.length >= 1);
 
   const next = () => {
     if (!canNext) return;
-    if (step === 3) return submit();
+    if (step === 4) return submit();
     // Entering OTP step: start resend cooldown
-    if (step === 1) setResendIn(30);
+    if (step === 2) setResendIn(30);
+
     setDir(1);
     setStep((s) => s + 1);
   };
@@ -227,7 +270,7 @@ function RegisterPage() {
         <div className="mt-8 flex items-baseline justify-between gap-3">
           <h1 className="font-display text-2xl font-semibold sm:text-3xl">Create account</h1>
           <span className="shrink-0 text-xs font-medium text-muted-foreground">
-            Step {step + 1} of 4
+            Step {step + 1} of 5
           </span>
         </div>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -245,12 +288,13 @@ function RegisterPage() {
             {/* progress track */}
             <motion.div
               initial={false}
-              animate={{ width: `${(step / 3) * 100}%` }}
+              animate={{ width: `${(step / 4) * 100}%` }}
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               className="absolute left-5 top-1/2 h-0.5 -translate-y-1/2 rounded-full bg-gradient-to-r from-primary to-tutor"
               style={{ maxWidth: "calc(100% - 2.5rem)" }}
             />
-            {["Account", "Profile", "Verify", "Interests"].map((label, i) => {
+            {["Role", "Account", "Profile", "Verify", "Interests"].map((label, i) => {
+
               const active = step === i;
               const done = step > i;
               return (
@@ -319,7 +363,42 @@ function RegisterPage() {
                 </p>
               </motion.div>
             ) : step === 0 ? (
-              <StepPane key="s0" dir={dir}>
+              <StepPane key="s-role" dir={dir}>
+                <div className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    Pick the role that fits you best — we'll tailor the next steps for you.
+                  </p>
+                  <div className="grid gap-3">
+                    <BigRoleCard
+                      label="Student"
+                      desc="Learn, ask doubts, join classes"
+                      icon={BookOpen}
+                      accent="from-primary/15 to-primary/5"
+                      active={role === "student"}
+                      onClick={() => setRole("student")}
+                    />
+                    <BigRoleCard
+                      label="Tutor"
+                      desc="Teach subjects, mentor learners, earn"
+                      icon={GraduationCap}
+                      accent="from-tutor/20 to-tutor/5"
+                      active={role === "tutor"}
+                      onClick={() => setRole("tutor")}
+                    />
+                    <BigRoleCard
+                      label="Parent"
+                      desc="Track & guide your child's learning"
+                      icon={Heart}
+                      accent="from-accent/20 to-accent/5"
+                      active={role === "parent"}
+                      onClick={() => setRole("parent")}
+                    />
+                  </div>
+                </div>
+              </StepPane>
+            ) : step === 1 ? (
+              <StepPane key="s-account" dir={dir}>
+
                 <div className="space-y-4">
                   <Field
                     id="email"
@@ -383,8 +462,9 @@ function RegisterPage() {
                   </div>
                 </div>
               </StepPane>
-            ) : step === 1 ? (
-              <StepPane key="s1" dir={dir}>
+            ) : step === 2 ? (
+              <StepPane key="s-profile" dir={dir}>
+
                 <div className="space-y-5">
                   {/* Avatar upload — polished, drag-and-drop */}
                   <div
@@ -562,16 +642,6 @@ function RegisterPage() {
                   </div>
 
                   <Field
-                    id="institute"
-                    label="Institute"
-                    icon={Building2}
-                    value={institute}
-                    onChange={setInstitute}
-                    placeholder="e.g. Notre Dame College"
-                    required
-                  />
-
-                  <Field
                     id="address"
                     label="Full address"
                     icon={MapPin}
@@ -581,34 +651,225 @@ function RegisterPage() {
                     required
                   />
 
-                  <div>
-                    <label className="mb-2 block text-xs font-semibold text-foreground/80">
-                      I'm joining as
-                    </label>
-                    <div className="grid grid-cols-3 gap-2">
-                      <RoleCard
-                        label="Student"
-                        desc="Learn & ask"
-                        icon={BookOpen}
-                        active={role === "student"}
-                        onClick={() => setRole("student")}
-                      />
-                      <RoleCard
-                        label="Tutor"
-                        desc="Teach & mentor"
-                        icon={GraduationCap}
-                        active={role === "tutor"}
-                        onClick={() => setRole("tutor")}
-                      />
-                      <RoleCard
-                        label="Parent"
-                        desc="Guide a learner"
-                        icon={Heart}
-                        active={role === "parent"}
-                        onClick={() => setRole("parent")}
-                      />
+                  {/* Role badge */}
+                  <div className="flex items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 p-2.5">
+                    <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground">
+                      {role === "tutor" ? (
+                        <GraduationCap className="h-4 w-4" />
+                      ) : role === "parent" ? (
+                        <Heart className="h-4 w-4" />
+                      ) : (
+                        <BookOpen className="h-4 w-4" />
+                      )}
+                    </span>
+                    <div className="flex-1">
+                      <p className="text-[11px] font-semibold uppercase tracking-wide text-primary">
+                        Joining as {role || "—"}
+                      </p>
+                      <p className="text-[11px] text-muted-foreground">
+                        Fields below are tailored for {role || "you"}.
+                      </p>
                     </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setDir(-1);
+                        setStep(0);
+                      }}
+                      className="text-[11px] font-semibold text-primary hover:underline"
+                    >
+                      Change
+                    </button>
                   </div>
+
+                  {/* STUDENT-specific */}
+                  {role === "student" && (
+                    <div className="space-y-4 rounded-2xl border border-border/70 bg-muted/20 p-4">
+                      <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                        Student details
+                      </p>
+                      <Field
+                        id="institute"
+                        label="School / College"
+                        icon={Building2}
+                        value={institute}
+                        onChange={setInstitute}
+                        placeholder="e.g. Notre Dame College"
+                        required
+                      />
+                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div>
+                          <label htmlFor="grade" className="mb-1.5 block text-xs font-semibold text-foreground/80">
+                            Class / Grade
+                          </label>
+                          <div className="relative">
+                            <BookOpen className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                            <select
+                              id="grade"
+                              value={grade}
+                              onChange={(e) => setGrade(e.target.value)}
+                              required
+                              className="h-11 w-full appearance-none rounded-xl border border-border bg-surface pl-10 pr-8 text-sm text-foreground outline-none transition focus:border-primary/40 focus:ring-4 focus:ring-primary/10"
+                            >
+                              <option value="">Select class</option>
+                              {["6","7","8","9","10","11","12","Undergrad","Postgrad"].map((c) => (
+                                <option key={c} value={c}>Class {c}</option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                        <Field
+                          id="guardianPhone"
+                          label="Guardian phone"
+                          icon={PhoneIcon}
+                          type="tel"
+                          value={guardianPhone}
+                          onChange={setGuardianPhone}
+                          placeholder="01XXXXXXXXX"
+                          required
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* TUTOR-specific */}
+                  {role === "tutor" && (
+                    <div className="space-y-4 rounded-2xl border border-tutor/30 bg-tutor/5 p-4">
+                      <p className="text-[11px] font-semibold uppercase tracking-wide text-tutor">
+                        Tutor profile
+                      </p>
+                      <Field
+                        id="institute"
+                        label="University / Institute"
+                        icon={Building2}
+                        value={institute}
+                        onChange={setInstitute}
+                        placeholder="e.g. University of Dhaka"
+                        required
+                      />
+                      <Field
+                        id="qualification"
+                        label="Highest qualification"
+                        icon={Award}
+                        value={qualification}
+                        onChange={setQualification}
+                        placeholder="e.g. BSc in Mathematics"
+                        required
+                      />
+                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <Field
+                          id="experience"
+                          label="Experience (years)"
+                          icon={Clock}
+                          type="number"
+                          value={experience}
+                          onChange={setExperience}
+                          placeholder="e.g. 3"
+                          required
+                        />
+                        <Field
+                          id="hourlyRate"
+                          label="Hourly rate (৳)"
+                          icon={DollarSign}
+                          type="number"
+                          value={hourlyRate}
+                          onChange={setHourlyRate}
+                          placeholder="e.g. 500"
+                          required
+                        />
+                      </div>
+                      <Field
+                        id="subjectsTaught"
+                        label="Subjects you teach"
+                        icon={BookOpen}
+                        value={subjectsTaught}
+                        onChange={setSubjectsTaught}
+                        placeholder="Math, Physics, Chemistry"
+                        required
+                      />
+                      <div>
+                        <label htmlFor="bio" className="mb-1.5 block text-xs font-semibold text-foreground/80">
+                          Short bio
+                        </label>
+                        <div className="relative">
+                          <FileText className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                          <textarea
+                            id="bio"
+                            value={bio}
+                            onChange={(e) => setBio(e.target.value)}
+                            placeholder="Tell students about your teaching style, achievements…"
+                            rows={3}
+                            required
+                            className="w-full resize-none rounded-xl border border-border bg-surface py-3 pl-10 pr-3 text-sm text-foreground outline-none transition focus:border-primary/40 focus:ring-4 focus:ring-primary/10"
+                          />
+                        </div>
+                        <p className="mt-1 text-[10px] text-muted-foreground">
+                          {bio.length}/300 — minimum 10 characters
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* PARENT-specific */}
+                  {role === "parent" && (
+                    <div className="space-y-4 rounded-2xl border border-accent/30 bg-accent/5 p-4">
+                      <p className="text-[11px] font-semibold uppercase tracking-wide text-accent">
+                        Your child
+                      </p>
+                      <Field
+                        id="childName"
+                        label="Child's full name"
+                        icon={Baby}
+                        value={childName}
+                        onChange={setChildName}
+                        placeholder="e.g. Rahim Ahmed"
+                        required
+                      />
+                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div>
+                          <label htmlFor="childGrade" className="mb-1.5 block text-xs font-semibold text-foreground/80">
+                            Child's class
+                          </label>
+                          <div className="relative">
+                            <BookOpen className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                            <select
+                              id="childGrade"
+                              value={childGrade}
+                              onChange={(e) => setChildGrade(e.target.value)}
+                              required
+                              className="h-11 w-full appearance-none rounded-xl border border-border bg-surface pl-10 pr-8 text-sm text-foreground outline-none transition focus:border-primary/40 focus:ring-4 focus:ring-primary/10"
+                            >
+                              <option value="">Select class</option>
+                              {["1","2","3","4","5","6","7","8","9","10","11","12"].map((c) => (
+                                <option key={c} value={c}>Class {c}</option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                        <div>
+                          <label htmlFor="relation" className="mb-1.5 block text-xs font-semibold text-foreground/80">
+                            Relation
+                          </label>
+                          <div className="relative">
+                            <Briefcase className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                            <select
+                              id="relation"
+                              value={relation}
+                              onChange={(e) => setRelation(e.target.value)}
+                              required
+                              className="h-11 w-full appearance-none rounded-xl border border-border bg-surface pl-10 pr-8 text-sm text-foreground outline-none transition focus:border-primary/40 focus:ring-4 focus:ring-primary/10"
+                            >
+                              <option value="">Select</option>
+                              <option value="mother">Mother</option>
+                              <option value="father">Father</option>
+                              <option value="guardian">Guardian</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
 
                   <label className="flex items-start gap-2.5 rounded-xl border border-border/70 bg-muted/30 p-3 text-xs text-foreground/80">
                     <input
@@ -631,7 +892,8 @@ function RegisterPage() {
                   </label>
                 </div>
               </StepPane>
-            ) : step === 2 ? (
+            ) : step === 3 ? (
+
               <StepPane key="s-otp" dir={dir}>
                 <div className="space-y-5">
                   <div className="rounded-2xl border border-border/70 bg-gradient-to-br from-surface to-muted/40 p-5">
@@ -786,7 +1048,8 @@ function RegisterPage() {
                   <span className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground/40 border-t-primary-foreground" />
                   Creating…
                 </>
-              ) : step === 3 ? (
+              ) : step === 4 ? (
+
                 <>
                   Finish <Check className="h-4 w-4" />
                 </>
@@ -874,3 +1137,55 @@ function RoleCard({
     </motion.button>
   );
 }
+
+function BigRoleCard({
+  label,
+  desc,
+  icon: Icon,
+  accent,
+  active,
+  onClick,
+}: {
+  label: string;
+  desc: string;
+  icon: React.ElementType;
+  accent: string;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <motion.button
+      type="button"
+      whileHover={{ y: -2 }}
+      whileTap={{ scale: 0.98 }}
+      onClick={onClick}
+      className={`relative flex items-center gap-4 overflow-hidden rounded-2xl border p-4 text-left transition ${
+        active
+          ? "border-primary ring-2 ring-primary/20"
+          : "border-border hover:border-foreground/30"
+      }`}
+    >
+      <div
+        className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-gradient-to-br ${accent} ${
+          active ? "text-primary" : "text-foreground/70"
+        }`}
+      >
+        <Icon className="h-6 w-6" />
+      </div>
+      <div className="flex-1">
+        <div className="text-sm font-semibold text-foreground">{label}</div>
+        <div className="text-[12px] text-muted-foreground">{desc}</div>
+      </div>
+      <div
+        className={`grid h-6 w-6 place-items-center rounded-full border-2 transition ${
+          active
+            ? "border-primary bg-primary text-primary-foreground"
+            : "border-border"
+        }`}
+      >
+        {active && <Check className="h-3.5 w-3.5" strokeWidth={3} />}
+      </div>
+    </motion.button>
+  );
+}
+
