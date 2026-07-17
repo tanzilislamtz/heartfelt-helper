@@ -216,12 +216,12 @@ function RegisterPage() {
             {/* progress track */}
             <motion.div
               initial={false}
-              animate={{ width: `${(step / 2) * 100}%` }}
+              animate={{ width: `${(step / 3) * 100}%` }}
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               className="absolute left-5 top-1/2 h-0.5 -translate-y-1/2 rounded-full bg-gradient-to-r from-primary to-tutor"
               style={{ maxWidth: "calc(100% - 2.5rem)" }}
             />
-            {["Account", "Profile", "Interests"].map((label, i) => {
+            {["Account", "Profile", "Verify", "Interests"].map((label, i) => {
               const active = step === i;
               const done = step > i;
               return (
