@@ -9,6 +9,10 @@ import {
   ArrowRight,
   GraduationCap,
   Sparkles,
+  BookOpen,
+  Award,
+  TrendingUp,
+  CheckCircle2,
 } from "lucide-react";
 
 export const Route = createFileRoute("/login")({
@@ -166,50 +170,189 @@ export function AuthShell({
 }) {
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto grid min-h-screen max-w-[1400px] grid-cols-1 lg:grid-cols-2">
-        <div className="flex items-center justify-center p-6 sm:p-10">
-          <div className="w-full max-w-md">{children}</div>
+      <div className="mx-auto grid min-h-screen max-w-[1400px] grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
+        {/* Form side */}
+        <div className="relative flex items-center justify-center p-6 sm:p-10">
+          <div
+            className="pointer-events-none absolute inset-0 opacity-[0.35]"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle at 1px 1px, var(--color-border) 1px, transparent 0)",
+              backgroundSize: "22px 22px",
+              maskImage:
+                "radial-gradient(ellipse at center, black 40%, transparent 75%)",
+            }}
+          />
+          <div className="relative w-full max-w-md">{children}</div>
         </div>
+
+        {/* Decorative side */}
         <div className="relative hidden overflow-hidden bg-primary text-primary-foreground lg:block">
+          {/* animated gradient orbs */}
           <motion.div
             animate={{ x: [0, 24, 0], y: [0, -18, 0] }}
             transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-            className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-accent/30 blur-3xl"
+            className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-accent/40 blur-3xl"
           />
           <motion.div
             animate={{ x: [0, -20, 0], y: [0, 20, 0] }}
             transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
-            className="pointer-events-none absolute -bottom-32 -left-16 h-96 w-96 rounded-full bg-tutor/40 blur-3xl"
+            className="pointer-events-none absolute -bottom-32 -left-16 h-96 w-96 rounded-full bg-tutor/50 blur-3xl"
           />
+          {/* faint grid */}
+          <div
+            className="pointer-events-none absolute inset-0 opacity-[0.08]"
+            style={{
+              backgroundImage:
+                "linear-gradient(var(--color-primary-foreground) 1px, transparent 1px), linear-gradient(90deg, var(--color-primary-foreground) 1px, transparent 1px)",
+              backgroundSize: "48px 48px",
+            }}
+          />
+
           <div className="relative flex h-full flex-col justify-between p-12">
-            <Link to="/" className="inline-flex items-center gap-2 text-sm font-medium text-primary-foreground/80 hover:text-primary-foreground">
+            <Link
+              to="/"
+              className="inline-flex w-fit items-center gap-2 rounded-full border border-primary-foreground/20 bg-primary-foreground/5 px-3 py-1.5 text-xs font-medium text-primary-foreground/80 backdrop-blur-md hover:bg-primary-foreground/10"
+            >
               ← Back to home
             </Link>
+
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              className="relative"
             >
               {side}
-              <div className="mt-8 flex -space-x-2">
-                {["A", "R", "S", "N"].map((c, i) => (
-                  <motion.div
-                    key={c}
-                    initial={{ opacity: 0, x: -8 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.3 + i * 0.08 }}
-                    className="grid h-9 w-9 place-items-center rounded-full border-2 border-primary bg-accent/80 text-xs font-bold text-accent-foreground"
-                  >
-                    {c}
-                  </motion.div>
-                ))}
-                <div className="ml-4 self-center text-xs text-primary-foreground/70">
-                  12k+ learners joined this month
+
+              {/* Floating preview stack */}
+              <div className="relative mt-10 h-56">
+                {/* card 3 (back) */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: [0, -6, 0] }}
+                  transition={{
+                    opacity: { duration: 0.6, delay: 0.2 },
+                    y: { duration: 5, repeat: Infinity, ease: "easeInOut" },
+                  }}
+                  className="absolute right-2 top-0 w-56 rotate-6 rounded-2xl border border-primary-foreground/15 bg-primary-foreground/10 p-4 backdrop-blur-md"
+                >
+                  <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-accent">
+                    <TrendingUp className="h-3.5 w-3.5" />
+                    Streak
+                  </div>
+                  <div className="mt-2 font-display text-3xl font-semibold">
+                    12 days
+                  </div>
+                  <div className="mt-3 flex gap-1">
+                    {Array.from({ length: 7 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className={`h-6 flex-1 rounded ${
+                          i < 5 ? "bg-accent" : "bg-primary-foreground/20"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </motion.div>
+
+                {/* card 2 (middle) */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: [0, -8, 0] }}
+                  transition={{
+                    opacity: { duration: 0.6, delay: 0.35 },
+                    y: {
+                      duration: 6,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                      delay: 0.3,
+                    },
+                  }}
+                  className="absolute left-0 top-8 w-60 -rotate-3 rounded-2xl border border-primary-foreground/15 bg-primary-foreground/10 p-4 backdrop-blur-md"
+                >
+                  <div className="flex items-center gap-2">
+                    <div className="grid h-9 w-9 place-items-center rounded-full bg-accent text-accent-foreground">
+                      <Award className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <div className="text-sm font-semibold">
+                        Verified Helper
+                      </div>
+                      <div className="text-[11px] text-primary-foreground/70">
+                        Badge unlocked
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-primary-foreground/15">
+                    <div className="h-full w-[82%] rounded-full bg-tutor" />
+                  </div>
+                </motion.div>
+
+                {/* card 1 (front) */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: [0, -10, 0] }}
+                  transition={{
+                    opacity: { duration: 0.6, delay: 0.5 },
+                    y: {
+                      duration: 7,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                      delay: 0.6,
+                    },
+                  }}
+                  className="absolute left-6 top-24 w-64 rotate-2 rounded-2xl border border-primary-foreground/20 bg-surface p-4 text-foreground shadow-2xl"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-tutor text-tutor-foreground">
+                      <BookOpen className="h-4 w-4" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1">
+                        <span className="truncate text-sm font-semibold">
+                          Dr. Ayesha
+                        </span>
+                        <CheckCircle2 className="h-3.5 w-3.5 text-tutor" />
+                      </div>
+                      <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
+                        A visual way to understand eigenvectors — 3 minute
+                        intuition
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+
+              <div className="mt-6 flex items-center gap-3">
+                <div className="flex -space-x-2">
+                  {["A", "R", "S", "N"].map((c, i) => (
+                    <motion.div
+                      key={c}
+                      initial={{ opacity: 0, x: -8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.5 + i * 0.08 }}
+                      className="grid h-9 w-9 place-items-center rounded-full border-2 border-primary bg-accent/80 text-xs font-bold text-accent-foreground"
+                    >
+                      {c}
+                    </motion.div>
+                  ))}
+                </div>
+                <div className="text-xs text-primary-foreground/70">
+                  <span className="font-semibold text-primary-foreground">
+                    12k+
+                  </span>{" "}
+                  learners joined this month
                 </div>
               </div>
             </motion.div>
-            <div className="text-xs text-primary-foreground/60">
-              © Learn Academy
+
+            <div className="flex items-center justify-between text-xs text-primary-foreground/60">
+              <span>© Learn Academy</span>
+              <span className="inline-flex items-center gap-1">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-tutor" />
+                All systems normal
+              </span>
             </div>
           </div>
         </div>
