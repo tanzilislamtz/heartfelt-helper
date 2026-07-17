@@ -73,66 +73,6 @@ function Index() {
   );
 }
 
-function TopBar({ onMenu }: { onMenu: () => void }) {
-  return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-[1400px] items-center gap-3 px-4 py-3 lg:px-8">
-        <button
-          onClick={onMenu}
-          aria-label="Open menu"
-          className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-foreground/70 hover:bg-muted lg:hidden"
-        >
-          <Menu className="h-5 w-5" />
-        </button>
-        <a href="/" className="flex items-center gap-2">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-foreground shadow-sm">
-            <GraduationCap className="h-5 w-5" strokeWidth={2.2} />
-          </span>
-          <span className="hidden text-lg font-semibold tracking-tight sm:inline">
-            <span className="font-display italic">Learns</span>
-            <span className="ml-1 text-primary">Academy</span>
-          </span>
-        </a>
-
-        <div className="relative ml-auto hidden max-w-md flex-1 md:block">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Search topics, tutors, courses…"
-            className="h-10 w-full rounded-full border border-border bg-muted/60 pl-10 pr-4 text-sm outline-none transition focus:border-primary/40 focus:bg-surface focus:ring-4 focus:ring-primary/10"
-          />
-        </div>
-
-        <div className="ml-auto flex items-center gap-1 md:ml-0">
-          <IconBtn label="Notifications">
-            <Bell className="h-5 w-5" />
-            <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-destructive ring-2 ring-background" />
-          </IconBtn>
-          <IconBtn label="Messages">
-            <MessageCircle className="h-5 w-5" />
-          </IconBtn>
-          <Link
-            to="/login"
-            className="ml-2 hidden items-center gap-1.5 rounded-full border border-border px-3 py-2 text-sm font-medium text-foreground/80 transition hover:bg-muted sm:inline-flex"
-          >
-            Sign in
-          </Link>
-          <Link
-            to="/register"
-            className="ml-1 hidden items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-95 sm:inline-flex"
-          >
-            <Plus className="h-4 w-4" /> Join
-          </Link>
-          <div className="ml-2 h-9 w-9 overflow-hidden rounded-full border-2 border-accent bg-muted">
-            <div className="grid h-full w-full place-items-center bg-primary text-sm font-bold text-primary-foreground">
-              A
-            </div>
-          </div>
-        </div>
-      </div>
-    </header>
-  );
-}
 
 function IconBtn({ children, label }: { children: React.ReactNode; label: string }) {
   return (
