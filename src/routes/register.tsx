@@ -35,7 +35,11 @@ import {
   Clock,
   DollarSign,
   FileText,
+  UserCircle2,
+  IdCard,
+  ShieldCheck,
 } from "lucide-react";
+
 
 import { AuthShell, Field, SocialBtn } from "./login";
 import { AvatarCropper } from "@/components/AvatarCropper";
