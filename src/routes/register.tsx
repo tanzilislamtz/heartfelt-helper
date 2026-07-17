@@ -43,14 +43,24 @@ export const Route = createFileRoute("/register")({
 type Role = "student" | "tutor" | "parent";
 
 const TOPICS = [
-  { id: "math", label: "Math", icon: Calculator },
-  { id: "code", label: "Programming", icon: Code2 },
-  { id: "lang", label: "Languages", icon: Languages },
-  { id: "sci", label: "Science", icon: FlaskConical },
-  { id: "design", label: "Design", icon: Palette },
+  { id: "math", label: "Mathematics", icon: Calculator },
+  { id: "physics", label: "Physics", icon: FlaskConical },
+  { id: "chem", label: "Chemistry", icon: FlaskConical },
+  { id: "bio", label: "Biology", icon: FlaskConical },
+  { id: "english", label: "English", icon: Languages },
+  { id: "bangla", label: "Bangla", icon: Languages },
+  { id: "ict", label: "ICT", icon: Code2 },
+  { id: "web", label: "Web Development", icon: Code2 },
+  { id: "data", label: "Data Science", icon: BarChart3 },
+  { id: "programming", label: "Programming", icon: Code2 },
+  { id: "emerging", label: "Emerging Tech", icon: Sparkles },
   { id: "biz", label: "Business", icon: BookOpen },
-  { id: "music", label: "Music", icon: Music },
+  { id: "design", label: "Design", icon: Palette },
   { id: "photo", label: "Photography", icon: Camera },
+  { id: "music", label: "Music", icon: Music },
+  { id: "sports", label: "Sports", icon: Award },
+  { id: "motivation", label: "Motivation", icon: Heart },
+  { id: "social", label: "Social Studies", icon: Users },
 ];
 
 function RegisterPage() {
