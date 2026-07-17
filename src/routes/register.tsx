@@ -642,16 +642,6 @@ function RegisterPage() {
                   </div>
 
                   <Field
-                    id="institute"
-                    label="Institute"
-                    icon={Building2}
-                    value={institute}
-                    onChange={setInstitute}
-                    placeholder="e.g. Notre Dame College"
-                    required
-                  />
-
-                  <Field
                     id="address"
                     label="Full address"
                     icon={MapPin}
@@ -661,34 +651,225 @@ function RegisterPage() {
                     required
                   />
 
-                  <div>
-                    <label className="mb-2 block text-xs font-semibold text-foreground/80">
-                      I'm joining as
-                    </label>
-                    <div className="grid grid-cols-3 gap-2">
-                      <RoleCard
-                        label="Student"
-                        desc="Learn & ask"
-                        icon={BookOpen}
-                        active={role === "student"}
-                        onClick={() => setRole("student")}
-                      />
-                      <RoleCard
-                        label="Tutor"
-                        desc="Teach & mentor"
-                        icon={GraduationCap}
-                        active={role === "tutor"}
-                        onClick={() => setRole("tutor")}
-                      />
-                      <RoleCard
-                        label="Parent"
-                        desc="Guide a learner"
-                        icon={Heart}
-                        active={role === "parent"}
-                        onClick={() => setRole("parent")}
-                      />
+                  {/* Role badge */}
+                  <div className="flex items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 p-2.5">
+                    <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground">
+                      {role === "tutor" ? (
+                        <GraduationCap className="h-4 w-4" />
+                      ) : role === "parent" ? (
+                        <Heart className="h-4 w-4" />
+                      ) : (
+                        <BookOpen className="h-4 w-4" />
+                      )}
+                    </span>
+                    <div className="flex-1">
+                      <p className="text-[11px] font-semibold uppercase tracking-wide text-primary">
+                        Joining as {role || "—"}
+                      </p>
+                      <p className="text-[11px] text-muted-foreground">
+                        Fields below are tailored for {role || "you"}.
+                      </p>
                     </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setDir(-1);
+                        setStep(0);
+                      }}
+                      className="text-[11px] font-semibold text-primary hover:underline"
+                    >
+                      Change
+                    </button>
                   </div>
+
+                  {/* STUDENT-specific */}
+                  {role === "student" && (
+                    <div className="space-y-4 rounded-2xl border border-border/70 bg-muted/20 p-4">
+                      <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                        Student details
+                      </p>
+                      <Field
+                        id="institute"
+                        label="School / College"
+                        icon={Building2}
+                        value={institute}
+                        onChange={setInstitute}
+                        placeholder="e.g. Notre Dame College"
+                        required
+                      />
+                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div>
+                          <label htmlFor="grade" className="mb-1.5 block text-xs font-semibold text-foreground/80">
+                            Class / Grade
+                          </label>
+                          <div className="relative">
+                            <BookOpen className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                            <select
+                              id="grade"
+                              value={grade}
+                              onChange={(e) => setGrade(e.target.value)}
+                              required
+                              className="h-11 w-full appearance-none rounded-xl border border-border bg-surface pl-10 pr-8 text-sm text-foreground outline-none transition focus:border-primary/40 focus:ring-4 focus:ring-primary/10"
+                            >
+                              <option value="">Select class</option>
+                              {["6","7","8","9","10","11","12","Undergrad","Postgrad"].map((c) => (
+                                <option key={c} value={c}>Class {c}</option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                        <Field
+                          id="guardianPhone"
+                          label="Guardian phone"
+                          icon={PhoneIcon}
+                          type="tel"
+                          value={guardianPhone}
+                          onChange={setGuardianPhone}
+                          placeholder="01XXXXXXXXX"
+                          required
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* TUTOR-specific */}
+                  {role === "tutor" && (
+                    <div className="space-y-4 rounded-2xl border border-tutor/30 bg-tutor/5 p-4">
+                      <p className="text-[11px] font-semibold uppercase tracking-wide text-tutor">
+                        Tutor profile
+                      </p>
+                      <Field
+                        id="institute"
+                        label="University / Institute"
+                        icon={Building2}
+                        value={institute}
+                        onChange={setInstitute}
+                        placeholder="e.g. University of Dhaka"
+                        required
+                      />
+                      <Field
+                        id="qualification"
+                        label="Highest qualification"
+                        icon={Award}
+                        value={qualification}
+                        onChange={setQualification}
+                        placeholder="e.g. BSc in Mathematics"
+                        required
+                      />
+                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <Field
+                          id="experience"
+                          label="Experience (years)"
+                          icon={Clock}
+                          type="number"
+                          value={experience}
+                          onChange={setExperience}
+                          placeholder="e.g. 3"
+                          required
+                        />
+                        <Field
+                          id="hourlyRate"
+                          label="Hourly rate (৳)"
+                          icon={DollarSign}
+                          type="number"
+                          value={hourlyRate}
+                          onChange={setHourlyRate}
+                          placeholder="e.g. 500"
+                          required
+                        />
+                      </div>
+                      <Field
+                        id="subjectsTaught"
+                        label="Subjects you teach"
+                        icon={BookOpen}
+                        value={subjectsTaught}
+                        onChange={setSubjectsTaught}
+                        placeholder="Math, Physics, Chemistry"
+                        required
+                      />
+                      <div>
+                        <label htmlFor="bio" className="mb-1.5 block text-xs font-semibold text-foreground/80">
+                          Short bio
+                        </label>
+                        <div className="relative">
+                          <FileText className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                          <textarea
+                            id="bio"
+                            value={bio}
+                            onChange={(e) => setBio(e.target.value)}
+                            placeholder="Tell students about your teaching style, achievements…"
+                            rows={3}
+                            required
+                            className="w-full resize-none rounded-xl border border-border bg-surface py-3 pl-10 pr-3 text-sm text-foreground outline-none transition focus:border-primary/40 focus:ring-4 focus:ring-primary/10"
+                          />
+                        </div>
+                        <p className="mt-1 text-[10px] text-muted-foreground">
+                          {bio.length}/300 — minimum 10 characters
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* PARENT-specific */}
+                  {role === "parent" && (
+                    <div className="space-y-4 rounded-2xl border border-accent/30 bg-accent/5 p-4">
+                      <p className="text-[11px] font-semibold uppercase tracking-wide text-accent">
+                        Your child
+                      </p>
+                      <Field
+                        id="childName"
+                        label="Child's full name"
+                        icon={Baby}
+                        value={childName}
+                        onChange={setChildName}
+                        placeholder="e.g. Rahim Ahmed"
+                        required
+                      />
+                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div>
+                          <label htmlFor="childGrade" className="mb-1.5 block text-xs font-semibold text-foreground/80">
+                            Child's class
+                          </label>
+                          <div className="relative">
+                            <BookOpen className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                            <select
+                              id="childGrade"
+                              value={childGrade}
+                              onChange={(e) => setChildGrade(e.target.value)}
+                              required
+                              className="h-11 w-full appearance-none rounded-xl border border-border bg-surface pl-10 pr-8 text-sm text-foreground outline-none transition focus:border-primary/40 focus:ring-4 focus:ring-primary/10"
+                            >
+                              <option value="">Select class</option>
+                              {["1","2","3","4","5","6","7","8","9","10","11","12"].map((c) => (
+                                <option key={c} value={c}>Class {c}</option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                        <div>
+                          <label htmlFor="relation" className="mb-1.5 block text-xs font-semibold text-foreground/80">
+                            Relation
+                          </label>
+                          <div className="relative">
+                            <Briefcase className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                            <select
+                              id="relation"
+                              value={relation}
+                              onChange={(e) => setRelation(e.target.value)}
+                              required
+                              className="h-11 w-full appearance-none rounded-xl border border-border bg-surface pl-10 pr-8 text-sm text-foreground outline-none transition focus:border-primary/40 focus:ring-4 focus:ring-primary/10"
+                            >
+                              <option value="">Select</option>
+                              <option value="mother">Mother</option>
+                              <option value="father">Father</option>
+                              <option value="guardian">Guardian</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
 
                   <label className="flex items-start gap-2.5 rounded-xl border border-border/70 bg-muted/30 p-3 text-xs text-foreground/80">
                     <input
