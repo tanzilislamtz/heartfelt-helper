@@ -25,7 +25,7 @@ import {
   GraduationCap,
   Menu,
 } from "lucide-react";
-import { Hero3D } from "@/components/Hero3D";
+
 import { MobileNav } from "@/components/MobileNav";
 import { hasWelcomed, isAuthed } from "@/lib/session";
 
@@ -195,7 +195,7 @@ function LeftNav() {
 function Feed() {
   return (
     <section className="space-y-5">
-      <Hero3D />
+      
       <Composer />
       <TopicChips />
       <NearbyTutors />
