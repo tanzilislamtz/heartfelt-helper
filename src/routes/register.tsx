@@ -30,7 +30,13 @@ import {
   MapPin,
   Phone as PhoneIcon,
   Building2,
+  Baby,
+  Briefcase,
+  Clock,
+  DollarSign,
+  FileText,
 } from "lucide-react";
+
 import { AuthShell, Field, SocialBtn } from "./login";
 import { AvatarCropper } from "@/components/AvatarCropper";
 import { signIn } from "@/lib/session";
