@@ -270,7 +270,7 @@ function RegisterPage() {
         <div className="mt-8 flex items-baseline justify-between gap-3">
           <h1 className="font-display text-2xl font-semibold sm:text-3xl">Create account</h1>
           <span className="shrink-0 text-xs font-medium text-muted-foreground">
-            Step {step + 1} of 4
+            Step {step + 1} of 5
           </span>
         </div>
         <p className="mt-1 text-sm text-muted-foreground">
