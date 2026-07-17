@@ -195,7 +195,7 @@ function LeftNav() {
 function Feed() {
   return (
     <section className="space-y-5">
-      <Hero3D />
+      
       <Composer />
       <TopicChips />
       <NearbyTutors />
