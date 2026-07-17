@@ -92,10 +92,27 @@ function RegisterPage() {
   const [institute, setInstitute] = useState("");
   const [address, setAddress] = useState("");
   const [agree, setAgree] = useState(false);
-  const [role, setRole] = useState<Role>("student");
+  const [role, setRole] = useState<Role | "">("");
   const [avatar, setAvatar] = useState<string | null>(null);
   const [rawAvatar, setRawAvatar] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // Student-specific
+  const [grade, setGrade] = useState("");
+  const [guardianPhone, setGuardianPhone] = useState("");
+
+  // Tutor-specific
+  const [qualification, setQualification] = useState("");
+  const [experience, setExperience] = useState("");
+  const [subjectsTaught, setSubjectsTaught] = useState("");
+  const [hourlyRate, setHourlyRate] = useState("");
+  const [bio, setBio] = useState("");
+
+  // Parent-specific
+  const [childName, setChildName] = useState("");
+  const [childGrade, setChildGrade] = useState("");
+  const [relation, setRelation] = useState("");
+
 
   const onPickAvatar = (file?: File) => {
     if (!file) return;
