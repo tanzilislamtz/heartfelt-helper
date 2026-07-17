@@ -144,25 +144,45 @@ function RegisterPage() {
     return s;
   }, [password]);
 
-  const canNext =
-    (step === 0 && email.includes("@") && password.length >= 6) ||
-    (step === 1 &&
-      name.trim().length > 1 &&
-      lastName.trim().length > 0 &&
-      /^01\d{9}$/.test(phone) &&
-      !!gender &&
+  const profileBaseValid =
+    name.trim().length > 1 &&
+    lastName.trim().length > 0 &&
+    /^01\d{9}$/.test(phone) &&
+    !!gender &&
+    address.trim().length > 3 &&
+    agree &&
+    !!avatar;
+
+  const profileRoleValid =
+    (role === "student" &&
       institute.trim().length > 1 &&
-      address.trim().length > 3 &&
-      agree &&
-      !!avatar) ||
-    (step === 2 && otpValid) ||
-    (step === 3 && topics.length >= 1);
+      grade.trim().length > 0 &&
+      /^01\d{9}$/.test(guardianPhone)) ||
+    (role === "tutor" &&
+      institute.trim().length > 1 &&
+      qualification.trim().length > 1 &&
+      experience.trim().length > 0 &&
+      subjectsTaught.trim().length > 1 &&
+      hourlyRate.trim().length > 0 &&
+      bio.trim().length > 10) ||
+    (role === "parent" &&
+      childName.trim().length > 1 &&
+      childGrade.trim().length > 0 &&
+      !!relation);
+
+  const canNext =
+    (step === 0 && !!role) ||
+    (step === 1 && email.includes("@") && password.length >= 6) ||
+    (step === 2 && profileBaseValid && profileRoleValid) ||
+    (step === 3 && otpValid) ||
+    (step === 4 && topics.length >= 1);
 
   const next = () => {
     if (!canNext) return;
-    if (step === 3) return submit();
+    if (step === 4) return submit();
     // Entering OTP step: start resend cooldown
-    if (step === 1) setResendIn(30);
+    if (step === 2) setResendIn(30);
+
     setDir(1);
     setStep((s) => s + 1);
   };
