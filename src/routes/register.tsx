@@ -280,61 +280,18 @@ function RegisterPage() {
           </Link>
         </p>
 
-        {/* Stepper */}
-        <div className="mt-8">
-          <div className="relative flex items-center justify-between">
-            {/* base track */}
-            <div className="absolute left-5 right-5 top-1/2 h-0.5 -translate-y-1/2 rounded-full bg-muted" />
-            {/* progress track */}
-            <motion.div
-              initial={false}
-              animate={{ width: `${(step / 4) * 100}%` }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute left-5 top-1/2 h-0.5 -translate-y-1/2 rounded-full bg-gradient-to-r from-primary to-tutor"
-              style={{ maxWidth: "calc(100% - 2.5rem)" }}
-            />
-            {["Role", "Account", "Profile", "Verify", "Interests"].map((label, i) => {
+        {/* Journey Stepper — advanced */}
+        <JourneyStepper
+          step={step}
+          total={5}
+          onJump={(i) => {
+            if (i < step) {
+              setDir(-1);
+              setStep(i);
+            }
+          }}
+        />
 
-              const active = step === i;
-              const done = step > i;
-              return (
-                <div key={label} className="relative flex flex-col items-center gap-2">
-                  <motion.div
-                    initial={false}
-                    animate={{
-                      scale: active ? 1.1 : 1,
-                    }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                    className={`relative grid h-10 w-10 place-items-center rounded-full border-2 text-sm font-semibold transition-colors ${
-                      done
-                        ? "border-tutor bg-tutor text-tutor-foreground"
-                        : active
-                          ? "border-primary bg-primary text-primary-foreground shadow-lg shadow-primary/30"
-                          : "border-border bg-surface text-muted-foreground"
-                    }`}
-                  >
-                    {done ? <Check className="h-4 w-4" strokeWidth={3} /> : i + 1}
-                    {active && (
-                      <motion.span
-                        initial={{ scale: 1, opacity: 0.6 }}
-                        animate={{ scale: 1.6, opacity: 0 }}
-                        transition={{ duration: 1.4, repeat: Infinity }}
-                        className="absolute inset-0 rounded-full border-2 border-primary"
-                      />
-                    )}
-                  </motion.div>
-                  <span
-                    className={`text-[11px] font-semibold ${
-                      active || done ? "text-foreground" : "text-muted-foreground"
-                    }`}
-                  >
-                    {label}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
 
         {/* Steps */}
         <div className="relative mt-5">
