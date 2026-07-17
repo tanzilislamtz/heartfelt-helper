@@ -172,7 +172,7 @@ export function AuthShell({
     <div className="min-h-screen bg-background text-foreground">
       <div className="mx-auto grid min-h-screen max-w-[1400px] grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
         {/* Form side */}
-        <div className="relative flex items-center justify-center p-6 sm:p-10">
+        <div className="relative flex items-start justify-center px-5 pb-10 pt-8 sm:p-10 lg:items-center">
           <div
             className="pointer-events-none absolute inset-0 opacity-[0.35]"
             style={{
@@ -439,7 +439,10 @@ export function SocialBtn({ label }: { label: string }) {
           <span className="text-[10px] font-bold">{label.charAt(0)}</span>
         )}
       </span>
-      <span className="relative">Continue with {label}</span>
+      <span className="relative">
+        <span className="sm:hidden">{label}</span>
+        <span className="hidden sm:inline">Continue with {label}</span>
+      </span>
     </motion.button>
   );
 }
