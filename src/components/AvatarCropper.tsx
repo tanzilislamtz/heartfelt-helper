@@ -242,22 +242,25 @@ export function AvatarCropper({ src, onCancel, onApply, size = 512 }: Props) {
 
             <div className="flex items-center gap-3 border-t border-border/60 bg-muted/30 px-5 py-4 sm:px-8">
 
-              <button
-                type="button"
-                onClick={onCancel}
-                className="flex-1 rounded-xl border border-border/70 bg-surface px-4 py-2.5 text-sm font-semibold text-foreground transition hover:bg-muted"
-              >
-                Cancel
-              </button>
-              <motion.button
-                whileTap={{ scale: 0.97 }}
-                type="button"
-                onClick={apply}
-                className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-md shadow-primary/30 transition hover:brightness-110"
-              >
-                <Check className="h-4 w-4" strokeWidth={3} /> Apply
-              </motion.button>
+              <div className="mx-auto flex w-full max-w-lg items-center gap-3">
+                <button
+                  type="button"
+                  onClick={onCancel}
+                  className="flex-1 rounded-xl border border-border/70 bg-surface px-4 py-3 text-sm font-semibold text-foreground transition hover:bg-muted"
+                >
+                  Cancel
+                </button>
+                <motion.button
+                  whileTap={{ scale: 0.97 }}
+                  type="button"
+                  onClick={apply}
+                  className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-md shadow-primary/30 transition hover:brightness-110"
+                >
+                  <Check className="h-4 w-4" strokeWidth={3} /> Apply
+                </motion.button>
+              </div>
             </div>
+
           </motion.div>
         </motion.div>
       )}
