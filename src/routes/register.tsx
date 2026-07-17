@@ -35,7 +35,11 @@ import {
   Clock,
   DollarSign,
   FileText,
+  UserCircle2,
+  IdCard,
+  ShieldCheck,
 } from "lucide-react";
+
 
 import { AuthShell, Field, SocialBtn } from "./login";
 import { AvatarCropper } from "@/components/AvatarCropper";
@@ -280,61 +284,18 @@ function RegisterPage() {
           </Link>
         </p>
 
-        {/* Stepper */}
-        <div className="mt-8">
-          <div className="relative flex items-center justify-between">
-            {/* base track */}
-            <div className="absolute left-5 right-5 top-1/2 h-0.5 -translate-y-1/2 rounded-full bg-muted" />
-            {/* progress track */}
-            <motion.div
-              initial={false}
-              animate={{ width: `${(step / 4) * 100}%` }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute left-5 top-1/2 h-0.5 -translate-y-1/2 rounded-full bg-gradient-to-r from-primary to-tutor"
-              style={{ maxWidth: "calc(100% - 2.5rem)" }}
-            />
-            {["Role", "Account", "Profile", "Verify", "Interests"].map((label, i) => {
+        {/* Journey Stepper — advanced */}
+        <JourneyStepper
+          step={step}
+          total={5}
+          onJump={(i) => {
+            if (i < step) {
+              setDir(-1);
+              setStep(i);
+            }
+          }}
+        />
 
-              const active = step === i;
-              const done = step > i;
-              return (
-                <div key={label} className="relative flex flex-col items-center gap-2">
-                  <motion.div
-                    initial={false}
-                    animate={{
-                      scale: active ? 1.1 : 1,
-                    }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                    className={`relative grid h-10 w-10 place-items-center rounded-full border-2 text-sm font-semibold transition-colors ${
-                      done
-                        ? "border-tutor bg-tutor text-tutor-foreground"
-                        : active
-                          ? "border-primary bg-primary text-primary-foreground shadow-lg shadow-primary/30"
-                          : "border-border bg-surface text-muted-foreground"
-                    }`}
-                  >
-                    {done ? <Check className="h-4 w-4" strokeWidth={3} /> : i + 1}
-                    {active && (
-                      <motion.span
-                        initial={{ scale: 1, opacity: 0.6 }}
-                        animate={{ scale: 1.6, opacity: 0 }}
-                        transition={{ duration: 1.4, repeat: Infinity }}
-                        className="absolute inset-0 rounded-full border-2 border-primary"
-                      />
-                    )}
-                  </motion.div>
-                  <span
-                    className={`text-[11px] font-semibold ${
-                      active || done ? "text-foreground" : "text-muted-foreground"
-                    }`}
-                  >
-                    {label}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
 
         {/* Steps */}
         <div className="relative mt-5">
@@ -1188,4 +1149,199 @@ function BigRoleCard({
     </motion.button>
   );
 }
+
+const JOURNEY_STEPS = [
+  { label: "Role", hint: "Who you are", icon: UserCircle2 },
+  { label: "Account", hint: "Email & password", icon: Mail },
+  { label: "Profile", hint: "Your details", icon: IdCard },
+  { label: "Verify", hint: "Confirm code", icon: ShieldCheck },
+  { label: "Interests", hint: "What you love", icon: Sparkles },
+] as const;
+
+function JourneyStepper({
+  step,
+  total,
+  onJump,
+}: {
+  step: number;
+  total: number;
+  onJump: (i: number) => void;
+}) {
+  const pct = Math.round((step / (total - 1)) * 100);
+  const current = JOURNEY_STEPS[step];
+
+  return (
+    <div className="mt-7">
+      {/* Meta row */}
+      <div className="mb-3 flex items-end justify-between">
+        <div className="min-w-0">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+            Step {step + 1} / {total}
+          </p>
+          <motion.p
+            key={current.label}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-0.5 truncate font-display text-base font-semibold text-foreground sm:text-lg"
+          >
+            {current.label}{" "}
+            <span className="text-muted-foreground/70">— {current.hint}</span>
+          </motion.p>
+        </div>
+        <div className="shrink-0 rounded-full border border-primary/20 bg-primary/5 px-2.5 py-1 text-[10px] font-bold tabular-nums text-primary">
+          {pct}%
+        </div>
+      </div>
+
+      {/* Track */}
+      <div className="relative">
+        {/* dashed base line */}
+        <svg
+          className="absolute left-6 right-6 top-1/2 h-[2px] -translate-y-1/2"
+          width="calc(100% - 3rem)"
+          preserveAspectRatio="none"
+          viewBox="0 0 100 2"
+          aria-hidden
+        >
+          <line
+            x1="0"
+            y1="1"
+            x2="100"
+            y2="1"
+            stroke="var(--border)"
+            strokeWidth="1.5"
+            strokeDasharray="3 3"
+            vectorEffect="non-scaling-stroke"
+          />
+        </svg>
+
+        {/* animated gradient progress */}
+        <motion.div
+          initial={false}
+          animate={{ width: `calc(${pct}% - ${pct > 0 ? "3rem" : "0rem"} * ${pct / 100})` }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="absolute left-6 top-1/2 h-[3px] -translate-y-1/2 overflow-hidden rounded-full"
+          style={{ maxWidth: "calc(100% - 3rem)" }}
+        >
+          <div className="h-full w-full bg-gradient-to-r from-tutor via-primary to-accent" />
+          <motion.div
+            aria-hidden
+            animate={{ x: ["-100%", "200%"] }}
+            transition={{ duration: 2.2, repeat: Infinity, ease: "linear" }}
+            className="pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-white/60 to-transparent mix-blend-overlay"
+          />
+        </motion.div>
+
+        {/* nodes */}
+        <div className="relative flex items-center justify-between">
+          {JOURNEY_STEPS.map((s, i) => {
+            const active = step === i;
+            const done = step > i;
+            const clickable = done;
+            const Icon = s.icon;
+            return (
+              <div
+                key={s.label}
+                className="relative flex flex-col items-center"
+                style={{ width: 48 }}
+              >
+                <motion.button
+                  type="button"
+                  disabled={!clickable && !active}
+                  onClick={() => clickable && onJump(i)}
+                  initial={false}
+                  animate={{
+                    scale: active ? 1 : done ? 0.92 : 0.85,
+                  }}
+                  transition={{ type: "spring", stiffness: 320, damping: 22 }}
+                  whileHover={clickable ? { scale: 1 } : undefined}
+                  className={`relative grid place-items-center rounded-2xl transition-colors ${
+                    active
+                      ? "h-12 w-12 bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-xl shadow-primary/40"
+                      : done
+                        ? "h-11 w-11 bg-tutor text-tutor-foreground shadow-md shadow-tutor/30 cursor-pointer"
+                        : "h-11 w-11 border-2 border-dashed border-border bg-surface text-muted-foreground"
+                  }`}
+                  aria-label={s.label}
+                >
+                  {/* pulsing ring on active */}
+                  {active && (
+                    <>
+                      <motion.span
+                        aria-hidden
+                        initial={{ scale: 1, opacity: 0.5 }}
+                        animate={{ scale: 1.6, opacity: 0 }}
+                        transition={{ duration: 1.6, repeat: Infinity, ease: "easeOut" }}
+                        className="absolute inset-0 rounded-2xl border-2 border-primary"
+                      />
+                      <motion.span
+                        aria-hidden
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 14, repeat: Infinity, ease: "linear" }}
+                        className="absolute -inset-1.5 rounded-[1.1rem] border border-dashed border-primary/30"
+                      />
+                    </>
+                  )}
+
+                  {done ? (
+                    <motion.span
+                      initial={{ scale: 0, rotate: -30 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                    >
+                      <Check className="h-5 w-5" strokeWidth={3} />
+                    </motion.span>
+                  ) : (
+                    <Icon className={active ? "h-5 w-5" : "h-4 w-4"} />
+                  )}
+
+                  {/* index badge */}
+                  <span
+                    className={`absolute -bottom-1 -right-1 grid h-4 w-4 place-items-center rounded-full text-[9px] font-bold tabular-nums ring-2 ring-background ${
+                      active
+                        ? "bg-foreground text-background"
+                        : done
+                          ? "bg-tutor text-tutor-foreground"
+                          : "bg-muted text-muted-foreground"
+                    }`}
+                  >
+                    {i + 1}
+                  </span>
+                </motion.button>
+
+                <motion.span
+                  initial={false}
+                  animate={{
+                    opacity: active ? 1 : done ? 0.85 : 0.55,
+                  }}
+                  className={`mt-2.5 text-[10px] font-semibold uppercase tracking-wide ${
+                    active
+                      ? "text-primary"
+                      : done
+                        ? "text-foreground"
+                        : "text-muted-foreground"
+                  }`}
+                >
+                  {s.label}
+                </motion.span>
+
+                {/* spark under active */}
+                {active && (
+                  <motion.span
+                    aria-hidden
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: 1 }}
+                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                    className="absolute -bottom-1 left-1/2 h-0.5 w-8 -translate-x-1/2 origin-center rounded-full bg-gradient-to-r from-transparent via-primary to-transparent"
+                  />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 
