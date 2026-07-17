@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { motion } from "framer-motion";
 import {
   Search,
   Home,
@@ -21,7 +23,10 @@ import {
   Plus,
   ArrowUpRight,
   GraduationCap,
+  Menu,
 } from "lucide-react";
+import { Hero3D } from "@/components/Hero3D";
+import { MobileNav } from "@/components/MobileNav";
 
 export const Route = createFileRoute("/")({
   component: Index,
