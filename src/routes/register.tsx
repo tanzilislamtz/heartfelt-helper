@@ -1274,12 +1274,6 @@ function JourneyStepper({
                         transition={{ duration: 1.6, repeat: Infinity, ease: "easeOut" }}
                         className="absolute inset-0 rounded-2xl border-2 border-primary"
                       />
-                      <motion.span
-                        aria-hidden
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 14, repeat: Infinity, ease: "linear" }}
-                        className="absolute -inset-1.5 rounded-[1.1rem] border border-dashed border-primary/30"
-                      />
                     </>
                   )}
 
