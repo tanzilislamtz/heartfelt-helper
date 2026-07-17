@@ -129,7 +129,7 @@ export function AvatarCropper({ src, onCancel, onApply, size = 512 }: Props) {
             </div>
 
 
-            <div className="p-5">
+            <div className="flex flex-1 flex-col items-center justify-center gap-6 overflow-auto p-5 sm:p-8">
               <div
                 ref={boxRef}
                 onPointerDown={onPointerDown}
