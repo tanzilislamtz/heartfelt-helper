@@ -21,7 +21,21 @@ export function AvatarCropper({ src, onCancel, onApply, size = 512 }: Props) {
   const [rotate, setRotate] = useState(0);
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const dragging = useRef<{ x: number; y: number } | null>(null);
-  const BOX = 288; // preview box (px)
+  const [BOX, setBox] = useState(288); // preview box (px) — responsive
+
+  useEffect(() => {
+    const compute = () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      // Leave room for header (~72), controls (~180), footer (~72), padding
+      const avail = Math.min(w - 48, h - 340);
+      setBox(Math.max(240, Math.min(560, avail)));
+    };
+    compute();
+    window.addEventListener("resize", compute);
+    return () => window.removeEventListener("resize", compute);
+  }, []);
+
 
   useEffect(() => {
     if (!src) return;
@@ -88,33 +102,34 @@ export function AvatarCropper({ src, onCancel, onApply, size = 512 }: Props) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 grid place-items-center bg-foreground/60 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex flex-col bg-background/95 backdrop-blur-md"
           onClick={onCancel}
         >
           <motion.div
-            initial={{ scale: 0.94, y: 20, opacity: 0 }}
-            animate={{ scale: 1, y: 0, opacity: 1 }}
-            exit={{ scale: 0.96, opacity: 0 }}
+            initial={{ scale: 0.98, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{ type: "spring", stiffness: 260, damping: 24 }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-sm overflow-hidden rounded-3xl border border-border/60 bg-surface shadow-2xl"
+            className="flex h-full w-full flex-col bg-surface"
           >
-            <div className="flex items-center justify-between border-b border-border/60 px-5 py-3">
+            <div className="flex items-center justify-between border-b border-border/60 px-5 py-4 sm:px-8">
               <div>
-                <p className="font-display text-base font-semibold">Adjust your photo</p>
-                <p className="text-[11px] text-muted-foreground">Drag, zoom & rotate to frame</p>
+                <p className="font-display text-lg font-semibold sm:text-xl">Adjust your photo</p>
+                <p className="text-[11px] text-muted-foreground sm:text-xs">Drag, zoom & rotate to frame your avatar</p>
               </div>
               <button
                 type="button"
                 onClick={onCancel}
-                className="grid h-8 w-8 place-items-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground"
+                className="grid h-10 w-10 place-items-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground"
                 aria-label="Cancel"
               >
-                <X className="h-4 w-4" />
+                <X className="h-5 w-5" />
               </button>
             </div>
 
-            <div className="p-5">
+
+            <div className="flex flex-1 flex-col items-center justify-center gap-6 overflow-auto p-5 sm:p-8">
               <div
                 ref={boxRef}
                 onPointerDown={onPointerDown}
@@ -168,10 +183,10 @@ export function AvatarCropper({ src, onCancel, onApply, size = 512 }: Props) {
                 </div>
               </div>
 
-              {/* Zoom */}
-              <div className="mt-5 space-y-3">
+              {/* Controls */}
+              <div className="w-full max-w-lg space-y-4">
                 <div className="flex items-center gap-3">
-                  <ZoomOut className="h-4 w-4 text-muted-foreground" />
+                  <ZoomOut className="h-4 w-4 shrink-0 text-muted-foreground" />
                   <input
                     type="range"
                     min={0.2}
@@ -182,10 +197,10 @@ export function AvatarCropper({ src, onCancel, onApply, size = 512 }: Props) {
                     className="h-1.5 flex-1 accent-primary"
                     aria-label="Zoom"
                   />
-                  <ZoomIn className="h-4 w-4 text-muted-foreground" />
+                  <ZoomIn className="h-4 w-4 shrink-0 text-muted-foreground" />
                 </div>
                 <div className="flex items-center gap-3">
-                  <RotateCw className="h-4 w-4 text-muted-foreground" />
+                  <RotateCw className="h-4 w-4 shrink-0 text-muted-foreground" />
                   <input
                     type="range"
                     min={-180}
@@ -199,12 +214,12 @@ export function AvatarCropper({ src, onCancel, onApply, size = 512 }: Props) {
                   <button
                     type="button"
                     onClick={() => setRotate((r) => r + 90)}
-                    className="rounded-lg border border-border/70 px-2 py-1 text-[11px] font-semibold text-foreground transition hover:bg-muted"
+                    className="shrink-0 rounded-lg border border-border/70 px-2 py-1 text-[11px] font-semibold text-foreground transition hover:bg-muted"
                   >
                     +90°
                   </button>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <button
                     type="button"
                     onClick={() => {
@@ -218,30 +233,34 @@ export function AvatarCropper({ src, onCancel, onApply, size = 512 }: Props) {
                   >
                     Reset
                   </button>
-                  <span className="ml-auto self-center text-[11px] text-muted-foreground">
+                  <span className="ml-auto text-[11px] tabular-nums text-muted-foreground">
                     {Math.round(zoom * 100)}% · {rotate}°
                   </span>
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-2 border-t border-border/60 bg-muted/30 px-5 py-3">
-              <button
-                type="button"
-                onClick={onCancel}
-                className="flex-1 rounded-xl border border-border/70 bg-surface px-4 py-2.5 text-sm font-semibold text-foreground transition hover:bg-muted"
-              >
-                Cancel
-              </button>
-              <motion.button
-                whileTap={{ scale: 0.97 }}
-                type="button"
-                onClick={apply}
-                className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-md shadow-primary/30 transition hover:brightness-110"
-              >
-                <Check className="h-4 w-4" strokeWidth={3} /> Apply
-              </motion.button>
+            <div className="flex items-center gap-3 border-t border-border/60 bg-muted/30 px-5 py-4 sm:px-8">
+
+              <div className="mx-auto flex w-full max-w-lg items-center gap-3">
+                <button
+                  type="button"
+                  onClick={onCancel}
+                  className="flex-1 rounded-xl border border-border/70 bg-surface px-4 py-3 text-sm font-semibold text-foreground transition hover:bg-muted"
+                >
+                  Cancel
+                </button>
+                <motion.button
+                  whileTap={{ scale: 0.97 }}
+                  type="button"
+                  onClick={apply}
+                  className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-md shadow-primary/30 transition hover:brightness-110"
+                >
+                  <Check className="h-4 w-4" strokeWidth={3} /> Apply
+                </motion.button>
+              </div>
             </div>
+
           </motion.div>
         </motion.div>
       )}
