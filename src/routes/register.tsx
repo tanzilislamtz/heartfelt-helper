@@ -148,9 +148,9 @@ function RegisterPage() {
           </span>
         </div>
 
-        <div className="mt-8 flex items-baseline justify-between">
-          <h1 className="font-display text-3xl font-semibold">Create account</h1>
-          <span className="text-xs font-medium text-muted-foreground">
+        <div className="mt-8 flex items-baseline justify-between gap-3">
+          <h1 className="font-display text-2xl font-semibold sm:text-3xl">Create account</h1>
+          <span className="shrink-0 text-xs font-medium text-muted-foreground">
             Step {step + 1} of 3
           </span>
         </div>
