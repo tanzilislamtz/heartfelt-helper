@@ -61,7 +61,7 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <TopBar onMenu={() => setMenuOpen(true)} />
+      <Topbar variant="app" onMenu={() => setMenuOpen(true)} />
       <MobileNav open={menuOpen} onClose={() => setMenuOpen(false)} />
       <main className="mx-auto grid max-w-[1400px] grid-cols-1 gap-6 px-4 py-6 lg:grid-cols-[240px_minmax(0,1fr)_320px] lg:px-8">
         <LeftNav />
