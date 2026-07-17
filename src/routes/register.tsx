@@ -671,7 +671,7 @@ function RegisterPage() {
                   <span className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground/40 border-t-primary-foreground" />
                   Creating…
                 </>
-              ) : step === 2 ? (
+              ) : step === 3 ? (
                 <>
                   Finish <Check className="h-4 w-4" />
                 </>
