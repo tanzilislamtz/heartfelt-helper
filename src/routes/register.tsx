@@ -1257,7 +1257,7 @@ function JourneyStepper({
                   whileHover={clickable ? { scale: 1 } : undefined}
                   className={`relative grid place-items-center rounded-2xl transition-colors ${
                     active
-                      ? "h-12 w-12 bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-xl shadow-primary/40"
+                      ? "h-12 w-12 bg-[linear-gradient(135deg,#6366f1_0%,#a855f7_45%,#ec4899_100%)] text-white shadow-xl shadow-fuchsia-500/40 ring-2 ring-white/40"
                       : done
                         ? "h-11 w-11 bg-tutor text-tutor-foreground shadow-md shadow-tutor/30 cursor-pointer"
                         : "h-11 w-11 border-2 border-dashed border-border bg-surface text-muted-foreground"
@@ -1269,13 +1269,14 @@ function JourneyStepper({
                     <>
                       <motion.span
                         aria-hidden
-                        initial={{ scale: 1, opacity: 0.5 }}
+                        initial={{ scale: 1, opacity: 0.55 }}
                         animate={{ scale: 1.6, opacity: 0 }}
                         transition={{ duration: 1.6, repeat: Infinity, ease: "easeOut" }}
-                        className="absolute inset-0 rounded-2xl border-2 border-primary"
+                        className="absolute inset-0 rounded-2xl border-2 border-fuchsia-400"
                       />
                     </>
                   )}
+
 
                   {done ? (
                     <motion.span
