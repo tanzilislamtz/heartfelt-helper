@@ -78,6 +78,13 @@ function RegisterPage() {
     reader.readAsDataURL(file);
   };
 
+  // Step 2: OTP verification (demo — any 4 digits accepted)
+  const [otp, setOtp] = useState<string[]>(["", "", "", ""]);
+  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [resendIn, setResendIn] = useState(0);
+  const otpValue = otp.join("");
+  const otpValid = /^\d{4}$/.test(otpValue);
+
   // Step 3: Interests
   const [topics, setTopics] = useState<string[]>([]);
 
@@ -96,11 +103,14 @@ function RegisterPage() {
   const canNext =
     (step === 0 && email.includes("@") && password.length >= 6) ||
     (step === 1 && name.trim().length > 1 && !!avatar) ||
-    (step === 2 && topics.length >= 1);
+    (step === 2 && otpValid) ||
+    (step === 3 && topics.length >= 1);
 
   const next = () => {
     if (!canNext) return;
-    if (step === 2) return submit();
+    if (step === 3) return submit();
+    // Entering OTP step: start resend cooldown
+    if (step === 1) setResendIn(30);
     setDir(1);
     setStep((s) => s + 1);
   };
@@ -109,11 +119,45 @@ function RegisterPage() {
     setStep((s) => Math.max(0, s - 1));
   };
 
+  // Countdown for OTP resend
+  useEffect(() => {
+    if (resendIn <= 0) return;
+    const t = setTimeout(() => setResendIn((v) => v - 1), 1000);
+    return () => clearTimeout(t);
+  }, [resendIn]);
+
+  const setOtpAt = (i: number, v: string) => {
+    const digit = v.replace(/\D/g, "").slice(-1);
+    setOtp((prev) => {
+      const n = [...prev];
+      n[i] = digit;
+      return n;
+    });
+    if (digit && i < 3) otpRefs.current[i + 1]?.focus();
+  };
+
+  const onOtpKeyDown = (i: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Backspace" && !otp[i] && i > 0) otpRefs.current[i - 1]?.focus();
+    if (e.key === "ArrowLeft" && i > 0) otpRefs.current[i - 1]?.focus();
+    if (e.key === "ArrowRight" && i < 3) otpRefs.current[i + 1]?.focus();
+  };
+
+  const onOtpPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const text = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 4);
+    if (!text) return;
+    e.preventDefault();
+    const next = ["", "", "", ""];
+    for (let i = 0; i < text.length; i++) next[i] = text[i];
+    setOtp(next);
+    otpRefs.current[Math.min(text.length, 3)]?.focus();
+  };
+
   const submit = () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
       setDone(true);
+      signIn({ email, name });
       setTimeout(() => navigate({ to: "/" }), 1400);
     }, 900);
   };
