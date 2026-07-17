@@ -87,7 +87,7 @@ function TopBar({ onMenu }: { onMenu: () => void }) {
             <GraduationCap className="h-5 w-5" strokeWidth={2.2} />
           </span>
           <span className="hidden text-lg font-semibold tracking-tight sm:inline">
-            <span className="font-display italic">Learn</span>
+            <span className="font-display italic">Learns</span>
             <span className="ml-1 text-primary">Academy</span>
           </span>
         </a>
@@ -791,7 +791,7 @@ function RightRail() {
         </div>
 
         <p className="px-2 text-[11px] text-muted-foreground">
-          © Learn Academy · About · Privacy · Terms · Help
+          © Learns Academy · About · Privacy · Terms · Help
         </p>
       </div>
     </aside>

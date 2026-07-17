@@ -43,7 +43,7 @@ export function MobileNav({ open, onClose }: { open: boolean; onClose: () => voi
                   <GraduationCap className="h-5 w-5" />
                 </span>
                 <span className="text-lg font-semibold">
-                  <span className="font-display italic">Learn</span>
+                  <span className="font-display italic">Learns</span>
                   <span className="ml-1 text-primary">Academy</span>
                 </span>
               </div>

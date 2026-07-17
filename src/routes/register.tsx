@@ -25,6 +25,11 @@ import {
   Music,
   Camera,
   Sparkles,
+  BarChart3,
+  Award,
+  MapPin,
+  Phone as PhoneIcon,
+  Building2,
 } from "lucide-react";
 import { AuthShell, Field, SocialBtn } from "./login";
 import { AvatarCropper } from "@/components/AvatarCropper";
@@ -33,8 +38,8 @@ import { signIn } from "@/lib/session";
 export const Route = createFileRoute("/register")({
   head: () => ({
     meta: [
-      { title: "Create account — Learn Academy" },
-      { name: "description", content: "Join Learn Academy in three quick steps." },
+      { title: "Create account — Learns Academy" },
+      { name: "description", content: "Join Learns Academy in three quick steps." },
     ],
   }),
   component: RegisterPage,
@@ -43,14 +48,24 @@ export const Route = createFileRoute("/register")({
 type Role = "student" | "tutor" | "parent";
 
 const TOPICS = [
-  { id: "math", label: "Math", icon: Calculator },
-  { id: "code", label: "Programming", icon: Code2 },
-  { id: "lang", label: "Languages", icon: Languages },
-  { id: "sci", label: "Science", icon: FlaskConical },
-  { id: "design", label: "Design", icon: Palette },
+  { id: "math", label: "Mathematics", icon: Calculator },
+  { id: "physics", label: "Physics", icon: FlaskConical },
+  { id: "chem", label: "Chemistry", icon: FlaskConical },
+  { id: "bio", label: "Biology", icon: FlaskConical },
+  { id: "english", label: "English", icon: Languages },
+  { id: "bangla", label: "Bangla", icon: Languages },
+  { id: "ict", label: "ICT", icon: Code2 },
+  { id: "web", label: "Web Development", icon: Code2 },
+  { id: "data", label: "Data Science", icon: BarChart3 },
+  { id: "programming", label: "Programming", icon: Code2 },
+  { id: "emerging", label: "Emerging Tech", icon: Sparkles },
   { id: "biz", label: "Business", icon: BookOpen },
-  { id: "music", label: "Music", icon: Music },
+  { id: "design", label: "Design", icon: Palette },
   { id: "photo", label: "Photography", icon: Camera },
+  { id: "music", label: "Music", icon: Music },
+  { id: "sports", label: "Sports", icon: Award },
+  { id: "motivation", label: "Motivation", icon: Heart },
+  { id: "social", label: "Social Studies", icon: Users },
 ];
 
 function RegisterPage() {
@@ -65,6 +80,12 @@ function RegisterPage() {
 
   // Step 2: Profile
   const [name, setName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [gender, setGender] = useState("");
+  const [institute, setInstitute] = useState("");
+  const [address, setAddress] = useState("");
+  const [agree, setAgree] = useState(false);
   const [role, setRole] = useState<Role>("student");
   const [avatar, setAvatar] = useState<string | null>(null);
   const [rawAvatar, setRawAvatar] = useState<string | null>(null);
@@ -102,7 +123,15 @@ function RegisterPage() {
 
   const canNext =
     (step === 0 && email.includes("@") && password.length >= 6) ||
-    (step === 1 && name.trim().length > 1 && !!avatar) ||
+    (step === 1 &&
+      name.trim().length > 1 &&
+      lastName.trim().length > 0 &&
+      /^01\d{9}$/.test(phone) &&
+      !!gender &&
+      institute.trim().length > 1 &&
+      address.trim().length > 3 &&
+      agree &&
+      !!avatar) ||
     (step === 2 && otpValid) ||
     (step === 3 && topics.length >= 1);
 
@@ -190,7 +219,7 @@ function RegisterPage() {
             <GraduationCap className="h-5 w-5" />
           </span>
           <span className="text-lg font-semibold">
-            <span className="font-display italic">Learn</span>
+            <span className="font-display italic">Learns</span>
             <span className="ml-1 text-primary">Academy</span>
           </span>
         </div>
@@ -477,15 +506,81 @@ function RegisterPage() {
 
 
 
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <Field
+                      id="firstName"
+                      label="First name"
+                      icon={UserIcon}
+                      value={name}
+                      onChange={setName}
+                      placeholder="Ayesha"
+                      required
+                    />
+                    <Field
+                      id="lastName"
+                      label="Last name"
+                      icon={UserIcon}
+                      value={lastName}
+                      onChange={setLastName}
+                      placeholder="Rahman"
+                      required
+                    />
+                  </div>
+
                   <Field
-                    id="name"
-                    label="Your name"
-                    icon={UserIcon}
-                    value={name}
-                    onChange={setName}
-                    placeholder="e.g. Ayesha Rahman"
+                    id="phone"
+                    label="Phone number"
+                    icon={PhoneIcon}
+                    type="tel"
+                    value={phone}
+                    onChange={setPhone}
+                    placeholder="01XXXXXXXXX"
                     required
                   />
+
+                  <div>
+                    <label htmlFor="gender" className="mb-1.5 block text-xs font-semibold text-foreground/80">
+                      Gender
+                    </label>
+                    <div className="relative">
+                      <UserIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                      <select
+                        id="gender"
+                        value={gender}
+                        onChange={(e) => setGender(e.target.value)}
+                        required
+                        className="h-11 w-full appearance-none rounded-xl border border-border bg-surface pl-10 pr-8 text-sm text-foreground outline-none transition focus:border-primary/40 focus:ring-4 focus:ring-primary/10"
+                      >
+                        <option value="">Select gender</option>
+                        <option value="female">Female</option>
+                        <option value="male">Male</option>
+                        <option value="other">Other</option>
+                        <option value="na">Prefer not to say</option>
+                      </select>
+                      <ArrowRight className="pointer-events-none absolute right-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 rotate-90 text-muted-foreground" />
+                    </div>
+                  </div>
+
+                  <Field
+                    id="institute"
+                    label="Institute"
+                    icon={Building2}
+                    value={institute}
+                    onChange={setInstitute}
+                    placeholder="e.g. Notre Dame College"
+                    required
+                  />
+
+                  <Field
+                    id="address"
+                    label="Full address"
+                    icon={MapPin}
+                    value={address}
+                    onChange={setAddress}
+                    placeholder="House, road, area, city"
+                    required
+                  />
+
                   <div>
                     <label className="mb-2 block text-xs font-semibold text-foreground/80">
                       I'm joining as
@@ -514,6 +609,26 @@ function RegisterPage() {
                       />
                     </div>
                   </div>
+
+                  <label className="flex items-start gap-2.5 rounded-xl border border-border/70 bg-muted/30 p-3 text-xs text-foreground/80">
+                    <input
+                      type="checkbox"
+                      checked={agree}
+                      onChange={(e) => setAgree(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 rounded border-border accent-primary"
+                    />
+                    <span>
+                      I agree to the{" "}
+                      <a href="#" className="font-semibold text-primary hover:underline">
+                        Terms & Conditions
+                      </a>{" "}
+                      and{" "}
+                      <a href="#" className="font-semibold text-primary hover:underline">
+                        Privacy Policy
+                      </a>
+                      .
+                    </span>
+                  </label>
                 </div>
               </StepPane>
             ) : step === 2 ? (

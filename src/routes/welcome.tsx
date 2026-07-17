@@ -14,8 +14,8 @@ import { hasWelcomed, isAuthed, markWelcomed } from "@/lib/session";
 export const Route = createFileRoute("/welcome")({
   head: () => ({
     meta: [
-      { title: "Welcome — Learn Academy" },
-      { name: "description", content: "Discover Learn Academy in a quick tour." },
+      { title: "Welcome — Learns Academy" },
+      { name: "description", content: "Discover Learns Academy in a quick tour." },
     ],
   }),
   component: WelcomePage,
@@ -35,9 +35,9 @@ const SLIDES: Slide[] = [
   {
     key: "hello",
     icon: GraduationCap,
-    eyebrow: "Learn Academy",
-    title: "A calmer place to learn, together.",
-    desc: "Real tutors. Real answers. Real momentum — designed for students, tutors and parents.",
+    eyebrow: "Learns Academy",
+    title: "Smart learning for a smarter future.",
+    desc: "Real tutors. Real answers. Real momentum — for students, tutors and parents across Bangladesh.",
     bg: "from-primary/15 via-accent/10 to-tutor/15",
     accent: "primary",
   },
@@ -103,7 +103,7 @@ function WelcomePage() {
               <GraduationCap className="h-4.5 w-4.5" />
             </span>
             <span className="text-sm font-semibold">
-              <span className="font-display italic">Learn</span>
+              <span className="font-display italic">Learns</span>
               <span className="ml-1 text-primary">Academy</span>
             </span>
           </div>
