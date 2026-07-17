@@ -183,10 +183,10 @@ export function AvatarCropper({ src, onCancel, onApply, size = 512 }: Props) {
                 </div>
               </div>
 
-              {/* Zoom */}
-              <div className="mt-5 space-y-3">
+              {/* Controls */}
+              <div className="w-full max-w-lg space-y-4">
                 <div className="flex items-center gap-3">
-                  <ZoomOut className="h-4 w-4 text-muted-foreground" />
+                  <ZoomOut className="h-4 w-4 shrink-0 text-muted-foreground" />
                   <input
                     type="range"
                     min={0.2}
@@ -197,10 +197,10 @@ export function AvatarCropper({ src, onCancel, onApply, size = 512 }: Props) {
                     className="h-1.5 flex-1 accent-primary"
                     aria-label="Zoom"
                   />
-                  <ZoomIn className="h-4 w-4 text-muted-foreground" />
+                  <ZoomIn className="h-4 w-4 shrink-0 text-muted-foreground" />
                 </div>
                 <div className="flex items-center gap-3">
-                  <RotateCw className="h-4 w-4 text-muted-foreground" />
+                  <RotateCw className="h-4 w-4 shrink-0 text-muted-foreground" />
                   <input
                     type="range"
                     min={-180}
@@ -214,12 +214,12 @@ export function AvatarCropper({ src, onCancel, onApply, size = 512 }: Props) {
                   <button
                     type="button"
                     onClick={() => setRotate((r) => r + 90)}
-                    className="rounded-lg border border-border/70 px-2 py-1 text-[11px] font-semibold text-foreground transition hover:bg-muted"
+                    className="shrink-0 rounded-lg border border-border/70 px-2 py-1 text-[11px] font-semibold text-foreground transition hover:bg-muted"
                   >
                     +90°
                   </button>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <button
                     type="button"
                     onClick={() => {
@@ -233,14 +233,15 @@ export function AvatarCropper({ src, onCancel, onApply, size = 512 }: Props) {
                   >
                     Reset
                   </button>
-                  <span className="ml-auto self-center text-[11px] text-muted-foreground">
+                  <span className="ml-auto text-[11px] tabular-nums text-muted-foreground">
                     {Math.round(zoom * 100)}% · {rotate}°
                   </span>
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-2 border-t border-border/60 bg-muted/30 px-5 py-3">
+            <div className="flex items-center gap-3 border-t border-border/60 bg-muted/30 px-5 py-4 sm:px-8">
+
               <button
                 type="button"
                 onClick={onCancel}
