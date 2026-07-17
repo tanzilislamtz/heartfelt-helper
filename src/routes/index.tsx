@@ -27,6 +27,8 @@ import {
 } from "lucide-react";
 
 import { MobileNav } from "@/components/MobileNav";
+import { Topbar } from "@/components/Topbar";
+import { FeedToolbar } from "@/components/FeedToolbar";
 import { hasWelcomed, isAuthed } from "@/lib/session";
 
 export const Route = createFileRoute("/")({
