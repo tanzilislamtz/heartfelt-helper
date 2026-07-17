@@ -149,10 +149,19 @@ function LoginPage() {
           <div className="h-px flex-1 bg-border" />
         </div>
 
-        <div className="grid grid-cols-2 gap-2">
-          <SocialBtn label="Google" />
-          <SocialBtn label="Apple" />
+        <div className="grid grid-cols-4 gap-2">
+          <SocialBtn label="Google" compact />
+          <SocialBtn label="Facebook" compact />
+          <SocialBtn label="LinkedIn" compact />
+          <SocialBtn label="Apple" compact />
         </div>
+
+        <p className="mt-6 text-center text-sm text-muted-foreground">
+          Don't have an account?{" "}
+          <Link to="/register" className="font-semibold text-primary hover:underline">
+            Sign Up
+          </Link>
+        </p>
 
         <p className="mt-6 flex items-center gap-1.5 text-xs text-muted-foreground">
           <Sparkles className="h-3 w-3 text-accent" /> Demo screens — no data
