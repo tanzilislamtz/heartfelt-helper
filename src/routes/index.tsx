@@ -198,37 +198,56 @@ function Feed() {
       <Hero3D />
       <Composer />
       <TopicChips />
+      <NearbyTutors />
+
       <Post
-        author="Dr. Ayesha Rahman"
+        author="Alia Bhatt"
         role="tutor"
-        handle="@ayesha.math"
-        time="2h"
+        handle="@alia.tutors"
+        time="2h · Public"
         verified
-        title="A visual way to understand eigenvectors — 3 minute intuition"
-        body="Instead of memorizing the formula, think of eigenvectors as the directions that don't get knocked off their line when a transformation happens. Only their length changes."
-        tag="Linear Algebra"
-        stats={{ likes: 248, comments: 46, shares: 12 }}
+        title="Free doubt-solving session tonight — Class 9 & 10 Math"
+        body="আজ রাত ৯টায় ফ্রি ডাউট সলভিং সেশন। Algebra, Geometry, Trigonometry — যেকোনো প্রশ্ন নিয়ে আসুন। জুম লিঙ্ক কমেন্টে দেওয়া হবে।"
+        tag="Class 9-10 Math"
+        stats={{ likes: 328, comments: 42, shares: 18 }}
       />
+
+      <BestTutorCard />
+
       <Post
-        author="Rafi Chowdhury"
+        author="Nabila Chowdhury"
         role="student"
-        handle="@rafi.codes"
-        time="5h"
-        title="Finally solved my first LeetCode Hard 🎉"
-        body="Two-pointer + binary search combo. Stuck for 3 days, but the community here kept nudging me. Grateful."
-        tag="DSA"
+        handle="@nabila.bio"
+        time="4h · Public"
+        title="Butterfly on marigold — captured for my Biology assignment"
+        body="Field notes for chapter 7 (Pollination). Any tips on identifying this species? Guessing it's a Plain Tiger."
+        tag="Biology · Class 10"
         stats={{ likes: 512, comments: 88, shares: 24 }}
-        media
+        mediaUrl="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=1200&auto=format&fit=crop"
       />
+
       <Post
-        author="Sadia Noor"
-        role="guest"
-        handle="@sadia.write"
-        time="Yesterday"
-        title="Anyone recommend a good IELTS speaking partner?"
-        body="Preparing for the September test. Would love to swap 20-minute practice calls in the evenings."
-        tag="Languages"
-        stats={{ likes: 91, comments: 34, shares: 5 }}
+        author="Rafi Islam"
+        role="tutor"
+        handle="@rafi.stem"
+        time="6h · Public"
+        title="Weekend group class — pick your subjects"
+        body="ছুটির দিনে অনলাইন গ্রুপ ক্লাস নিচ্ছি। প্রতিটি সেশন ৪৫ মিনিট, ছোট ব্যাচ। আগ্রহীরা কমেন্ট করুন কোন সাবজেক্ট চান।"
+        tag="Weekend Batch"
+        tags={["Math", "Physics", "Chemistry", "Bangla Math"]}
+        stats={{ likes: 176, comments: 51, shares: 9 }}
+      />
+
+      <Post
+        author="Rayhan Chowdhury"
+        role="student"
+        handle="@rayhan.reads"
+        time="Yesterday · Public"
+        title="Study setup for finals week"
+        body="একটা আপেল, কয়েকটা বই — ব্যস, এটাই এই সপ্তাহের রুটিন। Board exam ঠিক ১২ দিন দূরে।"
+        tag="Motivation"
+        stats={{ likes: 421, comments: 66, shares: 12 }}
+        mediaUrl="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1200&auto=format&fit=crop"
       />
     </section>
   );
@@ -278,7 +297,7 @@ function ComposerBtn({ icon: Icon, label }: { icon: React.ElementType; label: st
 }
 
 function TopicChips() {
-  const topics = ["For you", "Math", "Programming", "Languages", "Science", "Design", "Business"];
+  const topics = ["For You", "Popular", "Q&A", "Trending Tutors"];
   return (
     <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       {topics.map((t, i) => (
@@ -294,6 +313,100 @@ function TopicChips() {
         </button>
       ))}
     </div>
+  );
+}
+
+function NearbyTutors() {
+  const tutors = [
+    { name: "Nadia Karim", subject: "Physics · 2.1 km away", rating: 4.9, tone: "primary" as const },
+    { name: "Tanvir Ahmed", subject: "Web Dev · 3.4 km away", rating: 4.8, tone: "tutor" as const },
+    { name: "Meherun Nisa", subject: "IELTS · 1.6 km away", rating: 5.0, tone: "accent" as const },
+    { name: "Sabbir Rahman", subject: "Chemistry · 4.2 km away", rating: 4.7, tone: "primary" as const },
+  ];
+  const toneMap = {
+    primary: "from-primary/20 via-primary/10 to-transparent ring-primary/30 text-primary",
+    tutor: "from-tutor/25 via-tutor/10 to-transparent ring-tutor/30 text-tutor",
+    accent: "from-accent/40 via-accent/15 to-transparent ring-accent/40 text-foreground",
+  };
+  return (
+    <div>
+      <div className="mb-2 flex items-center justify-between">
+        <h3 className="text-sm font-semibold text-foreground">Nearby tutors</h3>
+        <button className="text-xs font-medium text-primary hover:underline">See all</button>
+      </div>
+      <div className="-mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {tutors.map((t) => (
+          <motion.div
+            key={t.name}
+            whileHover={{ y: -3 }}
+            className="relative w-40 shrink-0 snap-start overflow-hidden rounded-2xl border border-border bg-surface shadow-sm"
+          >
+            <div className={`aspect-[4/5] bg-gradient-to-br ${toneMap[t.tone]}`}>
+              <div className="grid h-full w-full place-items-center">
+                <div className={`grid h-16 w-16 place-items-center rounded-full bg-background text-xl font-bold ring-2 ${toneMap[t.tone].split(" ").find((c) => c.startsWith("ring-"))}`}>
+                  <span className={toneMap[t.tone].split(" ").find((c) => c.startsWith("text-"))}>
+                    {t.name.charAt(0)}
+                  </span>
+                </div>
+              </div>
+              <span className="absolute right-2 top-2 rounded-full bg-background/90 px-2 py-0.5 text-[10px] font-semibold text-foreground shadow-sm">
+                ★ {t.rating}
+              </span>
+            </div>
+            <div className="p-3">
+              <p className="truncate text-sm font-semibold text-foreground">{t.name}</p>
+              <p className="mt-0.5 truncate text-[11px] text-muted-foreground">{t.subject}</p>
+              <button className="mt-2.5 w-full rounded-full bg-primary py-1.5 text-[11px] font-semibold text-primary-foreground transition hover:opacity-95">
+                Follow
+              </button>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function BestTutorCard() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      className="relative overflow-hidden rounded-2xl border border-accent/50 bg-gradient-to-br from-accent/40 via-surface to-surface p-4 shadow-sm"
+    >
+      <span className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-accent/30 blur-2xl" />
+      <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-primary">
+        <Sparkles className="h-3.5 w-3.5" /> Best tutor available
+      </div>
+      <div className="mt-3 flex items-center gap-3">
+        <div className="relative shrink-0">
+          <div className="grid h-14 w-14 place-items-center rounded-2xl bg-primary text-lg font-bold text-primary-foreground shadow-md">
+            R
+          </div>
+          <span className="absolute -bottom-1 -right-1 grid h-6 w-6 place-items-center rounded-full bg-tutor text-tutor-foreground ring-2 ring-surface">
+            <CheckCircle2 className="h-3.5 w-3.5" strokeWidth={3} />
+          </span>
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-semibold text-foreground">
+            Rayhan Chowdhury <span className="text-xs text-muted-foreground">· ★ 4.9</span>
+          </p>
+          <p className="truncate text-xs text-muted-foreground">
+            Physics · Chemistry · 6y experience · BUET
+          </p>
+          <p className="mt-0.5 text-[11px] text-primary">Available today · 2 slots left</p>
+        </div>
+      </div>
+      <div className="mt-4 flex gap-2">
+        <button className="flex-1 rounded-full border border-border bg-surface px-3 py-2 text-xs font-semibold text-foreground/80 transition hover:bg-muted">
+          Join Now
+        </button>
+        <button className="flex-1 rounded-full bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground shadow-sm transition hover:opacity-95">
+          Book Now
+        </button>
+      </div>
+    </motion.div>
   );
 }
 
