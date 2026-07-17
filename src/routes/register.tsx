@@ -38,7 +38,7 @@ export const Route = createFileRoute("/register")({
   component: RegisterPage,
 });
 
-type Role = "student" | "tutor" | "guest";
+type Role = "student" | "tutor" | "parent";
 
 const TOPICS = [
   { id: "math", label: "Math", icon: Calculator },
