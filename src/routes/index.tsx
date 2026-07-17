@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   Search,
   Home,
@@ -296,6 +296,32 @@ function Post({
   };
   const rs = roleStyles[role];
 
+  const [liked, setLiked] = useState(false);
+  const [likes, setLikes] = useState(stats.likes);
+  const [bookmarked, setBookmarked] = useState(false);
+  const [shared, setShared] = useState(stats.shares);
+  const [showComments, setShowComments] = useState(false);
+  const [comments, setComments] = useState<{ id: number; author: string; text: string; time: string }[]>([]);
+  const [draft, setDraft] = useState("");
+
+  const commentCount = stats.comments + comments.length;
+
+  const toggleLike = () => {
+    setLiked((v) => !v);
+    setLikes((n) => n + (liked ? -1 : 1));
+  };
+  const onShare = () => setShared((n) => n + 1);
+  const submitComment = (e: React.FormEvent) => {
+    e.preventDefault();
+    const text = draft.trim();
+    if (!text) return;
+    setComments((c) => [
+      ...c,
+      { id: Date.now(), author: "You", text, time: "now" },
+    ]);
+    setDraft("");
+  };
+
   return (
     <motion.article
       initial={{ opacity: 0, y: 24, rotateX: -6 }}
@@ -356,25 +382,115 @@ function Post({
       </div>
 
       <footer className="mt-4 flex items-center gap-1 border-t border-border pt-3">
-        <PostAction icon={Heart} label={`${stats.likes}`} />
-        <PostAction icon={MessageCircle} label={`${stats.comments}`} />
-        <PostAction icon={Share2} label={`${stats.shares}`} />
-        <button className="ml-auto rounded-full p-2 text-muted-foreground hover:bg-muted hover:text-foreground">
-          <Bookmark className="h-4 w-4" />
-        </button>
+        <motion.button
+          whileTap={{ scale: 0.9 }}
+          onClick={toggleLike}
+          aria-pressed={liked}
+          className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition ${
+            liked
+              ? "bg-destructive/10 text-destructive"
+              : "text-foreground/70 hover:bg-muted hover:text-foreground"
+          }`}
+        >
+          <Heart className={`h-4 w-4 ${liked ? "fill-current" : ""}`} />
+          {likes}
+        </motion.button>
+        <motion.button
+          whileTap={{ scale: 0.9 }}
+          onClick={() => setShowComments((v) => !v)}
+          aria-expanded={showComments}
+          className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition ${
+            showComments
+              ? "bg-primary/10 text-primary"
+              : "text-foreground/70 hover:bg-muted hover:text-foreground"
+          }`}
+        >
+          <MessageCircle className="h-4 w-4" />
+          {commentCount}
+        </motion.button>
+        <motion.button
+          whileTap={{ scale: 0.9 }}
+          onClick={onShare}
+          className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium text-foreground/70 transition hover:bg-muted hover:text-foreground"
+        >
+          <Share2 className="h-4 w-4" />
+          {shared}
+        </motion.button>
+        <motion.button
+          whileTap={{ scale: 0.85 }}
+          onClick={() => setBookmarked((v) => !v)}
+          aria-pressed={bookmarked}
+          className={`ml-auto rounded-full p-2 transition ${
+            bookmarked
+              ? "bg-accent/25 text-foreground"
+              : "text-muted-foreground hover:bg-muted hover:text-foreground"
+          }`}
+        >
+          <Bookmark className={`h-4 w-4 ${bookmarked ? "fill-current" : ""}`} />
+        </motion.button>
       </footer>
+
+      <AnimatePresence initial={false}>
+        {showComments && (
+          <motion.div
+            key="comments"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="overflow-hidden"
+          >
+            <div className="mt-4 space-y-3 border-t border-border pt-4">
+              {comments.length === 0 && (
+                <p className="text-xs text-muted-foreground">Be the first to comment.</p>
+              )}
+              {comments.map((c) => (
+                <motion.div
+                  key={c.id}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex gap-2"
+                >
+                  <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                    {c.author.charAt(0)}
+                  </div>
+                  <div className="min-w-0 flex-1 rounded-2xl bg-muted/60 px-3 py-2">
+                    <div className="flex items-center gap-2 text-xs">
+                      <span className="font-semibold text-foreground">{c.author}</span>
+                      <span className="text-muted-foreground">· {c.time}</span>
+                    </div>
+                    <p className="mt-0.5 text-sm text-foreground/85">{c.text}</p>
+                  </div>
+                </motion.div>
+              ))}
+
+              <form onSubmit={submitComment} className="flex gap-2 pt-1">
+                <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                  A
+                </div>
+                <input
+                  type="text"
+                  value={draft}
+                  onChange={(e) => setDraft(e.target.value)}
+                  placeholder="Write a comment…"
+                  className="h-9 min-w-0 flex-1 rounded-full border border-transparent bg-muted/60 px-4 text-sm outline-none focus:border-primary/30 focus:bg-surface focus:ring-4 focus:ring-primary/10"
+                />
+                <button
+                  type="submit"
+                  disabled={!draft.trim()}
+                  className="shrink-0 rounded-full bg-primary px-4 text-xs font-semibold text-primary-foreground transition hover:opacity-95 disabled:opacity-40"
+                >
+                  Post
+                </button>
+              </form>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.article>
   );
 }
 
-function PostAction({ icon: Icon, label }: { icon: React.ElementType; label: string }) {
-  return (
-    <button className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium text-foreground/70 transition hover:bg-muted hover:text-foreground">
-      <Icon className="h-4 w-4" />
-      {label}
-    </button>
-  );
-}
 
 function RightRail() {
   return (
