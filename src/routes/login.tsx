@@ -151,10 +151,15 @@ function LoginPage() {
 
         <div className="grid grid-cols-4 gap-2">
           <SocialBtn label="Google" compact />
+          <SocialBtn label="Apple" compact />
           <SocialBtn label="Facebook" compact />
           <SocialBtn label="LinkedIn" compact />
-          <SocialBtn label="Apple" compact />
+          <SocialBtn label="GitHub" compact />
+          <SocialBtn label="X" compact />
+          <SocialBtn label="Microsoft" compact />
+          <SocialBtn label="Discord" compact />
         </div>
+
 
         <p className="mt-6 text-center text-sm text-muted-foreground">
           Don't have an account?{" "}
