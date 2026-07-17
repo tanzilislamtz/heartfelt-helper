@@ -310,6 +310,73 @@ function RegisterPage() {
             ) : step === 1 ? (
               <StepPane key="s1" dir={dir}>
                 <div className="space-y-5">
+                  {/* Avatar upload */}
+                  <div className="flex items-center gap-4">
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      className="relative"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => fileRef.current?.click()}
+                        className={`group relative grid h-20 w-20 place-items-center overflow-hidden rounded-2xl border-2 border-dashed transition ${
+                          avatar
+                            ? "border-primary/40"
+                            : "border-border bg-surface hover:border-primary/50 hover:bg-primary/5"
+                        }`}
+                      >
+                        {avatar ? (
+                          <img
+                            src={avatar}
+                            alt="Profile preview"
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <div className="flex flex-col items-center gap-1 text-muted-foreground">
+                            <CameraIcon className="h-5 w-5" />
+                            <span className="text-[10px] font-semibold">Photo</span>
+                          </div>
+                        )}
+                        {avatar && (
+                          <span className="absolute inset-0 grid place-items-center bg-black/40 text-white opacity-0 transition group-hover:opacity-100">
+                            <Upload className="h-5 w-5" />
+                          </span>
+                        )}
+                      </button>
+                      {avatar && (
+                        <button
+                          type="button"
+                          onClick={() => setAvatar(null)}
+                          className="absolute -right-1.5 -top-1.5 grid h-6 w-6 place-items-center rounded-full bg-foreground text-background shadow"
+                          aria-label="Remove photo"
+                        >
+                          <X className="h-3.5 w-3.5" />
+                        </button>
+                      )}
+                    </motion.div>
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold">Profile picture</p>
+                      <p className="text-xs text-muted-foreground">
+                        PNG or JPG. Optional but helps others recognize you.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => fileRef.current?.click()}
+                        className="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
+                      >
+                        <Upload className="h-3 w-3" />
+                        {avatar ? "Change photo" : "Upload photo"}
+                      </button>
+                      <input
+                        ref={fileRef}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => onPickAvatar(e.target.files?.[0])}
+                      />
+                    </div>
+                  </div>
+
                   <Field
                     id="name"
                     label="Your name"
@@ -339,11 +406,11 @@ function RegisterPage() {
                         onClick={() => setRole("tutor")}
                       />
                       <RoleCard
-                        label="Guest"
-                        desc="Just exploring"
-                        icon={Users}
-                        active={role === "guest"}
-                        onClick={() => setRole("guest")}
+                        label="Parent"
+                        desc="Guide a learner"
+                        icon={Heart}
+                        active={role === "parent"}
+                        onClick={() => setRole("parent")}
                       />
                     </div>
                   </div>
