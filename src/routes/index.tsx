@@ -385,14 +385,73 @@ function Post({
           whileTap={{ scale: 0.9 }}
           onClick={toggleLike}
           aria-pressed={liked}
-          className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition ${
+          className={`relative inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition ${
             liked
               ? "bg-destructive/10 text-destructive"
               : "text-foreground/70 hover:bg-muted hover:text-foreground"
           }`}
         >
-          <Heart className={`h-4 w-4 ${liked ? "fill-current" : ""}`} />
-          {likes}
+          <span className="relative inline-flex">
+            <motion.span
+              key={liked ? "on" : "off"}
+              initial={{ scale: 0.6, rotate: -20 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ type: "spring", stiffness: 500, damping: 14 }}
+              className="inline-flex"
+            >
+              <Heart className={`h-4 w-4 ${liked ? "fill-current" : ""}`} />
+            </motion.span>
+
+            {/* Ripple ring */}
+            <AnimatePresence>
+              {liked && (
+                <motion.span
+                  key="ring"
+                  initial={{ scale: 0.3, opacity: 0.6 }}
+                  animate={{ scale: 2.4, opacity: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
+                  className="pointer-events-none absolute inset-0 rounded-full border-2 border-destructive"
+                />
+              )}
+            </AnimatePresence>
+
+            {/* Floating burst hearts */}
+            <AnimatePresence>
+              {liked &&
+                [0, 1, 2, 3, 4].map((i) => {
+                  const angle = (i / 5) * Math.PI - Math.PI / 2;
+                  const dist = 28 + (i % 2) * 10;
+                  const x = Math.cos(angle) * dist;
+                  const y = Math.sin(angle) * dist - 6;
+                  return (
+                    <motion.span
+                      key={`burst-${i}`}
+                      initial={{ x: 0, y: 0, scale: 0.4, opacity: 1 }}
+                      animate={{ x, y, scale: 1, opacity: 0 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.7, ease: "easeOut", delay: i * 0.02 }}
+                      className="pointer-events-none absolute left-0 top-0 text-destructive"
+                    >
+                      <Heart className="h-3 w-3 fill-current" />
+                    </motion.span>
+                  );
+                })}
+            </AnimatePresence>
+          </span>
+
+          <AnimatePresence mode="popLayout" initial={false}>
+            <motion.span
+              key={likes}
+              initial={{ y: 8, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -8, opacity: 0 }}
+              transition={{ duration: 0.18 }}
+              className="tabular-nums"
+            >
+              {likes}
+            </motion.span>
+          </AnimatePresence>
         </motion.button>
         <motion.button
           whileTap={{ scale: 0.9 }}
