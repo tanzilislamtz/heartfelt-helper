@@ -84,12 +84,12 @@ function LoginPage() {
         <form onSubmit={onSubmit} className="mt-6 space-y-4">
           <Field
             id="email"
-            label="Email"
+            label="Email or phone"
             icon={Mail}
-            type="email"
+            type="text"
             value={email}
             onChange={setEmail}
-            placeholder="you@school.edu"
+            placeholder="you@school.edu or 01XXXXXXXXX"
             required
           />
           <div>
