@@ -1137,3 +1137,55 @@ function RoleCard({
     </motion.button>
   );
 }
+
+function BigRoleCard({
+  label,
+  desc,
+  icon: Icon,
+  accent,
+  active,
+  onClick,
+}: {
+  label: string;
+  desc: string;
+  icon: React.ElementType;
+  accent: string;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <motion.button
+      type="button"
+      whileHover={{ y: -2 }}
+      whileTap={{ scale: 0.98 }}
+      onClick={onClick}
+      className={`relative flex items-center gap-4 overflow-hidden rounded-2xl border p-4 text-left transition ${
+        active
+          ? "border-primary ring-2 ring-primary/20"
+          : "border-border hover:border-foreground/30"
+      }`}
+    >
+      <div
+        className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-gradient-to-br ${accent} ${
+          active ? "text-primary" : "text-foreground/70"
+        }`}
+      >
+        <Icon className="h-6 w-6" />
+      </div>
+      <div className="flex-1">
+        <div className="text-sm font-semibold text-foreground">{label}</div>
+        <div className="text-[12px] text-muted-foreground">{desc}</div>
+      </div>
+      <div
+        className={`grid h-6 w-6 place-items-center rounded-full border-2 transition ${
+          active
+            ? "border-primary bg-primary text-primary-foreground"
+            : "border-border"
+        }`}
+      >
+        {active && <Check className="h-3.5 w-3.5" strokeWidth={3} />}
+      </div>
+    </motion.button>
+  );
+}
+
