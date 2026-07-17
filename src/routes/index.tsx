@@ -33,9 +33,11 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const [menuOpen, setMenuOpen] = useState(false);
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <TopBar />
+      <TopBar onMenu={() => setMenuOpen(true)} />
+      <MobileNav open={menuOpen} onClose={() => setMenuOpen(false)} />
       <main className="mx-auto grid max-w-[1400px] grid-cols-1 gap-6 px-4 py-6 lg:grid-cols-[240px_minmax(0,1fr)_320px] lg:px-8">
         <LeftNav />
         <Feed />
@@ -46,10 +48,17 @@ function Index() {
   );
 }
 
-function TopBar() {
+function TopBar({ onMenu }: { onMenu: () => void }) {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-[1400px] items-center gap-4 px-4 py-3 lg:px-8">
+      <div className="mx-auto flex max-w-[1400px] items-center gap-3 px-4 py-3 lg:px-8">
+        <button
+          onClick={onMenu}
+          aria-label="Open menu"
+          className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-foreground/70 hover:bg-muted lg:hidden"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
         <a href="/" className="flex items-center gap-2">
           <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-foreground shadow-sm">
             <GraduationCap className="h-5 w-5" strokeWidth={2.2} />
