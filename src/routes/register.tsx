@@ -66,13 +66,14 @@ function RegisterPage() {
   const [name, setName] = useState("");
   const [role, setRole] = useState<Role>("student");
   const [avatar, setAvatar] = useState<string | null>(null);
+  const [rawAvatar, setRawAvatar] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const onPickAvatar = (file?: File) => {
     if (!file) return;
     if (!file.type.startsWith("image/")) return;
     const reader = new FileReader();
-    reader.onload = (e) => setAvatar(e.target?.result as string);
+    reader.onload = (e) => setRawAvatar(e.target?.result as string);
     reader.readAsDataURL(file);
   };
 
