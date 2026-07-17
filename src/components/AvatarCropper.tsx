@@ -102,31 +102,32 @@ export function AvatarCropper({ src, onCancel, onApply, size = 512 }: Props) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 grid place-items-center bg-foreground/60 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex flex-col bg-background/95 backdrop-blur-md"
           onClick={onCancel}
         >
           <motion.div
-            initial={{ scale: 0.94, y: 20, opacity: 0 }}
-            animate={{ scale: 1, y: 0, opacity: 1 }}
-            exit={{ scale: 0.96, opacity: 0 }}
+            initial={{ scale: 0.98, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{ type: "spring", stiffness: 260, damping: 24 }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-sm overflow-hidden rounded-3xl border border-border/60 bg-surface shadow-2xl"
+            className="flex h-full w-full flex-col bg-surface"
           >
-            <div className="flex items-center justify-between border-b border-border/60 px-5 py-3">
+            <div className="flex items-center justify-between border-b border-border/60 px-5 py-4 sm:px-8">
               <div>
-                <p className="font-display text-base font-semibold">Adjust your photo</p>
-                <p className="text-[11px] text-muted-foreground">Drag, zoom & rotate to frame</p>
+                <p className="font-display text-lg font-semibold sm:text-xl">Adjust your photo</p>
+                <p className="text-[11px] text-muted-foreground sm:text-xs">Drag, zoom & rotate to frame your avatar</p>
               </div>
               <button
                 type="button"
                 onClick={onCancel}
-                className="grid h-8 w-8 place-items-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground"
+                className="grid h-10 w-10 place-items-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground"
                 aria-label="Cancel"
               >
-                <X className="h-4 w-4" />
+                <X className="h-5 w-5" />
               </button>
             </div>
+
 
             <div className="p-5">
               <div
