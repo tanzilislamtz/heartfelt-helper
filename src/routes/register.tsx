@@ -711,7 +711,8 @@ function RegisterPage() {
                   </label>
                 </div>
               </StepPane>
-            ) : step === 2 ? (
+            ) : step === 3 ? (
+
               <StepPane key="s-otp" dir={dir}>
                 <div className="space-y-5">
                   <div className="rounded-2xl border border-border/70 bg-gradient-to-br from-surface to-muted/40 p-5">
