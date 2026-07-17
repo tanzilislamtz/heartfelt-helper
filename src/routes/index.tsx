@@ -297,7 +297,15 @@ function Post({
   const rs = roleStyles[role];
 
   return (
-    <article className="group rounded-2xl border border-border bg-surface p-5 shadow-sm transition hover:shadow-md">
+    <motion.article
+      initial={{ opacity: 0, y: 24, rotateX: -6 }}
+      whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ type: "spring", stiffness: 120, damping: 18 }}
+      whileHover={{ y: -3, boxShadow: "0 18px 40px -20px rgba(41,44,117,0.25)" }}
+      style={{ transformStyle: "preserve-3d", perspective: 1000 }}
+      className="group rounded-2xl border border-border bg-surface p-5 shadow-sm"
+    >
       <header className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 sm:flex sm:items-center">
         <div className="flex min-w-0 items-center gap-3">
           <div className={`grid h-11 w-11 shrink-0 place-items-center rounded-full bg-muted font-semibold text-foreground ring-2 ${rs.ring}`}>
@@ -355,7 +363,7 @@ function Post({
           <Bookmark className="h-4 w-4" />
         </button>
       </footer>
-    </article>
+    </motion.article>
   );
 }
 
