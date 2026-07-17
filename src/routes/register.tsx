@@ -108,7 +108,15 @@ function RegisterPage() {
 
   const canNext =
     (step === 0 && email.includes("@") && password.length >= 6) ||
-    (step === 1 && name.trim().length > 1 && !!avatar) ||
+    (step === 1 &&
+      name.trim().length > 1 &&
+      lastName.trim().length > 0 &&
+      /^01\d{9}$/.test(phone) &&
+      !!gender &&
+      institute.trim().length > 1 &&
+      address.trim().length > 3 &&
+      agree &&
+      !!avatar) ||
     (step === 2 && otpValid) ||
     (step === 3 && topics.length >= 1);
 
