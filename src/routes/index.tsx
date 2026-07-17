@@ -139,7 +139,7 @@ function Feed() {
     <section className="space-y-5">
       
       <Composer />
-      <TopicChips />
+      <FeedToolbar />
       <NearbyTutors />
 
       <Post
