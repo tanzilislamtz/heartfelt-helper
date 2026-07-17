@@ -439,7 +439,10 @@ export function SocialBtn({ label }: { label: string }) {
           <span className="text-[10px] font-bold">{label.charAt(0)}</span>
         )}
       </span>
-      <span className="relative">Continue with {label}</span>
+      <span className="relative">
+        <span className="sm:hidden">{label}</span>
+        <span className="hidden sm:inline">Continue with {label}</span>
+      </span>
     </motion.button>
   );
 }
