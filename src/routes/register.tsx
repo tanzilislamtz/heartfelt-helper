@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { AuthShell, Field, SocialBtn } from "./login";
 import { AvatarCropper } from "@/components/AvatarCropper";
+import { signIn } from "@/lib/session";
 
 export const Route = createFileRoute("/register")({
   head: () => ({
