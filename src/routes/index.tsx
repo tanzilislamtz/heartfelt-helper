@@ -510,7 +510,16 @@ function Post({
         <p className="mt-2 text-sm leading-relaxed text-foreground/75">{body}</p>
       </div>
 
-      {media && (
+      {mediaUrl ? (
+        <div className="mt-4 overflow-hidden rounded-xl border border-border bg-muted">
+          <img
+            src={mediaUrl}
+            alt={title}
+            loading="lazy"
+            className="aspect-[16/10] w-full object-cover"
+          />
+        </div>
+      ) : media ? (
         <div className="mt-4 overflow-hidden rounded-xl border border-border">
           <div className="relative aspect-[16/9] w-full bg-gradient-to-br from-primary via-primary to-tutor">
             <div className="absolute inset-0 grid place-items-center">
@@ -521,13 +530,22 @@ function Post({
             </div>
           </div>
         </div>
-      )}
+      ) : null}
 
-      <div className="mt-4 flex items-center gap-2">
-        <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-foreground/70">
+      <div className="mt-4 flex flex-wrap items-center gap-1.5">
+        <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
           #{tag}
         </span>
+        {tags?.map((t) => (
+          <span
+            key={t}
+            className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-foreground/70"
+          >
+            #{t}
+          </span>
+        ))}
       </div>
+
 
       <footer className="mt-4 flex items-center gap-1 border-t border-border pt-3">
         <motion.button
