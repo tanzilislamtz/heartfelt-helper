@@ -1,24 +1,496 @@
 import { createFileRoute } from "@tanstack/react-router";
+import {
+  Search,
+  Home,
+  Compass,
+  BookOpen,
+  Bell,
+  MessageCircle,
+  Bookmark,
+  Award,
+  Users,
+  Sparkles,
+  Image as ImageIcon,
+  Paperclip,
+  BarChart3,
+  Heart,
+  Share2,
+  MoreHorizontal,
+  CheckCircle2,
+  TrendingUp,
+  Plus,
+  ArrowUpRight,
+  GraduationCap,
+} from "lucide-react";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="min-h-screen bg-background text-foreground">
+      <TopBar />
+      <main className="mx-auto grid max-w-[1400px] grid-cols-1 gap-6 px-4 py-6 lg:grid-cols-[240px_minmax(0,1fr)_320px] lg:px-8">
+        <LeftNav />
+        <Feed />
+        <RightRail />
+      </main>
+      <MobileTabBar />
     </div>
+  );
+}
+
+function TopBar() {
+  return (
+    <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-xl">
+      <div className="mx-auto flex max-w-[1400px] items-center gap-4 px-4 py-3 lg:px-8">
+        <a href="/" className="flex items-center gap-2">
+          <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-foreground shadow-sm">
+            <GraduationCap className="h-5 w-5" strokeWidth={2.2} />
+          </span>
+          <span className="hidden text-lg font-semibold tracking-tight sm:inline">
+            <span className="font-display italic">Learn</span>
+            <span className="ml-1 text-primary">Academy</span>
+          </span>
+        </a>
+
+        <div className="relative ml-auto hidden max-w-md flex-1 md:block">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="Search topics, tutors, courses…"
+            className="h-10 w-full rounded-full border border-border bg-muted/60 pl-10 pr-4 text-sm outline-none transition focus:border-primary/40 focus:bg-surface focus:ring-4 focus:ring-primary/10"
+          />
+        </div>
+
+        <div className="ml-auto flex items-center gap-1 md:ml-0">
+          <IconBtn label="Notifications">
+            <Bell className="h-5 w-5" />
+            <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-destructive ring-2 ring-background" />
+          </IconBtn>
+          <IconBtn label="Messages">
+            <MessageCircle className="h-5 w-5" />
+          </IconBtn>
+          <button className="ml-2 hidden items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-95 sm:inline-flex">
+            <Plus className="h-4 w-4" /> Create
+          </button>
+          <div className="ml-2 h-9 w-9 overflow-hidden rounded-full border-2 border-accent bg-muted">
+            <div className="grid h-full w-full place-items-center bg-primary text-sm font-bold text-primary-foreground">
+              A
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function IconBtn({ children, label }: { children: React.ReactNode; label: string }) {
+  return (
+    <button
+      aria-label={label}
+      className="relative grid h-10 w-10 place-items-center rounded-full text-foreground/70 transition hover:bg-muted hover:text-foreground"
+    >
+      {children}
+    </button>
+  );
+}
+
+function LeftNav() {
+  const items = [
+    { icon: Home, label: "Home", active: true },
+    { icon: Compass, label: "Explore" },
+    { icon: BookOpen, label: "Courses" },
+    { icon: Users, label: "Communities" },
+    { icon: Award, label: "Rewards" },
+    { icon: Bookmark, label: "Saved" },
+  ];
+  return (
+    <aside className="hidden lg:block">
+      <nav className="sticky top-24 space-y-1">
+        {items.map(({ icon: Icon, label, active }) => (
+          <a
+            key={label}
+            href="#"
+            className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
+              active
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-foreground/75 hover:bg-muted hover:text-foreground"
+            }`}
+          >
+            <Icon className="h-5 w-5" strokeWidth={active ? 2.4 : 2} />
+            {label}
+            {active && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-accent" />}
+          </a>
+        ))}
+
+        <div className="mt-6 rounded-2xl border border-border bg-surface p-4">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <Sparkles className="h-3.5 w-3.5 text-accent" />
+            Your progress
+          </div>
+          <div className="mt-3 flex items-baseline gap-1">
+            <span className="font-display text-3xl font-semibold text-foreground">72</span>
+            <span className="text-xs text-muted-foreground">/ 100 XP</span>
+          </div>
+          <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-muted">
+            <div className="h-full w-[72%] rounded-full bg-tutor" />
+          </div>
+          <p className="mt-2 text-xs text-muted-foreground">
+            28 XP to <span className="font-medium text-foreground">Level 4</span>
+          </p>
+        </div>
+      </nav>
+    </aside>
+  );
+}
+
+function Feed() {
+  return (
+    <section className="space-y-5">
+      <HeroBanner />
+      <Composer />
+      <TopicChips />
+      <Post
+        author="Dr. Ayesha Rahman"
+        role="tutor"
+        handle="@ayesha.math"
+        time="2h"
+        verified
+        title="A visual way to understand eigenvectors — 3 minute intuition"
+        body="Instead of memorizing the formula, think of eigenvectors as the directions that don't get knocked off their line when a transformation happens. Only their length changes."
+        tag="Linear Algebra"
+        stats={{ likes: 248, comments: 46, shares: 12 }}
+      />
+      <Post
+        author="Rafi Chowdhury"
+        role="student"
+        handle="@rafi.codes"
+        time="5h"
+        title="Finally solved my first LeetCode Hard 🎉"
+        body="Two-pointer + binary search combo. Stuck for 3 days, but the community here kept nudging me. Grateful."
+        tag="DSA"
+        stats={{ likes: 512, comments: 88, shares: 24 }}
+        media
+      />
+      <Post
+        author="Sadia Noor"
+        role="guest"
+        handle="@sadia.write"
+        time="Yesterday"
+        title="Anyone recommend a good IELTS speaking partner?"
+        body="Preparing for the September test. Would love to swap 20-minute practice calls in the evenings."
+        tag="Languages"
+        stats={{ likes: 91, comments: 34, shares: 5 }}
+      />
+    </section>
+  );
+}
+
+function HeroBanner() {
+  return (
+    <div className="relative overflow-hidden rounded-3xl border border-border bg-primary p-8 text-primary-foreground">
+      <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-accent/25 blur-3xl" />
+      <div className="absolute -bottom-24 -left-10 h-64 w-64 rounded-full bg-tutor/40 blur-3xl" />
+      <div className="relative max-w-xl">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/20 px-3 py-1 text-xs font-medium text-accent ring-1 ring-inset ring-accent/30">
+          <Sparkles className="h-3 w-3" /> New this week
+        </span>
+        <h1 className="mt-4 font-display text-3xl font-semibold leading-tight sm:text-4xl">
+          Learn out loud. <em className="text-accent not-italic">Grow together.</em>
+        </h1>
+        <p className="mt-2 max-w-md text-sm text-primary-foreground/75">
+          A quieter, kinder social space made for students and tutors. Share notes, ask
+          questions, earn rewards.
+        </p>
+        <div className="mt-5 flex flex-wrap gap-2">
+          <button className="inline-flex items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground transition hover:opacity-90">
+            Join a community <ArrowUpRight className="h-4 w-4" />
+          </button>
+          <button className="inline-flex items-center gap-1.5 rounded-full border border-primary-foreground/25 px-4 py-2 text-sm font-medium text-primary-foreground/90 transition hover:bg-primary-foreground/10">
+            Explore courses
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Composer() {
+  return (
+    <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
+      <div className="flex gap-3">
+        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+          A
+        </div>
+        <div className="min-w-0 flex-1">
+          <textarea
+            rows={2}
+            placeholder="Share a thought, ask a question, drop a note…"
+            className="w-full resize-none rounded-xl border border-transparent bg-muted/60 px-4 py-3 text-sm placeholder:text-muted-foreground focus:border-primary/30 focus:bg-surface focus:outline-none focus:ring-4 focus:ring-primary/10"
+          />
+          <div className="mt-3 flex flex-wrap items-center gap-1">
+            <ComposerBtn icon={ImageIcon} label="Image" />
+            <ComposerBtn icon={Paperclip} label="Attach" />
+            <ComposerBtn icon={BarChart3} label="Poll" />
+            <ComposerBtn icon={BookOpen} label="Note" />
+            <div className="ml-auto flex items-center gap-2">
+              <span className="hidden text-xs text-muted-foreground sm:inline">
+                Posting to <span className="font-medium text-foreground">Everyone</span>
+              </span>
+              <button className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-95">
+                Post
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ComposerBtn({ icon: Icon, label }: { icon: React.ElementType; label: string }) {
+  return (
+    <button className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-medium text-foreground/70 transition hover:bg-muted hover:text-foreground">
+      <Icon className="h-4 w-4 text-tutor" />
+      {label}
+    </button>
+  );
+}
+
+function TopicChips() {
+  const topics = ["For you", "Math", "Programming", "Languages", "Science", "Design", "Business"];
+  return (
+    <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      {topics.map((t, i) => (
+        <button
+          key={t}
+          className={`shrink-0 rounded-full border px-4 py-1.5 text-sm font-medium transition ${
+            i === 0
+              ? "border-foreground bg-foreground text-background"
+              : "border-border bg-surface text-foreground/70 hover:border-foreground/30 hover:text-foreground"
+          }`}
+        >
+          {t}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+type Role = "tutor" | "student" | "guest";
+function Post({
+  author,
+  role,
+  handle,
+  time,
+  title,
+  body,
+  tag,
+  stats,
+  verified,
+  media,
+}: {
+  author: string;
+  role: Role;
+  handle: string;
+  time: string;
+  title: string;
+  body: string;
+  tag: string;
+  stats: { likes: number; comments: number; shares: number };
+  verified?: boolean;
+  media?: boolean;
+}) {
+  const roleStyles: Record<Role, { badge: string; ring: string; label: string }> = {
+    tutor: { badge: "bg-tutor text-tutor-foreground", ring: "ring-tutor", label: "Tutor" },
+    student: { badge: "bg-primary text-primary-foreground", ring: "ring-primary", label: "Student" },
+    guest: { badge: "bg-accent text-accent-foreground", ring: "ring-accent", label: "Guest" },
+  };
+  const rs = roleStyles[role];
+
+  return (
+    <article className="group rounded-2xl border border-border bg-surface p-5 shadow-sm transition hover:shadow-md">
+      <header className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 sm:flex sm:items-center">
+        <div className="flex min-w-0 items-center gap-3">
+          <div className={`grid h-11 w-11 shrink-0 place-items-center rounded-full bg-muted font-semibold text-foreground ring-2 ${rs.ring}`}>
+            {author.charAt(0)}
+          </div>
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5">
+              <span className="truncate text-sm font-semibold text-foreground">{author}</span>
+              {verified && <CheckCircle2 className="h-4 w-4 shrink-0 text-tutor" />}
+              <span className={`ml-1 shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${rs.badge}`}>
+                {rs.label}
+              </span>
+            </div>
+            <div className="truncate text-xs text-muted-foreground">
+              {handle} · {time}
+            </div>
+          </div>
+        </div>
+        <button aria-label="More" className="shrink-0 rounded-full p-2 text-muted-foreground hover:bg-muted hover:text-foreground">
+          <MoreHorizontal className="h-4 w-4" />
+        </button>
+      </header>
+
+      <div className="mt-4">
+        <h2 className="font-display text-xl font-semibold leading-snug text-foreground">
+          {title}
+        </h2>
+        <p className="mt-2 text-sm leading-relaxed text-foreground/75">{body}</p>
+      </div>
+
+      {media && (
+        <div className="mt-4 overflow-hidden rounded-xl border border-border">
+          <div className="relative aspect-[16/9] w-full bg-gradient-to-br from-primary via-primary to-tutor">
+            <div className="absolute inset-0 grid place-items-center">
+              <div className="rounded-xl bg-background/95 px-4 py-3 text-center shadow-lg">
+                <div className="font-display text-2xl font-semibold text-foreground">Solved ✓</div>
+                <div className="text-xs text-muted-foreground">Runtime beats 96% · Memory 87%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="mt-4 flex items-center gap-2">
+        <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-foreground/70">
+          #{tag}
+        </span>
+      </div>
+
+      <footer className="mt-4 flex items-center gap-1 border-t border-border pt-3">
+        <PostAction icon={Heart} label={`${stats.likes}`} />
+        <PostAction icon={MessageCircle} label={`${stats.comments}`} />
+        <PostAction icon={Share2} label={`${stats.shares}`} />
+        <button className="ml-auto rounded-full p-2 text-muted-foreground hover:bg-muted hover:text-foreground">
+          <Bookmark className="h-4 w-4" />
+        </button>
+      </footer>
+    </article>
+  );
+}
+
+function PostAction({ icon: Icon, label }: { icon: React.ElementType; label: string }) {
+  return (
+    <button className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium text-foreground/70 transition hover:bg-muted hover:text-foreground">
+      <Icon className="h-4 w-4" />
+      {label}
+    </button>
+  );
+}
+
+function RightRail() {
+  return (
+    <aside className="hidden space-y-5 lg:block">
+      <div className="sticky top-24 space-y-5">
+        <div className="rounded-2xl border border-border bg-surface p-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-foreground">Trending now</h3>
+            <TrendingUp className="h-4 w-4 text-tutor" />
+          </div>
+          <ul className="mt-3 space-y-3">
+            {[
+              { tag: "Calculus", posts: "1.2k posts", hot: true },
+              { tag: "React 19", posts: "864 posts" },
+              { tag: "IELTS Prep", posts: "512 posts" },
+              { tag: "UX Research", posts: "310 posts" },
+            ].map((t) => (
+              <li key={t.tag} className="group flex items-center justify-between">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="truncate text-sm font-medium text-foreground">#{t.tag}</span>
+                    {t.hot && (
+                      <span className="rounded-full bg-destructive/10 px-1.5 py-0.5 text-[10px] font-semibold text-destructive">
+                        HOT
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-xs text-muted-foreground">{t.posts}</div>
+                </div>
+                <button className="rounded-full border border-border px-3 py-1 text-xs font-medium text-foreground/70 opacity-0 transition hover:border-foreground/30 hover:text-foreground group-hover:opacity-100">
+                  Follow
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="rounded-2xl border border-border bg-surface p-4">
+          <h3 className="text-sm font-semibold text-foreground">Suggested tutors</h3>
+          <ul className="mt-3 space-y-3">
+            {[
+              { name: "Nadia Karim", subject: "Physics · IUT" },
+              { name: "Tanvir Ahmed", subject: "Web Dev · 8y exp" },
+              { name: "Meherun Nisa", subject: "English · IELTS 8.5" },
+            ].map((u) => (
+              <li key={u.name} className="flex items-center gap-3">
+                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-tutor/15 text-sm font-semibold text-tutor ring-2 ring-tutor/20">
+                  {u.name.charAt(0)}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-sm font-medium text-foreground">{u.name}</div>
+                  <div className="truncate text-xs text-muted-foreground">{u.subject}</div>
+                </div>
+                <button className="shrink-0 rounded-full bg-foreground px-3 py-1 text-xs font-semibold text-background transition hover:opacity-90">
+                  Follow
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="overflow-hidden rounded-2xl border border-border bg-accent/60 p-5">
+          <Award className="h-6 w-6 text-primary" />
+          <h3 className="mt-3 font-display text-lg font-semibold text-foreground">
+            Earn your first badge
+          </h3>
+          <p className="mt-1 text-xs text-foreground/70">
+            Post 3 helpful answers this week and unlock the Verified Helper badge.
+          </p>
+          <button className="mt-3 inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-95">
+            Get started <ArrowUpRight className="h-3.5 w-3.5" />
+          </button>
+        </div>
+
+        <p className="px-2 text-[11px] text-muted-foreground">
+          © Learn Academy · About · Privacy · Terms · Help
+        </p>
+      </div>
+    </aside>
+  );
+}
+
+function MobileTabBar() {
+  const items = [
+    { icon: Home, label: "Home", active: true },
+    { icon: Compass, label: "Explore" },
+    { icon: Plus, label: "Post", primary: true },
+    { icon: Bell, label: "Alerts" },
+    { icon: Award, label: "You" },
+  ];
+  return (
+    <nav className="sticky bottom-0 z-40 border-t border-border bg-background/90 backdrop-blur-xl lg:hidden">
+      <ul className="mx-auto flex max-w-md items-center justify-around px-2 py-2">
+        {items.map(({ icon: Icon, label, active, primary }) => (
+          <li key={label}>
+            <button
+              className={`grid place-items-center gap-0.5 rounded-2xl px-3 py-1.5 text-[10px] font-medium ${
+                primary
+                  ? "bg-primary text-primary-foreground shadow-md"
+                  : active
+                    ? "text-primary"
+                    : "text-muted-foreground"
+              }`}
+            >
+              <Icon className="h-5 w-5" />
+              {!primary && <span>{label}</span>}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </nav>
   );
 }
