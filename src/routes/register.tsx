@@ -25,6 +25,11 @@ import {
   Music,
   Camera,
   Sparkles,
+  BarChart3,
+  Award,
+  MapPin,
+  Phone as PhoneIcon,
+  Building2,
 } from "lucide-react";
 import { AuthShell, Field, SocialBtn } from "./login";
 import { AvatarCropper } from "@/components/AvatarCropper";
