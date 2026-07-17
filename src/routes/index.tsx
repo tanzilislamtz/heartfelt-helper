@@ -163,7 +163,7 @@ function LeftNav() {
 function Feed() {
   return (
     <section className="space-y-5">
-      <HeroBanner />
+      <Hero3D />
       <Composer />
       <TopicChips />
       <Post
@@ -202,34 +202,6 @@ function Feed() {
   );
 }
 
-function HeroBanner() {
-  return (
-    <div className="relative overflow-hidden rounded-3xl border border-border bg-primary p-8 text-primary-foreground">
-      <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-accent/25 blur-3xl" />
-      <div className="absolute -bottom-24 -left-10 h-64 w-64 rounded-full bg-tutor/40 blur-3xl" />
-      <div className="relative max-w-xl">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/20 px-3 py-1 text-xs font-medium text-accent ring-1 ring-inset ring-accent/30">
-          <Sparkles className="h-3 w-3" /> New this week
-        </span>
-        <h1 className="mt-4 font-display text-3xl font-semibold leading-tight sm:text-4xl">
-          Learn out loud. <em className="text-accent not-italic">Grow together.</em>
-        </h1>
-        <p className="mt-2 max-w-md text-sm text-primary-foreground/75">
-          A quieter, kinder social space made for students and tutors. Share notes, ask
-          questions, earn rewards.
-        </p>
-        <div className="mt-5 flex flex-wrap gap-2">
-          <button className="inline-flex items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground transition hover:opacity-90">
-            Join a community <ArrowUpRight className="h-4 w-4" />
-          </button>
-          <button className="inline-flex items-center gap-1.5 rounded-full border border-primary-foreground/25 px-4 py-2 text-sm font-medium text-primary-foreground/90 transition hover:bg-primary-foreground/10">
-            Explore courses
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function Composer() {
   return (
