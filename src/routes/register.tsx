@@ -324,22 +324,32 @@ function RegisterPage() {
                       e.currentTarget.dataset.drag = "off";
                       onPickAvatar(e.dataTransfer.files?.[0]);
                     }}
-                    className="group/upload relative flex items-center gap-4 rounded-2xl border border-border/70 bg-gradient-to-br from-surface to-muted/40 p-3 transition data-[drag=on]:border-primary data-[drag=on]:bg-primary/5"
+                    className="group/upload relative flex flex-col items-center gap-3 rounded-2xl border border-border/70 bg-gradient-to-br from-surface to-muted/40 p-5 transition data-[drag=on]:border-primary data-[drag=on]:bg-primary/5"
                   >
-                    {/* Avatar */}
-                    <div className="relative shrink-0">
+                    <div className="flex items-center gap-1.5">
+                      <p className="text-sm font-semibold text-foreground">
+                        Profile picture
+                      </p>
+                      <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-primary">
+                        Required
+                      </span>
+                    </div>
+
+                    {/* Big clickable avatar */}
+                    <div className="relative">
                       <motion.button
                         type="button"
                         whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.97 }}
                         onClick={() => fileRef.current?.click()}
-                        className="relative grid h-16 w-16 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-primary/15 via-accent/10 to-tutor/15 ring-2 ring-background"
+                        className="relative grid h-32 w-32 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-primary/15 via-accent/10 to-tutor/15 ring-2 ring-background"
+                        aria-label={avatar ? "Change profile picture" : "Upload profile picture"}
                       >
                         {/* Rotating dashed ring */}
                         <motion.span
                           aria-hidden
                           animate={{ rotate: 360 }}
-                          transition={{ duration: 14, repeat: Infinity, ease: "linear" }}
+                          transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
                           className="absolute inset-0 rounded-full border-2 border-dashed border-primary/30"
                         />
                         {avatar ? (
@@ -349,69 +359,53 @@ function RegisterPage() {
                             className="relative h-full w-full rounded-full object-cover"
                           />
                         ) : (
-                          <CameraIcon className="relative h-5 w-5 text-primary/70" />
+                          <div className="relative flex flex-col items-center gap-1 text-primary/70">
+                            <CameraIcon className="h-8 w-8" />
+                            <span className="text-[10px] font-semibold uppercase tracking-wide">
+                              Tap to upload
+                            </span>
+                          </div>
                         )}
                         {/* Hover overlay */}
                         <span className="absolute inset-0 grid place-items-center rounded-full bg-foreground/60 text-background opacity-0 backdrop-blur-sm transition group-hover/upload:opacity-100">
-                          <Upload className="h-4 w-4" />
+                          <Upload className="h-6 w-6" />
                         </span>
                       </motion.button>
                       {/* Status dot */}
                       <span
-                        className={`absolute -bottom-0.5 -right-0.5 grid h-5 w-5 place-items-center rounded-full ring-2 ring-background transition ${
+                        className={`absolute bottom-1 right-1 grid h-7 w-7 place-items-center rounded-full ring-2 ring-background transition ${
                           avatar
                             ? "bg-tutor text-tutor-foreground"
                             : "bg-muted text-muted-foreground"
                         }`}
                       >
                         {avatar ? (
-                          <Check className="h-3 w-3" strokeWidth={3} />
+                          <Check className="h-4 w-4" strokeWidth={3} />
                         ) : (
-                          <CameraIcon className="h-2.5 w-2.5" />
+                          <CameraIcon className="h-3.5 w-3.5" />
                         )}
                       </span>
                       {avatar && (
                         <button
                           type="button"
                           onClick={() => setAvatar(null)}
-                          className="absolute -right-1.5 -top-1.5 grid h-5 w-5 place-items-center rounded-full bg-foreground text-background shadow-md transition hover:scale-110"
+                          className="absolute -right-1 -top-1 grid h-6 w-6 place-items-center rounded-full bg-foreground text-background shadow-md transition hover:scale-110"
                           aria-label="Remove photo"
                         >
-                          <X className="h-3 w-3" />
+                          <X className="h-3.5 w-3.5" />
                         </button>
                       )}
                     </div>
 
-                    {/* Copy + actions */}
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-1.5">
-                        <p className="text-sm font-semibold text-foreground">
-                          Profile picture
-                        </p>
-                        <span className="rounded-full bg-muted px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-muted-foreground">
-                          Optional
-                        </span>
-                      </div>
-                      <p className="mt-0.5 text-[11px] leading-relaxed text-muted-foreground">
-                        Drop a PNG or JPG here, or
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => fileRef.current?.click()}
-                        className="mt-1.5 inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 py-1 text-[11px] font-semibold text-foreground/80 shadow-sm transition hover:border-primary/40 hover:text-primary"
-                      >
-                        <Upload className="h-3 w-3" />
-                        {avatar ? "Replace photo" : "Choose file"}
-                      </button>
-                      <input
-                        ref={fileRef}
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={(e) => onPickAvatar(e.target.files?.[0])}
-                      />
-                    </div>
+                    <input
+                      ref={fileRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => onPickAvatar(e.target.files?.[0])}
+                    />
                   </div>
+
 
 
                   <Field
