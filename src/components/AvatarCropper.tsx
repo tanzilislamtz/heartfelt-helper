@@ -21,7 +21,21 @@ export function AvatarCropper({ src, onCancel, onApply, size = 512 }: Props) {
   const [rotate, setRotate] = useState(0);
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const dragging = useRef<{ x: number; y: number } | null>(null);
-  const BOX = 288; // preview box (px)
+  const [BOX, setBox] = useState(288); // preview box (px) — responsive
+
+  useEffect(() => {
+    const compute = () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      // Leave room for header (~72), controls (~180), footer (~72), padding
+      const avail = Math.min(w - 48, h - 340);
+      setBox(Math.max(240, Math.min(560, avail)));
+    };
+    compute();
+    window.addEventListener("resize", compute);
+    return () => window.removeEventListener("resize", compute);
+  }, []);
+
 
   useEffect(() => {
     if (!src) return;
