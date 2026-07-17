@@ -363,7 +363,42 @@ function RegisterPage() {
                 </p>
               </motion.div>
             ) : step === 0 ? (
-              <StepPane key="s0" dir={dir}>
+              <StepPane key="s-role" dir={dir}>
+                <div className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    Pick the role that fits you best — we'll tailor the next steps for you.
+                  </p>
+                  <div className="grid gap-3">
+                    <BigRoleCard
+                      label="Student"
+                      desc="Learn, ask doubts, join classes"
+                      icon={BookOpen}
+                      accent="from-primary/15 to-primary/5"
+                      active={role === "student"}
+                      onClick={() => setRole("student")}
+                    />
+                    <BigRoleCard
+                      label="Tutor"
+                      desc="Teach subjects, mentor learners, earn"
+                      icon={GraduationCap}
+                      accent="from-tutor/20 to-tutor/5"
+                      active={role === "tutor"}
+                      onClick={() => setRole("tutor")}
+                    />
+                    <BigRoleCard
+                      label="Parent"
+                      desc="Track & guide your child's learning"
+                      icon={Heart}
+                      accent="from-accent/20 to-accent/5"
+                      active={role === "parent"}
+                      onClick={() => setRole("parent")}
+                    />
+                  </div>
+                </div>
+              </StepPane>
+            ) : step === 1 ? (
+              <StepPane key="s-account" dir={dir}>
+
                 <div className="space-y-4">
                   <Field
                     id="email"
