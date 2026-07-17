@@ -516,8 +516,87 @@ function RegisterPage() {
                   </div>
                 </div>
               </StepPane>
+            ) : step === 2 ? (
+              <StepPane key="s-otp" dir={dir}>
+                <div className="space-y-5">
+                  <div className="rounded-2xl border border-border/70 bg-gradient-to-br from-surface to-muted/40 p-5">
+                    <div className="flex items-start gap-3">
+                      <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
+                        <Mail className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-foreground">
+                          Check your inbox
+                        </p>
+                        <p className="mt-0.5 text-xs text-muted-foreground">
+                          We sent a 4-digit code to{" "}
+                          <span className="font-medium text-foreground">
+                            {email || "your email"}
+                          </span>
+                          . Enter it below to verify.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mt-5 flex items-center justify-center gap-2 sm:gap-3">
+                      {otp.map((d, i) => (
+                        <input
+                          key={i}
+                          ref={(el) => {
+                            otpRefs.current[i] = el;
+                          }}
+                          value={d}
+                          onChange={(e) => setOtpAt(i, e.target.value)}
+                          onKeyDown={(e) => onOtpKeyDown(i, e)}
+                          onPaste={onOtpPaste}
+                          inputMode="numeric"
+                          autoComplete="one-time-code"
+                          maxLength={1}
+                          aria-label={`Digit ${i + 1}`}
+                          className={`h-14 w-12 rounded-xl border-2 bg-surface text-center font-display text-2xl font-semibold tabular-nums text-foreground transition focus:outline-none sm:h-16 sm:w-14 sm:text-3xl ${
+                            d
+                              ? "border-primary shadow-md shadow-primary/20"
+                              : "border-border focus:border-primary/60"
+                          }`}
+                        />
+                      ))}
+                    </div>
+
+                    <div className="mt-4 flex items-center justify-between text-[11px] text-muted-foreground">
+                      <span className="inline-flex items-center gap-1">
+                        <Sparkles className="h-3 w-3 text-accent" />
+                        Demo — any 4 digits work
+                      </span>
+                      {resendIn > 0 ? (
+                        <span>Resend in {resendIn}s</span>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setOtp(["", "", "", ""]);
+                            setResendIn(30);
+                            otpRefs.current[0]?.focus();
+                          }}
+                          className="font-semibold text-primary hover:underline"
+                        >
+                          Resend code
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={back}
+                    className="mx-auto flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground hover:text-foreground"
+                  >
+                    <ArrowLeft className="h-3 w-3" />
+                    Wrong email? Go back
+                  </button>
+                </div>
+              </StepPane>
             ) : (
-              <StepPane key="s2" dir={dir}>
+              <StepPane key="s3" dir={dir}>
                 <div>
                   <p className="text-sm text-muted-foreground">
                     Pick at least one topic —{" "}
