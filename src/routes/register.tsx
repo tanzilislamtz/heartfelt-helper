@@ -217,7 +217,7 @@ function RegisterPage() {
         </div>
 
         {/* Steps */}
-        <div className="relative mt-6 min-h-[300px]">
+        <div className="relative mt-5">
           <AnimatePresence mode="wait" custom={dir} initial={false}>
             {done ? (
               <motion.div
