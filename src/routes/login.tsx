@@ -19,8 +19,8 @@ import { signIn } from "@/lib/session";
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Sign in — Learn Academy" },
-      { name: "description", content: "Sign in to your Learn Academy account." },
+      { title: "Sign in — Learns Academy" },
+      { name: "description", content: "Sign in to your Learns Academy account." },
     ],
   }),
   component: LoginPage,
@@ -68,7 +68,7 @@ function LoginPage() {
             <GraduationCap className="h-5 w-5" />
           </span>
           <span className="text-lg font-semibold">
-            <span className="font-display italic">Learn</span>
+            <span className="font-display italic">Learns</span>
             <span className="ml-1 text-primary">Academy</span>
           </span>
         </div>
@@ -350,7 +350,7 @@ export function AuthShell({
             </motion.div>
 
             <div className="flex items-center justify-between text-xs text-primary-foreground/60">
-              <span>© Learn Academy</span>
+              <span>© Learns Academy</span>
               <span className="inline-flex items-center gap-1">
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-tutor" />
                 All systems normal

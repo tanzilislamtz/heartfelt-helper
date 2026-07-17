@@ -33,8 +33,8 @@ import { signIn } from "@/lib/session";
 export const Route = createFileRoute("/register")({
   head: () => ({
     meta: [
-      { title: "Create account — Learn Academy" },
-      { name: "description", content: "Join Learn Academy in three quick steps." },
+      { title: "Create account — Learns Academy" },
+      { name: "description", content: "Join Learns Academy in three quick steps." },
     ],
   }),
   component: RegisterPage,
@@ -190,7 +190,7 @@ function RegisterPage() {
             <GraduationCap className="h-5 w-5" />
           </span>
           <span className="text-lg font-semibold">
-            <span className="font-display italic">Learn</span>
+            <span className="font-display italic">Learns</span>
             <span className="ml-1 text-primary">Academy</span>
           </span>
         </div>
