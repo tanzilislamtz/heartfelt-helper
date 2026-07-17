@@ -92,7 +92,7 @@ function RegisterPage() {
 
   const canNext =
     (step === 0 && email.includes("@") && password.length >= 6) ||
-    (step === 1 && name.trim().length > 1) ||
+    (step === 1 && name.trim().length > 1 && !!avatar) ||
     (step === 2 && topics.length >= 1);
 
   const next = () => {
