@@ -506,15 +506,81 @@ function RegisterPage() {
 
 
 
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <Field
+                      id="firstName"
+                      label="First name"
+                      icon={UserIcon}
+                      value={name}
+                      onChange={setName}
+                      placeholder="Ayesha"
+                      required
+                    />
+                    <Field
+                      id="lastName"
+                      label="Last name"
+                      icon={UserIcon}
+                      value={lastName}
+                      onChange={setLastName}
+                      placeholder="Rahman"
+                      required
+                    />
+                  </div>
+
                   <Field
-                    id="name"
-                    label="Your name"
-                    icon={UserIcon}
-                    value={name}
-                    onChange={setName}
-                    placeholder="e.g. Ayesha Rahman"
+                    id="phone"
+                    label="Phone number"
+                    icon={PhoneIcon}
+                    type="tel"
+                    value={phone}
+                    onChange={setPhone}
+                    placeholder="01XXXXXXXXX"
                     required
                   />
+
+                  <div>
+                    <label htmlFor="gender" className="mb-1.5 block text-xs font-semibold text-foreground/80">
+                      Gender
+                    </label>
+                    <div className="relative">
+                      <UserIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                      <select
+                        id="gender"
+                        value={gender}
+                        onChange={(e) => setGender(e.target.value)}
+                        required
+                        className="h-11 w-full appearance-none rounded-xl border border-border bg-surface pl-10 pr-8 text-sm text-foreground outline-none transition focus:border-primary/40 focus:ring-4 focus:ring-primary/10"
+                      >
+                        <option value="">Select gender</option>
+                        <option value="female">Female</option>
+                        <option value="male">Male</option>
+                        <option value="other">Other</option>
+                        <option value="na">Prefer not to say</option>
+                      </select>
+                      <ArrowRight className="pointer-events-none absolute right-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 rotate-90 text-muted-foreground" />
+                    </div>
+                  </div>
+
+                  <Field
+                    id="institute"
+                    label="Institute"
+                    icon={Building2}
+                    value={institute}
+                    onChange={setInstitute}
+                    placeholder="e.g. Notre Dame College"
+                    required
+                  />
+
+                  <Field
+                    id="address"
+                    label="Full address"
+                    icon={MapPin}
+                    value={address}
+                    onChange={setAddress}
+                    placeholder="House, road, area, city"
+                    required
+                  />
+
                   <div>
                     <label className="mb-2 block text-xs font-semibold text-foreground/80">
                       I'm joining as
@@ -543,6 +609,26 @@ function RegisterPage() {
                       />
                     </div>
                   </div>
+
+                  <label className="flex items-start gap-2.5 rounded-xl border border-border/70 bg-muted/30 p-3 text-xs text-foreground/80">
+                    <input
+                      type="checkbox"
+                      checked={agree}
+                      onChange={(e) => setAgree(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 rounded border-border accent-primary"
+                    />
+                    <span>
+                      I agree to the{" "}
+                      <a href="#" className="font-semibold text-primary hover:underline">
+                        Terms & Conditions
+                      </a>{" "}
+                      and{" "}
+                      <a href="#" className="font-semibold text-primary hover:underline">
+                        Privacy Policy
+                      </a>
+                      .
+                    </span>
+                  </label>
                 </div>
               </StepPane>
             ) : step === 2 ? (
