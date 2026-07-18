@@ -270,7 +270,7 @@ function InfoCard({
         <Icon className="h-4.5 w-4.5" strokeWidth={2.2} />
       </div>
       <div className="min-w-0">
-        <div className="font-display text-base font-bold text-[color:var(--ic)]">{title}</div>
+        <div className="text-base font-bold text-[color:var(--ic)]">{title}</div>
         <p className="mt-0.5 text-sm leading-snug opacity-80">{desc}</p>
       </div>
     </div>
