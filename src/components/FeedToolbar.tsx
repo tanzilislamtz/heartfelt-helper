@@ -19,9 +19,33 @@ const TABS = [
 ];
 const SORTS = ["Latest", "Top", "Rising"];
 
+const POST_TYPES = ["Questions", "Notes", "Tutor posts", "Study groups"];
+const TIME_RANGES = ["Today", "This week", "This month", "All time"];
+
 export function FeedToolbar() {
   const [active, setActive] = useState(0);
   const [sort, setSort] = useState(0);
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [types, setTypes] = useState<string[]>([]);
+  const [range, setRange] = useState(1);
+  const [verifiedOnly, setVerifiedOnly] = useState(false);
+  const filterRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!filterOpen) return;
+    const onDown = (e: MouseEvent) => {
+      if (filterRef.current && !filterRef.current.contains(e.target as Node)) {
+        setFilterOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [filterOpen]);
+
+  const toggleType = (t: string) =>
+    setTypes((prev) => (prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]));
+  const activeCount = types.length + (verifiedOnly ? 1 : 0) + (range !== 1 ? 1 : 0);
+
   
 
   return (
