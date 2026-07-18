@@ -22,7 +22,7 @@ const SORTS = ["Latest", "Top", "Rising"];
 export function FeedToolbar() {
   const [active, setActive] = useState(0);
   const [sort, setSort] = useState(0);
-  const [view, setView] = useState<"list" | "grid">("list");
+  
 
   return (
     <div className="group relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-surface via-background to-surface p-2 shadow-sm">
