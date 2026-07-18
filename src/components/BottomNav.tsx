@@ -245,7 +245,7 @@ export function BottomNav() {
         {/* Floating indicator orb */}
         <span
           aria-hidden
-          className="absolute rounded-full transition-all duration-500"
+          className="absolute rounded-full"
           style={{
             top: "calc(var(--item) * -0.15)",
             left: "calc(var(--item) * 0.85)",
@@ -255,7 +255,10 @@ export function BottomNav() {
             background: active.gradient,
             boxShadow: `0 10px 22px -6px ${active.glow}, 0 0 0 3px rgba(15,10,45,0.9), inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -6px 16px rgba(0,0,0,0.15)`,
             transform: `translateX(calc(var(--item) * ${activeIndex}))`,
+            transition: orbTransition,
+            willChange: "transform",
           }}
+
         >
           {/* inner gloss */}
           <span
