@@ -24,6 +24,15 @@ import {
   ArrowUpRight,
   GraduationCap,
   Menu,
+  FileText,
+  Flame,
+  MessageSquare,
+  UserSearch,
+  BookOpenCheck,
+  UserCheck,
+  Trophy,
+  ChevronRight,
+  ShieldCheck,
 } from "lucide-react";
 
 import { MobileNav } from "@/components/MobileNav";
@@ -88,11 +97,12 @@ function IconBtn({ children, label }: { children: React.ReactNode; label: string
 function LeftNav() {
   const items = [
     { icon: Home, label: "Home", active: true },
-    { icon: Compass, label: "Explore" },
-    { icon: BookOpen, label: "Courses" },
-    { icon: Users, label: "Communities" },
-    { icon: Award, label: "Rewards" },
-    { icon: Bookmark, label: "Saved" },
+    { icon: FileText, label: "Quiz" },
+    { icon: Flame, label: "Popular" },
+    { icon: MessageSquare, label: "Q&A" },
+    { icon: UserSearch, label: "Looking for Tutor" },
+    { icon: BookOpenCheck, label: "Looking for Student" },
+    { icon: UserCheck, label: "Available Tutor" },
   ];
   return (
     <aside className="hidden lg:block">
