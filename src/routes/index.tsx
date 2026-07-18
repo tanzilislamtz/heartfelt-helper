@@ -33,7 +33,12 @@ import {
   Trophy,
   ChevronRight,
   ShieldCheck,
+  ChevronDown,
+  HelpCircle,
+  Upload,
+  X,
 } from "lucide-react";
+
 
 import { MobileNav } from "@/components/MobileNav";
 import { Topbar } from "@/components/Topbar";
