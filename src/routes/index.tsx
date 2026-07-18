@@ -464,6 +464,7 @@ const kindConfig: Record<
 
 
 function Post({
+  id,
   author,
   role,
   handle,
@@ -479,6 +480,7 @@ function Post({
   kind = "learning",
   meta,
 }: {
+  id: string;
   author: string;
   role: Role;
   handle: string;
@@ -494,6 +496,8 @@ function Post({
   kind?: Kind;
   meta?: { label: string; value: string }[];
 }) {
+  const navigate = useNavigate();
+  const openDetail = () => navigate({ to: "/post/$postId", params: { postId: id } });
   const roleStyles: Record<Role, { badge: string; ring: string; label: string }> = {
     tutor: { badge: "bg-tutor text-tutor-foreground", ring: "ring-tutor", label: "Tutor" },
     student: { badge: "bg-primary text-primary-foreground", ring: "ring-primary", label: "Student" },
