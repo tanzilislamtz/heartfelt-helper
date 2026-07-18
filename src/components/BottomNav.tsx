@@ -55,6 +55,27 @@ export function BottomNav() {
   const active = items[activeIndex];
   const unread = useUnreadMessages();
 
+  // Mount flag: enable transitions only after first paint so the orb doesn't
+  // slide in from index 0 on load and the nav gently fades in.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
+
+  // Springy easing for state changes (bar/orb/icons)
+  const EASE = "cubic-bezier(0.34, 1.56, 0.64, 1)";
+  const orbTransition = mounted
+    ? `transform 550ms ${EASE}, background 400ms ease, box-shadow 400ms ease`
+    : "none";
+  const glowTransition = mounted
+    ? "background 700ms ease, opacity 500ms ease"
+    : "none";
+  const iconTransition = mounted
+    ? `transform 500ms ${EASE}, opacity 300ms ease, filter 300ms ease`
+    : "none";
+
+
   // Bar takes ~70% of viewport width (clamped for tiny + large screens).
   // --item is derived from the inner track so 4 tabs perfectly fill the bar,
   // and the floating orb / icons all scale from --item.
