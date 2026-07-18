@@ -5,11 +5,20 @@ import {
   LayoutGrid,
   Rows3,
   Sparkles,
-  Plus,
+  Flame,
+  MessageCircleQuestion,
+  GraduationCap,
+  MapPin,
   ArrowDownWideNarrow,
 } from "lucide-react";
 
-const TABS = ["For You", "Popular", "Q&A", "Trending Tutors", "Nearby"];
+const TABS = [
+  { label: "For You", Icon: Sparkles },
+  { label: "Popular", Icon: Flame },
+  { label: "Q&A", Icon: MessageCircleQuestion },
+  { label: "Trending Tutors", Icon: GraduationCap },
+  { label: "Nearby", Icon: MapPin },
+];
 const SORTS = ["Latest", "Top", "Rising"];
 
 export function FeedToolbar() {
@@ -18,63 +27,77 @@ export function FeedToolbar() {
   const [view, setView] = useState<"list" | "grid">("list");
 
   return (
-    <div className="-mx-4 border-y border-border bg-background/80 px-4 py-2.5 sm:mx-0 sm:rounded-2xl sm:border sm:px-3 sm:py-2">
-      <div className="flex items-center gap-2">
+    <div className="group relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-surface via-background to-surface p-2 shadow-sm">
+      {/* Decorative gradient blob */}
+      <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-primary/10 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-20 -left-10 h-40 w-40 rounded-full bg-accent/40 blur-3xl" />
+
+      <div className="relative flex items-center gap-2">
         {/* Tab chips */}
-        <div className="relative flex min-w-0 flex-1 gap-1.5 overflow-x-auto pr-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="relative flex min-w-0 flex-1 items-center gap-1 overflow-x-auto pr-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {TABS.map((t, i) => {
             const isActive = i === active;
+            const Icon = t.Icon;
             return (
               <button
-                key={t}
+                key={t.label}
                 onClick={() => setActive(i)}
                 className={`relative shrink-0 rounded-full px-3.5 py-1.5 text-sm font-medium transition ${
                   isActive
                     ? "text-primary-foreground"
-                    : "text-foreground/70 hover:bg-muted hover:text-foreground"
+                    : "text-foreground/60 hover:text-foreground"
                 }`}
               >
                 {isActive && (
                   <motion.span
                     layoutId="feed-tab-pill"
-                    className="absolute inset-0 -z-10 rounded-full bg-primary shadow-sm"
+                    className="absolute inset-0 -z-10 rounded-full bg-gradient-to-br from-primary to-primary/85 shadow-[0_6px_20px_-8px_hsl(var(--primary))]"
                     transition={{ type: "spring", stiffness: 400, damping: 32 }}
                   />
                 )}
-                {i === 0 && <Sparkles className="mr-1 inline h-3.5 w-3.5" />}
-                {t}
+                <span className="inline-flex items-center gap-1.5">
+                  <Icon className="h-3.5 w-3.5" strokeWidth={2.2} />
+                  {t.label}
+                </span>
               </button>
             );
           })}
         </div>
 
         {/* Divider */}
-        <span className="hidden h-6 w-px bg-border sm:block" />
+        <span className="hidden h-6 w-px bg-border/70 sm:block" />
 
-        {/* Sort */}
-        <div className="hidden items-center gap-1 rounded-full border border-border bg-surface p-0.5 md:flex">
+        {/* Sort — segmented dark pill */}
+        <div className="hidden items-center gap-0.5 rounded-full bg-foreground/[0.06] p-0.5 ring-1 ring-inset ring-border md:flex">
           {SORTS.map((s, i) => (
             <button
               key={s}
               onClick={() => setSort(i)}
-              className={`rounded-full px-2.5 py-1 text-xs font-medium transition ${
+              className={`relative rounded-full px-2.5 py-1 text-xs font-semibold transition ${
                 sort === i
-                  ? "bg-foreground text-background"
+                  ? "text-background"
                   : "text-foreground/60 hover:text-foreground"
               }`}
             >
+              {sort === i && (
+                <motion.span
+                  layoutId="feed-sort-pill"
+                  className="absolute inset-0 -z-10 rounded-full bg-foreground shadow-sm"
+                  transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                />
+              )}
               {s}
             </button>
           ))}
         </div>
 
         {/* View toggle */}
-        <div className="hidden items-center rounded-full border border-border bg-surface p-0.5 sm:flex">
+        <div className="hidden items-center rounded-full bg-foreground/[0.06] p-0.5 ring-1 ring-inset ring-border sm:flex">
           <button
             onClick={() => setView("list")}
             aria-label="List view"
             className={`grid h-7 w-7 place-items-center rounded-full transition ${
-              view === "list" ? "bg-foreground text-background" : "text-foreground/60"
+              view === "list" ? "bg-foreground text-background shadow-sm" : "text-foreground/60 hover:text-foreground"
             }`}
           >
             <Rows3 className="h-3.5 w-3.5" />
@@ -83,7 +106,7 @@ export function FeedToolbar() {
             onClick={() => setView("grid")}
             aria-label="Grid view"
             className={`grid h-7 w-7 place-items-center rounded-full transition ${
-              view === "grid" ? "bg-foreground text-background" : "text-foreground/60"
+              view === "grid" ? "bg-foreground text-background shadow-sm" : "text-foreground/60 hover:text-foreground"
             }`}
           >
             <LayoutGrid className="h-3.5 w-3.5" />
@@ -92,22 +115,25 @@ export function FeedToolbar() {
 
         <button
           aria-label="Filters"
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border bg-surface text-foreground/70 transition hover:text-foreground"
+          className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border bg-surface text-foreground/70 transition hover:border-primary/40 hover:text-primary"
         >
           <SlidersHorizontal className="h-4 w-4" />
         </button>
-
       </div>
 
       {/* Meta row */}
-      <div className="mt-2 hidden items-center gap-3 text-xs text-muted-foreground sm:flex">
-        <span className="inline-flex items-center gap-1">
+      <div className="relative mt-2 hidden items-center gap-3 border-t border-dashed border-border/70 pt-2 text-xs text-muted-foreground sm:flex">
+        <span className="inline-flex items-center gap-1.5">
           <ArrowDownWideNarrow className="h-3 w-3" />
-          Showing <span className="font-medium text-foreground">{TABS[active]}</span> · sorted by{" "}
-          <span className="font-medium text-foreground">{SORTS[sort]}</span>
+          Showing <span className="font-semibold text-foreground">{TABS[active].label}</span>
+          <span className="text-foreground/30">·</span>
+          sorted by <span className="font-semibold text-foreground">{SORTS[sort]}</span>
         </span>
-        <span className="ml-auto inline-flex items-center gap-1">
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-tutor" />
+        <span className="ml-auto inline-flex items-center gap-1.5 rounded-full bg-tutor/10 px-2 py-0.5 font-medium text-tutor">
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-tutor opacity-60" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-tutor" />
+          </span>
           128 tutors online
         </span>
       </div>
