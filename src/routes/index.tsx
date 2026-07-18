@@ -137,8 +137,8 @@ function Feed() {
   return (
     <section className="space-y-5">
       <Leaderboard />
-      <FeedToolbar />
       <Composer />
+      <FeedToolbar />
 
 
 
