@@ -49,10 +49,12 @@ export function FeedToolbar() {
   
 
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-surface via-background to-surface p-2 shadow-sm">
+    <div className="group relative rounded-2xl border border-border bg-gradient-to-br from-surface via-background to-surface p-2 shadow-sm">
       {/* Decorative gradient blob */}
-      <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-primary/10 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-20 -left-10 h-40 w-40 rounded-full bg-accent/40 blur-3xl" />
+      <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl">
+        <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-primary/10 blur-3xl" />
+        <div className="absolute -bottom-20 -left-10 h-40 w-40 rounded-full bg-accent/40 blur-3xl" />
+      </div>
 
       <div className="relative flex items-center gap-2">
         {/* Tab chips */}
