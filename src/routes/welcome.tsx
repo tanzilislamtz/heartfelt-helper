@@ -10,6 +10,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { hasWelcomed, isAuthed, markWelcomed } from "@/lib/session";
+import logoAsset from "@/assets/learns-academy-logo.png.asset.json";
 
 export const Route = createFileRoute("/welcome")({
   head: () => ({
@@ -99,14 +100,9 @@ function WelcomePage() {
         {/* Top bar */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-foreground">
-              <GraduationCap className="h-4.5 w-4.5" />
-            </span>
-            <span className="text-sm font-semibold">
-              <span className="font-display italic">Learns</span>
-              <span className="ml-1 text-primary">Academy</span>
-            </span>
+            <img src={logoAsset.url} alt="Learns Academy" className="h-10 w-auto" />
           </div>
+
           {!isLast && (
             <button
               type="button"
