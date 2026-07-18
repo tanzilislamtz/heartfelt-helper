@@ -14,6 +14,12 @@ import {
   Lock,
   Users,
   Check,
+  Image as ImageIcon,
+  Video,
+  Hash,
+  X,
+  MessageSquare,
+  Sparkles,
 } from "lucide-react";
 
 export type PostTab = "learning" | "question" | "tutor" | "student";
