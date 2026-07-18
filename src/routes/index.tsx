@@ -106,27 +106,42 @@ function LeftNav() {
   ];
   return (
     <aside className="hidden lg:block">
-      <nav className="sticky top-24 space-y-1">
-        {items.map(({ icon: Icon, label, active }) => (
-          <a
-            key={label}
-            href="#"
-            className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
-              active
-                ? "bg-primary text-primary-foreground shadow-sm"
-                : "text-foreground/75 hover:bg-muted hover:text-foreground"
-            }`}
-          >
-            <Icon className="h-5 w-5" strokeWidth={active ? 2.4 : 2} />
-            {label}
-            {active && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-accent" />}
-          </a>
-        ))}
+      <div className="sticky top-24 space-y-4">
+        <nav className="rounded-3xl border border-border bg-surface p-3 shadow-sm">
+          <div className="space-y-1">
+            {items.map(({ icon: Icon, label, active }) => (
+              <a
+                key={label}
+                href="#"
+                className={`group flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-medium transition ${
+                  active
+                    ? "bg-primary text-primary-foreground shadow-brand"
+                    : "text-foreground/75 hover:bg-muted hover:text-foreground"
+                }`}
+              >
+                <Icon className="h-4.5 w-4.5" strokeWidth={active ? 2.4 : 2} />
+                {label}
+                {active && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-accent" />}
+              </a>
+            ))}
+          </div>
+        </nav>
 
-      </nav>
+        <div className="rounded-2xl border border-tutor/15 bg-tutor/5 p-4">
+          <div className="flex items-center gap-2">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-tutor/50" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-tutor" />
+            </span>
+            <span className="text-xs font-bold text-tutor">42 tutors live</span>
+          </div>
+          <p className="mt-1 text-[11px] font-medium text-tutor/70">Get instant help now</p>
+        </div>
+      </div>
     </aside>
   );
 }
+
 
 function Feed() {
   return (
