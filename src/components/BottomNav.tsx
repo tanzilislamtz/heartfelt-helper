@@ -136,3 +136,26 @@ export function BottomNav() {
     </nav>
   );
 }
+
+function Badge({ label, elevated = false }: { label: string; elevated?: boolean }) {
+  const wide = label.length > 1;
+  return (
+    <AnimatePresence>
+      <motion.span
+        key={label}
+        initial={{ scale: 0.4, opacity: 0, y: -2 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.4, opacity: 0 }}
+        transition={{ type: "spring", stiffness: 500, damping: 22 }}
+        className={`pointer-events-none absolute ${
+          elevated ? "-right-1 -top-1" : "-right-2 -top-1"
+        } z-10 flex ${wide ? "h-[18px] min-w-[22px] px-1" : "h-[18px] w-[18px]"} items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold leading-none text-white ring-2 ring-surface shadow-[0_4px_10px_-2px_rgba(244,63,94,0.55)]`}
+        aria-hidden
+      >
+        {label}
+        <span className="absolute inset-0 -z-10 animate-ping rounded-full bg-rose-500/60" />
+      </motion.span>
+    </AnimatePresence>
+  );
+}
+
