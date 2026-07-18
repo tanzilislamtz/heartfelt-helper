@@ -81,14 +81,17 @@ export function BottomNav() {
           {items.map((item, i) => {
             const active = i === activeIndex;
             const Icon = item.Icon;
+            const showBadge = item.to === "/message" && unread > 0;
+            const badgeLabel = unread > 99 ? "99+" : String(unread);
             return (
               <li key={item.to} className="relative flex justify-center">
                 <Link
                   to={item.to}
-                  aria-label={item.label}
+                  aria-label={showBadge ? `${item.label} (${unread} unread)` : item.label}
                   aria-current={active ? "page" : undefined}
                   className="group relative flex w-full flex-col items-center gap-1 outline-none"
                 >
+
                   {active ? (
                     <>
                       {/* Elevated floating circle */}
