@@ -268,116 +268,53 @@ function Leaderboard() {
 
 
 function Composer() {
-  const [open, setOpen] = useState(false);
-  const [text, setText] = useState("");
-
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
-    window.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [open]);
+  const navigate = useNavigate();
+  const go = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    navigate({ to: "/create-post" });
+  };
 
   return (
-    <>
-      <div className="rounded-2xl border border-border bg-surface p-3 shadow-[0_8px_30px_rgb(41,44,117,0.08)]">
-        <div className="flex items-center gap-3">
-          <div className="font-display grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary text-lg font-bold text-primary-foreground shadow-sm">
-            A
+    <div className="rounded-2xl border border-border bg-surface p-3 shadow-[0_8px_30px_rgb(41,44,117,0.08)]">
+      <div className="flex items-center gap-3">
+        <div className="font-display grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary text-lg font-bold text-primary-foreground shadow-sm">
+          A
+        </div>
+
+        <button
+          onClick={() => go()}
+          className="group flex h-11 min-w-0 flex-1 items-center rounded-full border border-border bg-muted/50 px-4 transition-all hover:border-border/80 hover:bg-muted/70"
+        >
+          <div className="mr-3 hidden items-center gap-2 border-r border-border/80 pr-3 sm:flex">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-tutor">To</span>
+            <span className="text-xs font-semibold text-primary">Everyone</span>
+            <span
+              onClick={go}
+              className="rounded-full border border-border bg-surface px-2 py-0.5 text-[10px] font-semibold text-foreground/70 transition hover:border-primary/40 hover:text-primary"
+            >
+              Change
+            </span>
           </div>
 
-          <button
-            onClick={() => setOpen(true)}
-            className="group flex h-11 min-w-0 flex-1 items-center rounded-full border border-border bg-muted/50 px-4 transition-all hover:border-border/80 hover:bg-muted/70"
-          >
-            <div className="mr-3 hidden items-center gap-2 border-r border-border/80 pr-3 sm:flex">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-tutor">To</span>
-              <span className="text-xs font-semibold text-primary">Everyone</span>
-              <span
-                onClick={(e) => { e.stopPropagation(); setOpen(true); }}
-                className="rounded-full border border-border bg-surface px-2 py-0.5 text-[10px] font-semibold text-foreground/70 transition hover:border-primary/40 hover:text-primary"
-              >
-                Change
-              </span>
-            </div>
+          <span className="flex-1 truncate text-left text-sm text-muted-foreground">
+            Share a thought, ask a question, drop a note…
+          </span>
+          <span className="ml-2 hidden items-center gap-0.5 sm:flex">
+            <ComposerIconBtn icon={ImageIcon} onClick={go} title="Image" />
+            <ComposerIconBtn icon={Paperclip} onClick={go} title="Attach" />
+            <ComposerIconBtn icon={BarChart3} onClick={go} title="Poll" />
+            <ComposerIconBtn icon={BookOpen} onClick={go} title="Note" />
+          </span>
+        </button>
 
-            <span className="flex-1 truncate text-left text-sm text-muted-foreground">
-              Share a thought, ask a question, drop a note…
-            </span>
-            <span className="ml-2 hidden items-center gap-0.5 sm:flex">
-              <ComposerIconBtn icon={ImageIcon} onClick={(e) => { e.stopPropagation(); setOpen(true); }} title="Image" />
-              <ComposerIconBtn icon={Paperclip} onClick={(e) => { e.stopPropagation(); setOpen(true); }} title="Attach" />
-              <ComposerIconBtn icon={BarChart3} onClick={(e) => { e.stopPropagation(); setOpen(true); }} title="Poll" />
-              <ComposerIconBtn icon={BookOpen} onClick={(e) => { e.stopPropagation(); setOpen(true); }} title="Note" />
-            </span>
-          </button>
-
-          <button
-            onClick={() => setOpen(true)}
-            className="h-11 shrink-0 rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground shadow-md transition-all hover:bg-[color-mix(in_oklab,var(--color-primary)_88%,black)] active:scale-95"
-          >
-            Post
-          </button>
-        </div>
+        <button
+          onClick={() => go()}
+          className="h-11 shrink-0 rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground shadow-md transition-all hover:bg-[color-mix(in_oklab,var(--color-primary)_88%,black)] active:scale-95"
+        >
+          Post
+        </button>
       </div>
-
-
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[80] flex items-start justify-center bg-black/50 p-4 pt-16 backdrop-blur-sm"
-            onClick={() => setOpen(false)}
-          >
-            <motion.div
-              initial={{ opacity: 0, y: 20, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 10, scale: 0.98 }}
-              transition={{ type: "spring", damping: 22, stiffness: 260 }}
-              onClick={(e) => e.stopPropagation()}
-              className="max-h-[calc(100vh-2rem)] w-full max-w-2xl overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl flex flex-col"
-            >
-              <div className="flex items-center justify-between border-b border-border px-5 py-3 shrink-0">
-                <h3 className="text-base font-semibold">Create Post</h3>
-                <div className="flex items-center gap-2">
-                  <button className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground/80 transition hover:bg-muted">
-                    My Drafts
-                  </button>
-                  <button
-                    onClick={() => setOpen(false)}
-                    className="grid h-8 w-8 place-items-center rounded-full text-muted-foreground transition hover:bg-muted"
-                    aria-label="Close"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-
-              <CreatePostBody text={text} setText={setText} onClose={() => setOpen(false)} />
-            </motion.div>
-
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
-  );
-}
-
-function ComposerBtn({ icon: Icon, label, onClick }: { icon: React.ElementType; label: string; onClick?: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-medium text-foreground/70 transition hover:bg-muted hover:text-foreground"
-    >
-      <Icon className="h-4 w-4 text-tutor" />
-      {label}
-    </button>
+    </div>
   );
 }
 
@@ -402,238 +339,7 @@ function ComposerIconBtn({
   );
 }
 
-type PostTab = "learning" | "question" | "tutor" | "student";
 
-const TABS: { id: PostTab; label: string }[] = [
-  { id: "learning", label: "Learning post" },
-  { id: "question", label: "Question" },
-  { id: "tutor", label: "Looking for Tutor" },
-  { id: "student", label: "Looking for Student" },
-];
-
-function CreatePostBody({ text, setText, onClose }: { text: string; setText: (v: string) => void; onClose: () => void }) {
-  const [tab, setTab] = useState<PostTab>("learning");
-
-  return (
-    <div className="flex min-h-0 flex-1 flex-col">
-      {/* Tabs */}
-      <div className="flex gap-2 overflow-x-auto border-b border-border px-5 py-3 shrink-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {TABS.map((t) => (
-          <button
-            key={t.id}
-            onClick={() => setTab(t.id)}
-            className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
-              tab === t.id
-                ? "bg-primary text-primary-foreground shadow-sm"
-                : "text-foreground/70 hover:bg-muted"
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Author strip with Change */}
-      <div className="flex items-center justify-between border-b border-border px-5 py-3 shrink-0">
-        <div className="flex items-center gap-3">
-          <div className="grid h-10 w-10 place-items-center rounded-full bg-primary text-sm font-bold text-primary-foreground">A</div>
-          <div className="leading-tight">
-            <div className="text-sm font-semibold">You</div>
-            <div className="text-xs text-muted-foreground">Posting to <span className="font-medium text-foreground">Everyone</span></div>
-          </div>
-        </div>
-        <button className="flex items-center gap-1 rounded-lg border border-border px-2.5 py-1.5 text-xs font-semibold text-foreground/80 transition hover:border-primary/40 hover:text-primary">
-          Change <ChevronDown className="h-3.5 w-3.5" />
-        </button>
-      </div>
-
-      {/* Scrollable body */}
-      <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
-        {tab === "learning" && <LearningForm text={text} setText={setText} />}
-        {tab === "question" && <QuestionForm />}
-        {tab === "tutor" && <TutorRequestForm mode="tutor" />}
-        {tab === "student" && <TutorRequestForm mode="student" />}
-      </div>
-
-      {/* Footer */}
-      <div className="flex items-center justify-between gap-2 border-t border-border bg-muted/30 px-5 py-3 shrink-0">
-        <div className="text-[11px] text-muted-foreground">Your content must reach community standards.</div>
-        <div className="flex items-center gap-2">
-          <button className="rounded-lg border border-border px-3 py-1.5 text-xs font-semibold text-foreground/80 transition hover:bg-surface">Save Draft</button>
-          <button className="rounded-lg border border-primary/40 px-3 py-1.5 text-xs font-semibold text-primary transition hover:bg-primary/5">Preview</button>
-          <button
-            onClick={onClose}
-            className="rounded-lg bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground shadow-sm transition hover:opacity-95"
-          >
-            Post Now
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Field({ label, required, hint, children, className = "" }: { label: string; required?: boolean; hint?: string; children: React.ReactNode; className?: string }) {
-  return (
-    <div className={className}>
-      <label className="mb-1 block text-xs font-semibold text-foreground">
-        {label} {required && <span className="text-danger">*</span>}
-        {hint && <span className="ml-1 font-normal text-muted-foreground">{hint}</span>}
-      </label>
-      {children}
-    </div>
-  );
-}
-
-const inputCls = "w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm placeholder:text-muted-foreground focus:border-primary/40 focus:outline-none focus:ring-4 focus:ring-primary/10";
-
-function Select({ placeholder }: { placeholder: string }) {
-  return (
-    <div className="relative">
-      <select className={`${inputCls} appearance-none pr-8`} defaultValue="">
-        <option value="" disabled>{placeholder}</option>
-        <option>Option 1</option>
-        <option>Option 2</option>
-      </select>
-      <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-    </div>
-  );
-}
-
-function UploadBox() {
-  return (
-    <div className="rounded-lg border-2 border-dashed border-primary/30 bg-primary/5 px-4 py-5 text-center">
-      <div className="mx-auto mb-1 flex items-center justify-center gap-1.5 text-xs font-semibold text-primary">
-        <Upload className="h-3.5 w-3.5" /> Click to upload or drag and drop
-      </div>
-      <div className="text-[10px] text-muted-foreground">Images, video, PDF, DOC, PPT, XLS, TXT · ≤5 MB file / ≤50 MB video</div>
-    </div>
-  );
-}
-
-function LearningForm({ text, setText }: { text: string; setText: (v: string) => void }) {
-  return (
-    <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-      <div className="md:col-span-2 flex items-start gap-3 rounded-lg border border-border bg-accent/5 p-3">
-        <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-accent/15 text-accent"><BookOpen className="h-4 w-4" /></div>
-        <div>
-          <div className="text-sm font-semibold text-accent">Share Knowledge</div>
-          <div className="text-xs text-muted-foreground">Share educational content, notes, tips, or resources with others.</div>
-        </div>
-      </div>
-      <Field label="Title" required><input className={inputCls} placeholder="Enter post title" /></Field>
-      <Field label="Education Level" required><Select placeholder="Select Education Level" /></Field>
-      <Field label="Version"><Select placeholder="Select an education level first" /></Field>
-      <Field label="Class / Level"><Select placeholder="Select a version first" /></Field>
-      <Field label="Subject"><Select placeholder="Select a class / level first" /></Field>
-      <Field label="Topic" hint="(Optional)"><input className={inputCls} placeholder="Enter topic" /></Field>
-      <Field label="Chapter" hint="(Optional)"><input className={inputCls} placeholder="Enter chapter" /></Field>
-      <Field label="Content" required className="md:col-span-2">
-        <textarea rows={5} value={text} onChange={(e) => setText(e.target.value)} placeholder="Share your learning experience…" className={`${inputCls} resize-none`} />
-      </Field>
-      <Field label="Attach File" hint="(Optional)" className="md:col-span-2"><UploadBox /></Field>
-      <Field label="Add Tags" hint="(Optional)"><input className={inputCls} placeholder="Add tags and press enter" /></Field>
-      <Field label="Visibility"><Select placeholder="Public" /></Field>
-      <label className="md:col-span-2 flex items-center justify-between rounded-lg border border-border px-3 py-2 text-xs font-semibold">
-        Allow Comments
-        <span className="relative inline-flex h-5 w-9 items-center rounded-full bg-primary">
-          <span className="absolute right-0.5 h-4 w-4 rounded-full bg-white shadow" />
-        </span>
-      </label>
-    </div>
-  );
-}
-
-function QuestionForm() {
-  return (
-    <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-      <div className="md:col-span-2 flex items-start gap-3 rounded-lg border border-border bg-tutor/5 p-3">
-        <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-tutor/15 text-tutor"><HelpCircle className="h-4 w-4" /></div>
-        <div>
-          <div className="text-sm font-semibold text-tutor">Ask a Question</div>
-          <div className="text-xs text-muted-foreground">Get help from the community by asking your question.</div>
-        </div>
-      </div>
-      <Field label="Education Level" required><Select placeholder="Select Education Level" /></Field>
-      <Field label="Version" required><Select placeholder="Select an education level first" /></Field>
-      <Field label="Class / Level" required><Select placeholder="Select a version first" /></Field>
-      <Field label="Subject" required><Select placeholder="Select a class / level first" /></Field>
-      <Field label="Chapter / Topic" hint="(Optional)"><input className={inputCls} placeholder="Enter chapter or topic" /></Field>
-      <Field label="Urgency"><Select placeholder="Normal" /></Field>
-      <Field label="Tags" hint="(Optional)" className="md:col-span-2"><input className={inputCls} placeholder="Add tags (optional)…" /></Field>
-      <Field label="Question Details" required className="md:col-span-2">
-        <textarea rows={5} className={`${inputCls} resize-none`} placeholder="Write your question clearly…" />
-      </Field>
-      <Field label="Attach File" hint="(Optional)"><UploadBox /></Field>
-      <Field label="Visibility"><Select placeholder="Public" /></Field>
-      <label className="md:col-span-2 flex items-center justify-between rounded-lg border border-border px-3 py-2 text-xs font-semibold">
-        Allow Comments
-        <span className="relative inline-flex h-5 w-9 items-center rounded-full bg-primary"><span className="absolute right-0.5 h-4 w-4 rounded-full bg-white shadow" /></span>
-      </label>
-      <label className="flex items-center gap-2 text-xs"><input type="checkbox" className="h-4 w-4 rounded border-border" /> Mark as solved</label>
-    </div>
-  );
-}
-
-function TutorRequestForm({ mode }: { mode: "tutor" | "student" }) {
-  const isTutor = mode === "tutor";
-  return (
-    <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-      <div className="md:col-span-2 flex items-start gap-3 rounded-lg border border-border bg-primary/5 p-3">
-        <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-primary/15 text-primary">
-          {isTutor ? <UserSearch className="h-4 w-4" /> : <GraduationCap className="h-4 w-4" />}
-        </div>
-        <div>
-          <div className="text-sm font-semibold text-primary">{isTutor ? "Find a Tutor" : "Find a Student"}</div>
-          <div className="text-xs text-muted-foreground">
-            {isTutor ? "Find the right tutor who can help you learn better." : "Post your teaching offer and connect with students."}
-          </div>
-        </div>
-      </div>
-      <Field label="Education Level" required><Select placeholder="Select Education Level" /></Field>
-      <Field label="Version" required><Select placeholder="Select an education level first" /></Field>
-      <Field label="Class / Level" required><Select placeholder="Select a version first" /></Field>
-      <Field label="Subject" required><Select placeholder="Select a class / level first" /></Field>
-      <Field label="Institute" hint="(Optional)"><input className={inputCls} placeholder="Enter institute name" /></Field>
-      <Field label="Preferred Learning Mode">
-        <div className="flex flex-wrap gap-1.5">
-          {["Online", "Offline", "Hybrid", "Home Tutoring"].map((o) => (
-            <label key={o} className="cursor-pointer rounded-full border border-border px-2.5 py-1 text-[11px] font-medium hover:border-primary/40 hover:text-primary">
-              <input type="checkbox" className="mr-1 accent-primary" />{o}
-            </label>
-          ))}
-        </div>
-      </Field>
-      <Field label={isTutor ? "Tutor Requirement Duration" : "Teaching Availability"} hint="(Optional)"><Select placeholder="Select duration" /></Field>
-      <Field label="Preferred Days">
-        <div className="flex flex-wrap gap-1">
-          {["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map((d) => (
-            <label key={d} className="cursor-pointer rounded-md border border-border px-2 py-1 text-[11px] font-semibold hover:border-primary/40">
-              <input type="checkbox" className="mr-1 accent-primary" />{d}
-            </label>
-          ))}
-        </div>
-      </Field>
-      <Field label="Preferred Time"><Select placeholder="Select time" /></Field>
-      <Field label="Division"><Select placeholder="Select division" /></Field>
-      <Field label="District"><Select placeholder="Select district" /></Field>
-      <Field label="Thana / Upazila"><Select placeholder="Select thana" /></Field>
-      <Field label="Location / Area" hint="(Optional)"><input className={inputCls} placeholder="Enter area" /></Field>
-      <Field label={isTutor ? "Budget (Monthly)" : "Expected Salary"} hint="(Optional)"><input className={inputCls} placeholder="Enter your budget" /></Field>
-      <Field label="Start Date" hint="(Optional)"><input type="date" className={inputCls} /></Field>
-      <Field label="Visibility"><Select placeholder="Public" /></Field>
-      <Field label="Details" required className="md:col-span-2">
-        <textarea rows={4} className={`${inputCls} resize-none`} placeholder={isTutor ? "Describe what you need from a tutor…" : "Describe your teaching offer…"} />
-      </Field>
-      <Field label="Attach File" hint="(Optional)" className="md:col-span-2"><UploadBox /></Field>
-      <label className="flex items-center gap-2 text-xs font-medium"><input type="checkbox" className="h-4 w-4 rounded border-border accent-primary" /> Urgent Need — show an urgent badge on this post</label>
-      <label className="flex items-center justify-between rounded-lg border border-border px-3 py-2 text-xs font-semibold">
-        Allow Comments
-        <span className="relative inline-flex h-5 w-9 items-center rounded-full bg-primary"><span className="absolute right-0.5 h-4 w-4 rounded-full bg-white shadow" /></span>
-      </label>
-    </div>
-  );
-}
 
 
 
