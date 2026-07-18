@@ -24,6 +24,15 @@ import {
   ArrowUpRight,
   GraduationCap,
   Menu,
+  FileText,
+  Flame,
+  MessageSquare,
+  UserSearch,
+  BookOpenCheck,
+  UserCheck,
+  Trophy,
+  ChevronRight,
+  ShieldCheck,
 } from "lucide-react";
 
 import { MobileNav } from "@/components/MobileNav";
@@ -88,11 +97,12 @@ function IconBtn({ children, label }: { children: React.ReactNode; label: string
 function LeftNav() {
   const items = [
     { icon: Home, label: "Home", active: true },
-    { icon: Compass, label: "Explore" },
-    { icon: BookOpen, label: "Courses" },
-    { icon: Users, label: "Communities" },
-    { icon: Award, label: "Rewards" },
-    { icon: Bookmark, label: "Saved" },
+    { icon: FileText, label: "Quiz" },
+    { icon: Flame, label: "Popular" },
+    { icon: MessageSquare, label: "Q&A" },
+    { icon: UserSearch, label: "Looking for Tutor" },
+    { icon: BookOpenCheck, label: "Looking for Student" },
+    { icon: UserCheck, label: "Available Tutor" },
   ];
   return (
     <aside className="hidden lg:block">
@@ -137,9 +147,22 @@ function LeftNav() {
 function Feed() {
   return (
     <section className="space-y-5">
-      
       <Composer />
       <FeedToolbar />
+      <Leaderboard />
+
+      <Post
+        author="SOJIB KHAN"
+        role="student"
+        handle="Verified Student"
+        time="10 days ago"
+        verified
+        title="A Conversation Between Lily and Her Father"
+        body={"Lily: Hello, Baba!\nBaba: Lily? How are you?\nLily: Fine, Baba. I just got my exam result. I've got an A in my English test!\nBaba: That's wonderful, my dear. I'm so proud of you."}
+        tag="Learning Content"
+        stats={{ likes: 214, comments: 36, shares: 11 }}
+      />
+
       <NearbyTutors />
 
       <Post
@@ -192,6 +215,64 @@ function Feed() {
         mediaUrl="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1200&auto=format&fit=crop"
       />
     </section>
+  );
+}
+
+function Leaderboard() {
+  const entries = [
+    { rank: 1, name: "Md. Rajwanur R.", sub: "University of Dhaka", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&auto=format&fit=crop", following: false },
+    { rank: 2, name: "Papul Halder", sub: "Chittagong College", img: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=400&auto=format&fit=crop", following: false },
+    { rank: 3, name: "Sojib Khan", sub: "Rajshahi University", img: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&auto=format&fit=crop", following: false },
+    { rank: 4, name: "Sabuj Hossain", sub: "Notre Dame College", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&auto=format&fit=crop", following: false },
+    { rank: 5, name: "Protiq Halder", sub: "Khulna Model School", img: "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?w=400&auto=format&fit=crop", following: true },
+  ];
+  return (
+    <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
+      <div className="mb-3 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="grid h-7 w-7 place-items-center rounded-lg bg-accent/40 text-primary">
+            <Trophy className="h-4 w-4" />
+          </span>
+          <h3 className="text-sm font-semibold text-foreground">
+            Leaderboard <span className="text-muted-foreground">· top by points</span>
+          </h3>
+        </div>
+        <button className="inline-flex items-center gap-0.5 text-xs font-medium text-primary hover:underline">
+          See all <ChevronRight className="h-3 w-3" />
+        </button>
+      </div>
+      <div className="-mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {entries.map((e) => (
+          <motion.div
+            key={e.rank}
+            whileHover={{ y: -3 }}
+            className="relative w-40 shrink-0 snap-start overflow-hidden rounded-2xl border border-border bg-surface shadow-sm"
+          >
+            <div className="relative aspect-[4/5] overflow-hidden">
+              <img src={e.img} alt={e.name} loading="lazy" className="h-full w-full object-cover" />
+              <span className="absolute left-2 top-2 rounded-lg bg-background/95 px-1.5 py-0.5 text-[10px] font-bold text-primary shadow-sm">
+                #{e.rank}
+              </span>
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-foreground/85 via-foreground/40 to-transparent p-2">
+                <p className="truncate text-xs font-semibold text-background">{e.name}</p>
+                <p className="truncate text-[10px] text-background/80">{e.sub}</p>
+              </div>
+            </div>
+            <div className="p-2">
+              <button
+                className={`w-full rounded-full py-1.5 text-[11px] font-semibold transition ${
+                  e.following
+                    ? "bg-foreground text-background"
+                    : "bg-primary text-primary-foreground hover:opacity-95"
+                }`}
+              >
+                {e.following ? "Following" : "Follow"}
+              </button>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -449,7 +530,7 @@ function Post({
         <h2 className="font-display text-xl font-semibold leading-snug text-foreground">
           {title}
         </h2>
-        <p className="mt-2 text-sm leading-relaxed text-foreground/75">{body}</p>
+        <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-foreground/75">{body}</p>
       </div>
 
       {mediaUrl ? (
@@ -660,76 +741,96 @@ function Post({
 
 
 function RightRail() {
+  const [msgTab, setMsgTab] = useState<"active" | "all">("active");
   return (
     <aside className="hidden space-y-5 lg:block">
       <div className="sticky top-24 space-y-5">
-        <div className="rounded-2xl border border-border bg-surface p-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-foreground">Trending now</h3>
-            <TrendingUp className="h-4 w-4 text-tutor" />
+        {/* Sponsored */}
+        <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
+          <div className="mb-2 flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-foreground">Sponsored</h3>
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Ad
+            </span>
           </div>
-          <ul className="mt-3 space-y-3">
-            {[
-              { tag: "Calculus", posts: "1.2k posts", hot: true },
-              { tag: "React 19", posts: "864 posts" },
-              { tag: "IELTS Prep", posts: "512 posts" },
-              { tag: "UX Research", posts: "310 posts" },
-            ].map((t) => (
-              <li key={t.tag} className="group flex items-center justify-between">
-                <div className="min-w-0">
-                  <div className="flex items-center gap-1.5">
-                    <span className="truncate text-sm font-medium text-foreground">#{t.tag}</span>
-                    {t.hot && (
-                      <span className="rounded-full bg-destructive/10 px-1.5 py-0.5 text-[10px] font-semibold text-destructive">
-                        HOT
-                      </span>
-                    )}
+          <a
+            href="#"
+            className="group block overflow-hidden rounded-xl border border-border bg-muted"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&auto=format&fit=crop"
+              alt="Exotic Collection — Unstitched Fabrics"
+              loading="lazy"
+              className="aspect-[16/10] w-full object-cover transition group-hover:scale-[1.02]"
+            />
+          </a>
+          <div className="mt-3">
+            <p className="text-sm font-semibold text-foreground">Exotic Collection</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              Unstitched fabrics · New arrivals for Eid
+            </p>
+          </div>
+        </div>
+
+        {/* Message List */}
+        <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
+          <div className="mb-3 flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-foreground">Message List</h3>
+            <button className="text-xs font-medium text-primary hover:underline">See all</button>
+          </div>
+          <div className="mb-3 grid grid-cols-2 rounded-full bg-muted p-1 text-xs font-semibold">
+            <button
+              onClick={() => setMsgTab("active")}
+              className={`rounded-full py-1.5 transition ${
+                msgTab === "active" ? "bg-surface text-foreground shadow-sm" : "text-muted-foreground"
+              }`}
+            >
+              Active
+            </button>
+            <button
+              onClick={() => setMsgTab("all")}
+              className={`rounded-full py-1.5 transition ${
+                msgTab === "all" ? "bg-surface text-foreground shadow-sm" : "text-muted-foreground"
+              }`}
+            >
+              All <span className="opacity-70">(3)</span>
+            </button>
+          </div>
+
+          {msgTab === "active" ? (
+            <div className="rounded-xl border border-dashed border-border py-6 text-center">
+              <p className="text-xs text-muted-foreground">
+                No one is online right now.{" "}
+                <button className="font-semibold text-primary hover:underline">Show all</button>
+              </p>
+            </div>
+          ) : (
+            <ul className="space-y-3">
+              {[
+                { name: "Nadia Karim", msg: "Sent the notes ✓", time: "2m", unread: 2 },
+                { name: "Tanvir Ahmed", msg: "See you at 8pm class", time: "1h", unread: 0 },
+                { name: "Meherun Nisa", msg: "Thanks for the feedback!", time: "3h", unread: 0 },
+              ].map((m) => (
+                <li key={m.name} className="flex items-center gap-3">
+                  <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
+                    {m.name.charAt(0)}
                   </div>
-                  <div className="text-xs text-muted-foreground">{t.posts}</div>
-                </div>
-                <button className="rounded-full border border-border px-3 py-1 text-xs font-medium text-foreground/70 opacity-0 transition hover:border-foreground/30 hover:text-foreground group-hover:opacity-100">
-                  Follow
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="rounded-2xl border border-border bg-surface p-4">
-          <h3 className="text-sm font-semibold text-foreground">Suggested tutors</h3>
-          <ul className="mt-3 space-y-3">
-            {[
-              { name: "Nadia Karim", subject: "Physics · IUT" },
-              { name: "Tanvir Ahmed", subject: "Web Dev · 8y exp" },
-              { name: "Meherun Nisa", subject: "English · IELTS 8.5" },
-            ].map((u) => (
-              <li key={u.name} className="flex items-center gap-3">
-                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-tutor/15 text-sm font-semibold text-tutor ring-2 ring-tutor/20">
-                  {u.name.charAt(0)}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="truncate text-sm font-medium text-foreground">{u.name}</div>
-                  <div className="truncate text-xs text-muted-foreground">{u.subject}</div>
-                </div>
-                <button className="shrink-0 rounded-full bg-foreground px-3 py-1 text-xs font-semibold text-background transition hover:opacity-90">
-                  Follow
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="overflow-hidden rounded-2xl border border-border bg-accent/60 p-5">
-          <Award className="h-6 w-6 text-primary" />
-          <h3 className="mt-3 font-display text-lg font-semibold text-foreground">
-            Earn your first badge
-          </h3>
-          <p className="mt-1 text-xs text-foreground/70">
-            Post 3 helpful answers this week and unlock the Verified Helper badge.
-          </p>
-          <button className="mt-3 inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-95">
-            Get started <ArrowUpRight className="h-3.5 w-3.5" />
-          </button>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="truncate text-sm font-medium text-foreground">{m.name}</span>
+                      <span className="shrink-0 text-[10px] text-muted-foreground">{m.time}</span>
+                    </div>
+                    <p className="truncate text-xs text-muted-foreground">{m.msg}</p>
+                  </div>
+                  {m.unread > 0 && (
+                    <span className="grid h-5 min-w-[20px] place-items-center rounded-full bg-destructive px-1.5 text-[10px] font-bold text-destructive-foreground">
+                      {m.unread}
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         <p className="px-2 text-[11px] text-muted-foreground">
