@@ -229,6 +229,7 @@ function LearningForm() {
 function QuestionForm() {
   return (
     <>
+      <InfoCard icon={HelpCircle} tone="question" title="Ask a Question" desc="Get help from the community — the clearer your question, the better the answers." />
       <TitleInput placeholder="What's your question?" />
 
       <section className="mb-10">
