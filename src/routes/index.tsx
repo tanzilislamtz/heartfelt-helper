@@ -278,23 +278,45 @@ function Composer() {
 
   return (
     <>
-      <div className="rounded-full border border-border bg-surface px-3 py-2 shadow-sm">
+      <div className="rounded-2xl border border-border bg-surface p-3 shadow-[0_8px_30px_rgb(41,44,117,0.08)]">
         <div className="flex items-center gap-3">
-          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+          <div className="font-display grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary text-lg font-bold text-primary-foreground shadow-sm">
             A
           </div>
+
           <button
             onClick={() => setOpen(true)}
-            className="flex-1 truncate rounded-full bg-muted/60 px-4 py-2 text-left text-sm text-muted-foreground transition hover:bg-muted"
+            className="group flex h-11 min-w-0 flex-1 items-center rounded-full border border-border bg-muted/50 px-4 transition-all hover:border-border/80 hover:bg-muted/70"
           >
-            Share a thought, ask a question, drop a note…
+            <div className="mr-3 hidden items-center gap-1.5 border-r border-border/80 pr-3 sm:flex">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-tutor">To</span>
+              <span className="flex items-center gap-1 text-xs font-semibold text-primary">
+                Everyone
+                <svg className="h-3 w-3 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
+                </svg>
+              </span>
+            </div>
+            <span className="flex-1 truncate text-left text-sm text-muted-foreground">
+              Share a thought, ask a question, drop a note…
+            </span>
+            <span className="ml-2 hidden items-center gap-0.5 sm:flex">
+              <ComposerIconBtn icon={ImageIcon} onClick={(e) => { e.stopPropagation(); setOpen(true); }} title="Image" />
+              <ComposerIconBtn icon={Paperclip} onClick={(e) => { e.stopPropagation(); setOpen(true); }} title="Attach" />
+              <ComposerIconBtn icon={BarChart3} onClick={(e) => { e.stopPropagation(); setOpen(true); }} title="Poll" />
+              <ComposerIconBtn icon={BookOpen} onClick={(e) => { e.stopPropagation(); setOpen(true); }} title="Note" />
+            </span>
           </button>
-          <div className="hidden items-center gap-1 sm:flex">
-            <ComposerBtn icon={ImageIcon} label="Image" onClick={() => setOpen(true)} />
-            <ComposerBtn icon={BarChart3} label="Poll" onClick={() => setOpen(true)} />
-          </div>
+
+          <button
+            onClick={() => setOpen(true)}
+            className="h-11 shrink-0 rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground shadow-md transition-all hover:bg-[color-mix(in_oklab,var(--color-primary)_88%,black)] active:scale-95"
+          >
+            Post
+          </button>
         </div>
       </div>
+
 
       <AnimatePresence>
         {open && (
@@ -386,6 +408,28 @@ function ComposerBtn({ icon: Icon, label, onClick }: { icon: React.ElementType; 
     </button>
   );
 }
+
+function ComposerIconBtn({
+  icon: Icon,
+  onClick,
+  title,
+}: {
+  icon: React.ElementType;
+  onClick?: (e: React.MouseEvent) => void;
+  title?: string;
+}) {
+  return (
+    <span
+      role="button"
+      title={title}
+      onClick={onClick}
+      className="grid h-8 w-8 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-surface hover:text-primary"
+    >
+      <Icon className="h-4 w-4" />
+    </span>
+  );
+}
+
 
 
 function TopicChips() {
