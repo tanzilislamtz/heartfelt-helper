@@ -168,10 +168,6 @@ function LoginPage() {
           </Link>
         </p>
 
-        <p className="mt-6 flex items-center gap-1.5 text-xs text-muted-foreground">
-          <Sparkles className="h-3 w-3 text-accent" /> Demo screens — no data
-          is stored.
-        </p>
       </motion.div>
     </AuthShell>
   );
