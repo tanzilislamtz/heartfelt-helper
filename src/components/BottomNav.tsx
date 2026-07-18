@@ -227,8 +227,8 @@ export function BottomNav() {
                       marginTop: "calc(var(--item) * -0.36)",
                       border: "1.5px solid rgba(255,255,255,0.55)",
                       transform: isActive
-                        ? `translateY(calc(var(--h) * -0.5)) scale(1)`
-                        : `translateY(calc(var(--h) * -0.5)) scale(0)`,
+                        ? `translateY(calc(var(--item) * -0.38)) scale(1)`
+                        : `translateY(calc(var(--item) * -0.38)) scale(0)`,
                       opacity: isActive ? 1 : 0,
                       transition: mounted
                         ? `transform 500ms ${EASE} ${isActive ? "450ms" : "0ms"}, opacity 300ms ease`
@@ -245,17 +245,17 @@ export function BottomNav() {
           })}
         </ul>
 
-        {/* Floating indicator orb */}
+        {/* Floating indicator orb — vertically centered on the bar's top edge, slightly lifted; horizontally aligned to each tab's center. */}
         <span
           aria-hidden
           className="absolute rounded-full"
           style={{
-            top: "calc(var(--h) / 2)",
+            top: 0,
             left: "calc(var(--pad) + var(--item) * 0.5)",
             width: "calc(var(--item) * 0.72)",
             height: "calc(var(--item) * 0.72)",
             marginLeft: "calc(var(--item) * -0.36)",
-            marginTop: "calc(var(--item) * -0.36 - var(--h) * 0.5)",
+            marginTop: "calc(var(--item) * -0.32)",
             background: active.gradient,
             boxShadow: `0 10px 22px -6px ${active.glow}, 0 0 0 2px #ffffff, inset 0 -6px 16px rgba(0,0,0,0.15)`,
             transform: `translateX(calc(var(--item) * ${activeIndex}))`,
