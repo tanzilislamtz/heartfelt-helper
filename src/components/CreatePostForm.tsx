@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   BookOpen,
@@ -7,7 +8,8 @@ import {
   GraduationCap,
   ChevronDown,
   Upload,
-  Sparkles,
+  ArrowLeft,
+  FileText,
 } from "lucide-react";
 
 export type PostTab = "learning" | "question" | "tutor" | "student";
@@ -19,11 +21,13 @@ export const POST_TABS: {
   icon: React.ElementType;
   hint: string;
 }[] = [
-  { id: "learning", label: "Learning post", short: "Learning", icon: BookOpen, hint: "Share notes, tips or resources" },
+  { id: "learning", label: "Learning Post", short: "Learning", icon: BookOpen, hint: "Share notes, tips or resources" },
   { id: "question", label: "Question", short: "Question", icon: HelpCircle, hint: "Ask the community for help" },
   { id: "tutor", label: "Looking for Tutor", short: "Tutor", icon: UserSearch, hint: "Find a tutor near you" },
   { id: "student", label: "Looking for Student", short: "Student", icon: GraduationCap, hint: "Offer your teaching" },
 ];
+
+/* ─────────────────────────  primitives  ───────────────────────── */
 
 function Field({
   label,
@@ -39,11 +43,11 @@ function Field({
   className?: string;
 }) {
   return (
-    <div className={className}>
-      <label className="mb-1.5 flex items-center gap-1 text-xs font-semibold text-foreground">
+    <div className={`space-y-1.5 ${className}`}>
+      <label className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
         <span>{label}</span>
-        {required && <span className="text-danger">*</span>}
-        {hint && <span className="font-normal text-muted-foreground">{hint}</span>}
+        {required && <span className="text-danger normal-case">*</span>}
+        {hint && <span className="font-normal normal-case text-muted-foreground/70">{hint}</span>}
       </label>
       {children}
     </div>
@@ -51,7 +55,7 @@ function Field({
 }
 
 const inputCls =
-  "w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-sm placeholder:text-muted-foreground/70 transition focus:border-primary/40 focus:outline-none focus:ring-4 focus:ring-primary/10";
+  "w-full rounded-lg border border-border bg-muted/40 px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/70 transition focus:border-primary/50 focus:bg-surface focus:outline-none focus:ring-4 focus:ring-primary/10";
 
 function Select({ placeholder }: { placeholder: string }) {
   return (
@@ -70,8 +74,8 @@ function Select({ placeholder }: { placeholder: string }) {
 
 function UploadBox() {
   return (
-    <div className="group cursor-pointer rounded-xl border-2 border-dashed border-primary/25 bg-primary/5 px-4 py-6 text-center transition hover:border-primary/50 hover:bg-primary/10">
-      <div className="mx-auto mb-1.5 flex items-center justify-center gap-1.5 text-sm font-semibold text-primary">
+    <div className="group cursor-pointer rounded-xl border-2 border-dashed border-border bg-muted/30 px-4 py-6 text-center transition hover:border-primary/50 hover:bg-primary/5">
+      <div className="mx-auto mb-1.5 flex items-center justify-center gap-1.5 text-sm font-semibold text-foreground/80 group-hover:text-primary">
         <Upload className="h-4 w-4" /> Click to upload or drag and drop
       </div>
       <div className="text-[11px] text-muted-foreground">
@@ -81,239 +85,265 @@ function UploadBox() {
   );
 }
 
-function Toggle({ label }: { label: string }) {
+function Toggle({ label, defaultChecked = true }: { label: string; defaultChecked?: boolean }) {
   return (
-    <label className="flex items-center justify-between rounded-lg border border-border bg-surface px-3 py-2.5 text-xs font-semibold">
-      {label}
-      <span className="relative inline-flex h-5 w-9 items-center rounded-full bg-primary">
-        <span className="absolute right-0.5 h-4 w-4 rounded-full bg-white shadow" />
+    <label className="flex cursor-pointer items-center gap-3">
+      <span className="relative inline-flex">
+        <input type="checkbox" defaultChecked={defaultChecked} className="peer sr-only" />
+        <span className="h-5 w-9 rounded-full bg-muted transition peer-checked:bg-primary" />
+        <span className="absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white shadow transition peer-checked:translate-x-4" />
       </span>
+      <span className="text-sm font-medium text-foreground">{label}</span>
     </label>
   );
 }
 
-function SectionCard({
-  icon: Icon,
-  title,
-  subtitle,
-  tone,
-}: {
-  icon: React.ElementType;
-  title: string;
-  subtitle: string;
-  tone: "accent" | "tutor" | "primary";
-}) {
-  const map = {
-    accent: "border-accent/20 bg-accent/5 text-accent",
-    tutor: "border-tutor/20 bg-tutor/5 text-tutor",
-    primary: "border-primary/20 bg-primary/5 text-primary",
-  };
+function SectionHeader({ title }: { title: string }) {
   return (
-    <div className={`flex items-start gap-3 rounded-xl border p-3.5 ${map[tone]}`}>
-      <div className={`grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-current/15`}>
-        <Icon className="h-4 w-4" />
+    <div className="mb-5 flex items-center gap-3">
+      <h4 className="whitespace-nowrap text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+        {title}
+      </h4>
+      <span className="h-px flex-1 bg-border" />
+    </div>
+  );
+}
+
+/* ─────────────────────────  shared blocks  ───────────────────────── */
+
+function TitleInput({ placeholder = "Enter a compelling title for your post…" }: { placeholder?: string }) {
+  return (
+    <input
+      type="text"
+      placeholder={placeholder}
+      className="mb-8 w-full border-none bg-transparent p-0 font-serif text-3xl leading-tight text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-0 sm:text-4xl"
+    />
+  );
+}
+
+function ContentEditor({ placeholder }: { placeholder: string }) {
+  return (
+    <div className="rounded-xl border border-border bg-muted/30 focus-within:border-primary/40 focus-within:bg-surface focus-within:ring-4 focus-within:ring-primary/10">
+      <div className="flex items-center gap-1 border-b border-border/70 px-2 py-1.5 text-muted-foreground">
+        <button type="button" className="rounded px-2 py-1 text-sm font-bold hover:bg-muted">B</button>
+        <button type="button" className="rounded px-2 py-1 text-sm italic hover:bg-muted">I</button>
+        <button type="button" className="rounded px-2 py-1 text-sm underline hover:bg-muted">U</button>
+        <span className="mx-1 h-4 w-px bg-border" />
+        <button type="button" className="rounded px-2 py-1 text-[11px] font-semibold hover:bg-muted">List</button>
+        <button type="button" className="rounded px-2 py-1 text-[11px] font-semibold hover:bg-muted">Link</button>
+        <button type="button" className="rounded px-2 py-1 text-[11px] font-semibold hover:bg-muted">Image</button>
       </div>
-      <div>
-        <div className="text-sm font-semibold">{title}</div>
-        <div className="mt-0.5 text-xs text-muted-foreground">{subtitle}</div>
+      <textarea
+        rows={7}
+        placeholder={placeholder}
+        className="w-full resize-none rounded-b-xl bg-transparent px-4 py-3 text-sm leading-relaxed text-foreground placeholder:text-muted-foreground/60 focus:outline-none"
+      />
+    </div>
+  );
+}
+
+function VisibilityRow() {
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-6 border-t border-border pt-6">
+      <div className="flex flex-col gap-2">
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Visibility</span>
+        <div className="flex gap-4">
+          {["Public", "Followers", "Private"].map((v, i) => (
+            <label key={v} className="flex cursor-pointer items-center gap-2">
+              <input type="radio" name="visibility" defaultChecked={i === 0} className="h-4 w-4 accent-primary" />
+              <span className="text-sm text-foreground">{v}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+      <div className="flex flex-col gap-2">
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Interactions</span>
+        <Toggle label="Allow comments" />
       </div>
     </div>
   );
 }
 
+/* ─────────────────────────  form bodies  ───────────────────────── */
+
 function LearningForm() {
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-      <div className="md:col-span-2">
-        <SectionCard icon={BookOpen} title="Share Knowledge" subtitle="Share educational content, notes, tips, or resources with others." tone="accent" />
-      </div>
-      <Field label="Title" required className="md:col-span-2">
-        <input className={inputCls} placeholder="Enter post title" />
-      </Field>
-      <Field label="Education Level" required>
-        <Select placeholder="Select Education Level" />
-      </Field>
-      <Field label="Version">
-        <Select placeholder="Select an education level first" />
-      </Field>
-      <Field label="Class / Level">
-        <Select placeholder="Select a version first" />
-      </Field>
-      <Field label="Subject">
-        <Select placeholder="Select a class / level first" />
-      </Field>
-      <Field label="Topic" hint="(Optional)">
-        <input className={inputCls} placeholder="Enter topic" />
-      </Field>
-      <Field label="Chapter" hint="(Optional)">
-        <input className={inputCls} placeholder="Enter chapter" />
-      </Field>
-      <Field label="Content" required className="md:col-span-2">
-        <textarea rows={6} placeholder="Share your learning experience…" className={`${inputCls} resize-none`} />
-      </Field>
-      <Field label="Attach File" hint="(Optional)" className="md:col-span-2">
-        <UploadBox />
-      </Field>
-      <Field label="Add Tags" hint="(Optional)">
-        <input className={inputCls} placeholder="Add tags and press enter" />
-      </Field>
-      <Field label="Visibility">
-        <Select placeholder="Public" />
-      </Field>
-      <div className="md:col-span-2">
-        <Toggle label="Allow Comments" />
-      </div>
-    </div>
+    <>
+      <TitleInput />
+
+      <section className="mb-10">
+        <SectionHeader title="Academic Context" />
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+          <Field label="Education Level" required><Select placeholder="Select level" /></Field>
+          <Field label="Version"><Select placeholder="Select version" /></Field>
+          <Field label="Class / Level"><Select placeholder="Select class" /></Field>
+          <Field label="Subject"><Select placeholder="Select subject" /></Field>
+          <Field label="Topic" hint="(Optional)"><input className={inputCls} placeholder="Enter topic" /></Field>
+          <Field label="Chapter" hint="(Optional)"><input className={inputCls} placeholder="Enter chapter" /></Field>
+        </div>
+      </section>
+
+      <section className="mb-10">
+        <SectionHeader title="Post Content" />
+        <ContentEditor placeholder="Share your learning experience…" />
+      </section>
+
+      <section className="mb-10 grid grid-cols-1 gap-8 md:grid-cols-2">
+        <div>
+          <SectionHeader title="Attachments" />
+          <UploadBox />
+        </div>
+        <div>
+          <SectionHeader title="Tags" />
+          <input className={inputCls} placeholder="Add tags and press enter" />
+          <p className="mt-2 text-xs text-muted-foreground">Tip: posts with tags get 3× more engagement.</p>
+        </div>
+      </section>
+
+      <VisibilityRow />
+    </>
   );
 }
 
 function QuestionForm() {
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-      <div className="md:col-span-2">
-        <SectionCard icon={HelpCircle} title="Ask a Question" subtitle="Get help from the community by asking your question." tone="tutor" />
-      </div>
-      <Field label="Education Level" required>
-        <Select placeholder="Select Education Level" />
-      </Field>
-      <Field label="Version" required>
-        <Select placeholder="Select an education level first" />
-      </Field>
-      <Field label="Class / Level" required>
-        <Select placeholder="Select a version first" />
-      </Field>
-      <Field label="Subject" required>
-        <Select placeholder="Select a class / level first" />
-      </Field>
-      <Field label="Chapter / Topic" hint="(Optional)">
-        <input className={inputCls} placeholder="Enter chapter or topic" />
-      </Field>
-      <Field label="Urgency">
-        <Select placeholder="Normal" />
-      </Field>
-      <Field label="Tags" hint="(Optional)" className="md:col-span-2">
-        <input className={inputCls} placeholder="Add tags (optional)…" />
-      </Field>
-      <Field label="Question Details" required className="md:col-span-2">
-        <textarea rows={6} className={`${inputCls} resize-none`} placeholder="Write your question clearly…" />
-      </Field>
-      <Field label="Attach File" hint="(Optional)">
-        <UploadBox />
-      </Field>
-      <Field label="Visibility">
-        <Select placeholder="Public" />
-      </Field>
-      <Toggle label="Allow Comments" />
-      <label className="flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2.5 text-xs font-semibold">
-        <input type="checkbox" className="h-4 w-4 rounded border-border accent-primary" /> Mark as solved
-      </label>
-    </div>
+    <>
+      <TitleInput placeholder="What's your question?" />
+
+      <section className="mb-10">
+        <SectionHeader title="Academic Context" />
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+          <Field label="Education Level" required><Select placeholder="Select level" /></Field>
+          <Field label="Version" required><Select placeholder="Select version" /></Field>
+          <Field label="Class / Level" required><Select placeholder="Select class" /></Field>
+          <Field label="Subject" required><Select placeholder="Select subject" /></Field>
+          <Field label="Chapter / Topic" hint="(Optional)"><input className={inputCls} placeholder="Chapter or topic" /></Field>
+          <Field label="Urgency"><Select placeholder="Normal" /></Field>
+        </div>
+      </section>
+
+      <section className="mb-10">
+        <SectionHeader title="Question Details" />
+        <ContentEditor placeholder="Explain your question clearly — include what you've tried and where you're stuck." />
+      </section>
+
+      <section className="mb-10 grid grid-cols-1 gap-8 md:grid-cols-2">
+        <div>
+          <SectionHeader title="Attachments" />
+          <UploadBox />
+        </div>
+        <div>
+          <SectionHeader title="Tags" />
+          <input className={inputCls} placeholder="Add tags (optional)" />
+          <label className="mt-3 flex items-center gap-2 text-sm text-foreground">
+            <input type="checkbox" className="h-4 w-4 rounded border-border accent-primary" />
+            Mark as solved when you get an accepted answer
+          </label>
+        </div>
+      </section>
+
+      <VisibilityRow />
+    </>
   );
 }
 
 function TutorRequestForm({ mode }: { mode: "tutor" | "student" }) {
   const isTutor = mode === "tutor";
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-      <div className="md:col-span-2">
-        <SectionCard
-          icon={isTutor ? UserSearch : GraduationCap}
-          title={isTutor ? "Find a Tutor" : "Find a Student"}
-          subtitle={
-            isTutor
-              ? "Find the right tutor who can help you learn better."
-              : "Post your teaching offer and connect with students."
-          }
-          tone="primary"
-        />
-      </div>
-      <Field label="Education Level" required>
-        <Select placeholder="Select Education Level" />
-      </Field>
-      <Field label="Version" required>
-        <Select placeholder="Select an education level first" />
-      </Field>
-      <Field label="Class / Level" required>
-        <Select placeholder="Select a version first" />
-      </Field>
-      <Field label="Subject" required>
-        <Select placeholder="Select a class / level first" />
-      </Field>
-      <Field label="Institute" hint="(Optional)">
-        <input className={inputCls} placeholder="Enter institute name" />
-      </Field>
-      <Field label="Preferred Learning Mode">
-        <div className="flex flex-wrap gap-1.5">
-          {["Online", "Offline", "Hybrid", "Home Tutoring"].map((o) => (
-            <label
-              key={o}
-              className="cursor-pointer rounded-full border border-border bg-surface px-3 py-1.5 text-[11px] font-medium transition hover:border-primary/40 hover:text-primary"
-            >
-              <input type="checkbox" className="mr-1.5 accent-primary" />
-              {o}
-            </label>
-          ))}
+    <>
+      <TitleInput placeholder={isTutor ? "Looking for a tutor — briefly describe…" : "Offering to teach — briefly describe…"} />
+
+      <section className="mb-10">
+        <SectionHeader title="Academic Context" />
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+          <Field label="Education Level" required><Select placeholder="Select level" /></Field>
+          <Field label="Version" required><Select placeholder="Select version" /></Field>
+          <Field label="Class / Level" required><Select placeholder="Select class" /></Field>
+          <Field label="Subject" required><Select placeholder="Select subject" /></Field>
+          <Field label="Institute" hint="(Optional)"><input className={inputCls} placeholder="Institute name" /></Field>
+          <Field label={isTutor ? "Budget (Monthly)" : "Expected Salary"} hint="(Optional)">
+            <input className={inputCls} placeholder="Amount in BDT" />
+          </Field>
         </div>
-      </Field>
-      <Field
-        label={isTutor ? "Tutor Requirement Duration" : "Teaching Availability"}
-        hint="(Optional)"
-      >
-        <Select placeholder="Select duration" />
-      </Field>
-      <Field label="Preferred Days">
-        <div className="flex flex-wrap gap-1">
-          {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
-            <label
-              key={d}
-              className="cursor-pointer rounded-md border border-border bg-surface px-2.5 py-1.5 text-[11px] font-semibold transition hover:border-primary/40"
-            >
-              <input type="checkbox" className="mr-1 accent-primary" />
-              {d}
-            </label>
-          ))}
+      </section>
+
+      <section className="mb-10">
+        <SectionHeader title="Schedule & Mode" />
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+          <Field label="Preferred Learning Mode">
+            <div className="flex flex-wrap gap-1.5">
+              {["Online", "Offline", "Hybrid", "Home Tutoring"].map((o) => (
+                <label key={o} className="cursor-pointer rounded-full border border-border bg-surface px-3 py-1.5 text-[11px] font-medium transition hover:border-primary/40 hover:text-primary">
+                  <input type="checkbox" className="mr-1.5 accent-primary" />{o}
+                </label>
+              ))}
+            </div>
+          </Field>
+          <Field label="Preferred Days">
+            <div className="flex flex-wrap gap-1">
+              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
+                <label key={d} className="cursor-pointer rounded-md border border-border bg-surface px-2.5 py-1.5 text-[11px] font-semibold transition hover:border-primary/40">
+                  <input type="checkbox" className="mr-1 accent-primary" />{d}
+                </label>
+              ))}
+            </div>
+          </Field>
+          <Field label="Preferred Time"><Select placeholder="Select time" /></Field>
+          <Field label={isTutor ? "Requirement Duration" : "Teaching Availability"} hint="(Optional)">
+            <Select placeholder="Select duration" />
+          </Field>
+          <Field label="Start Date" hint="(Optional)"><input type="date" className={inputCls} /></Field>
         </div>
-      </Field>
-      <Field label="Preferred Time">
-        <Select placeholder="Select time" />
-      </Field>
-      <Field label="Division">
-        <Select placeholder="Select division" />
-      </Field>
-      <Field label="District">
-        <Select placeholder="Select district" />
-      </Field>
-      <Field label="Thana / Upazila">
-        <Select placeholder="Select thana" />
-      </Field>
-      <Field label="Location / Area" hint="(Optional)">
-        <input className={inputCls} placeholder="Enter area" />
-      </Field>
-      <Field label={isTutor ? "Budget (Monthly)" : "Expected Salary"} hint="(Optional)">
-        <input className={inputCls} placeholder="Enter your budget" />
-      </Field>
-      <Field label="Start Date" hint="(Optional)">
-        <input type="date" className={inputCls} />
-      </Field>
-      <Field label="Visibility">
-        <Select placeholder="Public" />
-      </Field>
-      <Field label="Details" required className="md:col-span-2">
-        <textarea
-          rows={5}
-          className={`${inputCls} resize-none`}
-          placeholder={
-            isTutor ? "Describe what you need from a tutor…" : "Describe your teaching offer…"
-          }
-        />
-      </Field>
-      <Field label="Attach File" hint="(Optional)" className="md:col-span-2">
-        <UploadBox />
-      </Field>
-      <label className="flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2.5 text-xs font-semibold">
-        <input type="checkbox" className="h-4 w-4 rounded border-border accent-primary" /> Urgent Need — show an urgent badge on this post
-      </label>
-      <Toggle label="Allow Comments" />
+      </section>
+
+      <section className="mb-10">
+        <SectionHeader title="Location" />
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-4">
+          <Field label="Division"><Select placeholder="Division" /></Field>
+          <Field label="District"><Select placeholder="District" /></Field>
+          <Field label="Thana / Upazila"><Select placeholder="Thana" /></Field>
+          <Field label="Area" hint="(Optional)"><input className={inputCls} placeholder="Enter area" /></Field>
+        </div>
+      </section>
+
+      <section className="mb-10">
+        <SectionHeader title="Details" />
+        <ContentEditor placeholder={isTutor ? "Describe what you need from a tutor…" : "Describe your teaching offer…"} />
+      </section>
+
+      <section className="mb-10 grid grid-cols-1 gap-8 md:grid-cols-2">
+        <div>
+          <SectionHeader title="Attachments" />
+          <UploadBox />
+        </div>
+        <div>
+          <SectionHeader title="Options" />
+          <label className="flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm">
+            <input type="checkbox" className="h-4 w-4 rounded border-border accent-primary" />
+            <span className="font-medium">Urgent — show an urgent badge on this post</span>
+          </label>
+        </div>
+      </section>
+
+      <VisibilityRow />
+    </>
+  );
+}
+
+/* ─────────────────────────  main shell  ───────────────────────── */
+
+function ActionButtons({ compact = false }: { compact?: boolean }) {
+  return (
+    <div className={`flex items-center gap-2 ${compact ? "" : "sm:gap-3"}`}>
+      <button className="rounded-lg px-3 py-2 text-xs font-semibold text-muted-foreground transition hover:text-foreground sm:text-sm">
+        Save Draft
+      </button>
+      <button className="rounded-lg border border-border bg-surface px-3 py-2 text-xs font-semibold text-foreground transition hover:border-primary/40 hover:text-primary sm:px-4 sm:text-sm">
+        Preview
+      </button>
+      <button className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-md shadow-primary/20 transition hover:opacity-95 sm:px-6 sm:text-sm">
+        Post Now
+      </button>
     </div>
   );
 }
@@ -323,14 +353,21 @@ export function CreatePostForm({ initialTab = "learning" }: { initialTab?: PostT
   const current = POST_TABS.find((t) => t.id === tab)!;
 
   return (
-    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
-      {/* Sidebar — post type picker */}
-      <aside className="hidden lg:sticky lg:top-6 lg:block lg:self-start">
-        <div className="rounded-2xl border border-border bg-surface p-3 shadow-sm">
-          <div className="mb-2 px-2 pt-1 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-            Post type
-          </div>
-          <div className="flex flex-col gap-1">
+    <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-lg shadow-primary/5">
+      <div className="flex flex-col lg:flex-row">
+        {/* Dark sidebar — post type picker */}
+        <aside className="hidden bg-primary p-6 text-primary-foreground lg:flex lg:w-64 lg:shrink-0 lg:flex-col">
+          <Link
+            to="/"
+            className="mb-6 inline-flex w-fit items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-[11px] font-semibold text-white/80 transition hover:border-white/30 hover:text-white"
+          >
+            <ArrowLeft className="h-3 w-3" /> Back
+          </Link>
+
+          <h2 className="mb-4 text-[10px] font-bold uppercase tracking-[0.2em] text-white/50">
+            Post Type
+          </h2>
+          <nav className="flex flex-col gap-1">
             {POST_TABS.map((t) => {
               const active = t.id === tab;
               const Icon = t.icon;
@@ -338,121 +375,123 @@ export function CreatePostForm({ initialTab = "learning" }: { initialTab?: PostT
                 <button
                   key={t.id}
                   onClick={() => setTab(t.id)}
-                  className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-left transition ${
+                  className={`group flex items-start gap-3 rounded-lg px-3 py-2.5 text-left transition ${
                     active
-                      ? "bg-primary/10 text-primary"
-                      : "text-foreground/70 hover:bg-muted"
+                      ? "bg-white/10 text-white"
+                      : "text-white/60 hover:bg-white/5 hover:text-white/90"
                   }`}
                 >
-                  {active && (
-                    <motion.span
-                      layoutId="postTabActive"
-                      className="absolute inset-y-2 left-0 w-1 rounded-r bg-primary"
-                    />
-                  )}
                   <span
-                    className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg ${
-                      active ? "bg-primary text-primary-foreground" : "bg-muted text-foreground/70"
+                    className={`mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-md transition ${
+                      active ? "bg-white/15 text-white" : "bg-white/5 text-white/70"
                     }`}
                   >
-                    <Icon className="h-4 w-4" />
+                    <Icon className="h-3.5 w-3.5" />
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block text-sm font-semibold">{t.label}</span>
-                    <span className="block truncate text-[11px] text-muted-foreground">
+                    <span className="block text-sm font-semibold leading-tight">{t.label}</span>
+                    <span className="mt-0.5 block text-[11px] leading-snug text-white/45">
                       {t.hint}
                     </span>
                   </span>
                 </button>
               );
             })}
-          </div>
-        </div>
+          </nav>
 
-        <div className="mt-4 hidden rounded-2xl border border-border bg-gradient-to-br from-primary/8 via-surface to-accent/8 p-4 lg:block">
-          <div className="mb-1 flex items-center gap-1.5 text-xs font-bold text-primary">
-            <Sparkles className="h-3.5 w-3.5" /> Pro tip
-          </div>
-          <p className="text-xs leading-relaxed text-muted-foreground">
-            Add clear tags and a specific title — posts with tags get 3× more engagement.
-          </p>
-        </div>
-      </aside>
-
-      {/* Main form area */}
-      <section className="min-w-0">
-        {/* Mobile tab pills */}
-        <div className="mb-4 flex gap-2 overflow-x-auto lg:hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {POST_TABS.map((t) => (
-            <button
-              key={t.id}
-              onClick={() => setTab(t.id)}
-              className={`shrink-0 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition ${
-                tab === t.id
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border bg-surface text-foreground/70"
-              }`}
-            >
-              {t.short}
-            </button>
-          ))}
-        </div>
-
-        <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm sm:p-6">
-          {/* Author strip */}
-          <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
-            <div className="flex min-w-0 items-center gap-3">
-              <div className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-primary text-base font-bold text-primary-foreground">
-                A
+          <div className="mt-auto space-y-3 pt-8">
+            <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+              <div className="mb-1 text-[10px] font-bold uppercase tracking-widest text-white/50">
+                Pro tip
               </div>
-              <div className="min-w-0 leading-tight">
-                <div className="truncate text-sm font-semibold">You</div>
-                <div className="text-xs text-muted-foreground">
-                  Posting to <span className="font-medium text-foreground">Everyone</span>
-                </div>
-              </div>
+              <p className="text-xs leading-relaxed text-white/75">
+                Add a specific title and clear tags — posts with strong metadata reach 3× more learners.
+              </p>
             </div>
-            <button className="flex items-center gap-1 rounded-lg border border-border px-3 py-1.5 text-xs font-semibold text-foreground/80 transition hover:border-primary/40 hover:text-primary">
-              Change <ChevronDown className="h-3.5 w-3.5" />
+            <button className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-white/15 bg-white/5 py-2 text-[11px] font-semibold text-white/80 transition hover:border-white/30 hover:text-white">
+              <FileText className="h-3.5 w-3.5" /> My Drafts
             </button>
           </div>
+        </aside>
 
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={tab}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.18 }}
-            >
-              {tab === "learning" && <LearningForm />}
-              {tab === "question" && <QuestionForm />}
-              {tab === "tutor" && <TutorRequestForm mode="tutor" />}
-              {tab === "student" && <TutorRequestForm mode="student" />}
-            </motion.div>
-          </AnimatePresence>
-        </div>
+        {/* Form area */}
+        <main className="min-w-0 flex-1">
+          {/* Header */}
+          <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-4 sm:px-8 sm:py-5">
+            <div className="min-w-0">
+              <h1 className="font-serif text-2xl leading-tight text-foreground sm:text-3xl">
+                Create New Post
+              </h1>
+              <p className="mt-0.5 text-[11px] text-muted-foreground sm:text-xs">
+                Posting as <span className="font-semibold text-foreground">You</span> · to{" "}
+                <span className="font-semibold text-foreground">Everyone</span>
+              </p>
+            </div>
+            <div className="hidden sm:block">
+              <ActionButtons />
+            </div>
+          </header>
 
-        {/* Action bar — sticky on mobile for reachability */}
-        <div className="sticky bottom-0 z-10 mt-4 flex flex-wrap items-center justify-end gap-2 rounded-2xl border border-border bg-surface/95 p-3 shadow-lg backdrop-blur sm:static sm:shadow-sm">
-          <div className="mr-auto hidden text-[11px] text-muted-foreground sm:block">
-            Your content must reach community standards.
+          {/* Mobile back + tab pills */}
+          <div className="border-b border-border px-5 py-3 lg:hidden">
+            <div className="mb-3 flex items-center justify-between">
+              <Link
+                to="/"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-primary"
+              >
+                <ArrowLeft className="h-3.5 w-3.5" /> Back
+              </Link>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                Post Type
+              </span>
+            </div>
+            <div className="flex gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {POST_TABS.map((t) => {
+                const Icon = t.icon;
+                const active = t.id === tab;
+                return (
+                  <button
+                    key={t.id}
+                    onClick={() => setTab(t.id)}
+                    className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition ${
+                      active
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-surface text-foreground/70"
+                    }`}
+                  >
+                    <Icon className="h-3.5 w-3.5" />
+                    {t.short}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-          <button className="rounded-lg border border-border px-4 py-2 text-xs font-semibold text-foreground/80 transition hover:bg-muted">
-            Save Draft
-          </button>
-          <button className="rounded-lg border border-primary/40 px-4 py-2 text-xs font-semibold text-primary transition hover:bg-primary/5">
-            Preview
-          </button>
-          <button className="rounded-lg bg-primary px-5 py-2 text-xs font-semibold text-primary-foreground shadow-md transition hover:opacity-95">
-            Post Now
-          </button>
-        </div>
 
-        <p className="mt-3 text-center text-[11px] text-muted-foreground sm:hidden">
-          Your content must reach community standards.
-        </p>
-      </section>
+          {/* Body */}
+          <div className="px-5 py-6 sm:px-8 sm:py-8">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={tab}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.18 }}
+              >
+                {tab === "learning" && <LearningForm />}
+                {tab === "question" && <QuestionForm />}
+                {tab === "tutor" && <TutorRequestForm mode="tutor" />}
+                {tab === "student" && <TutorRequestForm mode="student" />}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* Sticky mobile action bar */}
+          <div className="sticky bottom-0 z-10 flex items-center justify-between gap-2 border-t border-border bg-surface/95 px-5 py-3 shadow-[0_-6px_20px_rgba(0,0,0,0.04)] backdrop-blur sm:hidden">
+            <span className="text-[10px] text-muted-foreground">Draft saved automatically</span>
+            <ActionButtons compact />
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
