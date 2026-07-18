@@ -123,6 +123,8 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
+  const hideBottomNav = /^\/(welcome|login|register|create-post)(\/|$)/.test(pathname);
+
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
@@ -137,6 +139,7 @@ function RootComponent() {
           <Outlet />
         </motion.div>
       </AnimatePresence>
+      {!hideBottomNav && <BottomNav />}
     </QueryClientProvider>
   );
 }
