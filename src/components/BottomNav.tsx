@@ -199,13 +199,14 @@ export function BottomNav() {
                   </span>
 
                   <span
-                    className="absolute font-semibold tracking-wide text-white"
+                    className="absolute left-1/2 -translate-x-1/2 font-semibold tracking-wide text-white"
                     style={{
+                      bottom: "calc(var(--h) * 0.12)",
                       fontSize: "clamp(0.62rem, 1.8vw, 0.72rem)",
                       opacity: isActive ? 1 : 0,
                       transform: isActive
-                        ? "translateY(14px)"
-                        : "translateY(22px)",
+                        ? "translate(-50%, 0)"
+                        : "translate(-50%, 6px)",
                       textShadow: "0 1px 2px rgba(0,0,0,0.4)",
                       transition: mounted
                         ? "opacity 320ms ease, transform 500ms cubic-bezier(0.22,1,0.36,1)"
