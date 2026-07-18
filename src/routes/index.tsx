@@ -44,6 +44,14 @@ import {
 import { MobileNav } from "@/components/MobileNav";
 import { Topbar } from "@/components/Topbar";
 import { FeedToolbar } from "@/components/FeedToolbar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { BellOff, Copy, Flag, Link2, UserMinus } from "lucide-react";
 import { hasWelcomed, isAuthed } from "@/lib/session";
 
 export const Route = createFileRoute("/")({
