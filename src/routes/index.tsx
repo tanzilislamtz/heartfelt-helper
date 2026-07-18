@@ -501,7 +501,7 @@ function Post({
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       whileHover={{ y: -3, boxShadow: "0 18px 40px -20px rgba(41,44,117,0.25)" }}
-      className="group rounded-2xl border border-border bg-surface p-5 shadow-sm"
+      className="group rounded-3xl border border-border bg-surface p-5 shadow-sm transition-colors hover:border-primary/25 sm:p-6"
     >
       <header className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 sm:flex sm:items-center">
         <div className="flex min-w-0 items-center gap-3">
