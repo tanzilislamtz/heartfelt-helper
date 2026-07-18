@@ -48,7 +48,8 @@ export function BottomNav() {
           width: `calc(var(--item) * ${COUNT})`,
           maxWidth: "100%",
           height: "var(--item)",
-          background: "linear-gradient(45deg, #2196f3, #e91e63)",
+          background: "transparent",
+
         }}
       >
         <ul
