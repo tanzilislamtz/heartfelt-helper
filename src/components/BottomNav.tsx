@@ -1,7 +1,8 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Home, Lightbulb, MessageSquare, User } from "lucide-react";
-import type { ComponentType, SVGProps } from "react";
+import { useEffect, useState, type ComponentType, type SVGProps } from "react";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
+
 
 type Item = {
   to: "/" | "/quiz" | "/message" | "/profile";
@@ -54,6 +55,27 @@ export function BottomNav() {
   const active = items[activeIndex];
   const unread = useUnreadMessages();
 
+  // Mount flag: enable transitions only after first paint so the orb doesn't
+  // slide in from index 0 on load and the nav gently fades in.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
+
+  // Springy easing for state changes (bar/orb/icons)
+  const EASE = "cubic-bezier(0.34, 1.56, 0.64, 1)";
+  const orbTransition = mounted
+    ? `transform 550ms ${EASE}, background 400ms ease, box-shadow 400ms ease`
+    : "none";
+  const glowTransition = mounted
+    ? "background 700ms ease, opacity 500ms ease"
+    : "none";
+  const iconTransition = mounted
+    ? `transform 500ms ${EASE}, opacity 300ms ease, filter 300ms ease`
+    : "none";
+
+
   // Bar takes ~70% of viewport width (clamped for tiny + large screens).
   // --item is derived from the inner track so 4 tabs perfectly fill the bar,
   // and the floating orb / icons all scale from --item.
@@ -73,21 +95,27 @@ export function BottomNav() {
       className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-3 sm:px-4 lg:hidden"
       style={{
         paddingBottom: "calc(0.9rem + env(safe-area-inset-bottom))",
+        opacity: mounted ? 1 : 0,
+        transform: mounted ? "translateY(0)" : "translateY(12px)",
+        transition: "opacity 380ms ease, transform 480ms cubic-bezier(0.22, 1, 0.36, 1)",
+        willChange: "transform, opacity",
         ...style,
       }}
     >
       {/* Ambient aurora glow that follows the active tab */}
       <span
         aria-hidden
-        className="pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-[999px] blur-2xl transition-all duration-700"
+        className="pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-[999px] blur-2xl"
         style={{
           bottom: "calc(0.4rem + env(safe-area-inset-bottom))",
           width: "calc(var(--bar) * 0.85)",
           height: "calc(var(--h) * 1.1)",
           background: active.gradient,
           opacity: 0.35,
+          transition: glowTransition,
         }}
       />
+
 
       <div
         className="relative flex items-center justify-center rounded-full backdrop-blur-xl"
@@ -137,7 +165,7 @@ export function BottomNav() {
                   className="relative flex h-full w-full flex-col items-center justify-center text-center font-medium"
                 >
                   <span
-                    className="relative grid place-items-center text-white transition-all duration-500"
+                    className="relative grid place-items-center text-white"
                     style={{
                       transform: isActive
                         ? "translateY(calc(var(--item) * -0.28)) scale(1.05)"
@@ -146,8 +174,11 @@ export function BottomNav() {
                         ? "drop-shadow(0 2px 4px rgba(0,0,0,0.35))"
                         : "none",
                       opacity: isActive ? 1 : 0.72,
+                      transition: iconTransition,
+                      willChange: "transform",
                     }}
                   >
+
                     <Icon
                       className="h-[clamp(20px,5.5vw,24px)] w-[clamp(20px,5.5vw,24px)]"
                       strokeWidth={2.1}
@@ -168,7 +199,7 @@ export function BottomNav() {
                   </span>
 
                   <span
-                    className="absolute font-semibold tracking-wide text-white transition-all duration-500"
+                    className="absolute font-semibold tracking-wide text-white"
                     style={{
                       fontSize: "clamp(0.62rem, 1.8vw, 0.72rem)",
                       opacity: isActive ? 1 : 0,
@@ -176,14 +207,18 @@ export function BottomNav() {
                         ? "translateY(14px)"
                         : "translateY(22px)",
                       textShadow: "0 1px 2px rgba(0,0,0,0.4)",
+                      transition: mounted
+                        ? "opacity 320ms ease, transform 500ms cubic-bezier(0.22,1,0.36,1)"
+                        : "none",
                     }}
                   >
+
                     {item.label}
                   </span>
 
                   {/* Pulse ring around indicator */}
                   <span
-                    className="pointer-events-none absolute block rounded-full transition-all duration-500"
+                    className="pointer-events-none absolute block rounded-full"
                     style={{
                       width: "calc(var(--item) * 0.6)",
                       height: "calc(var(--item) * 0.6)",
@@ -191,13 +226,16 @@ export function BottomNav() {
                       transform: isActive
                         ? "translateY(calc(var(--item) * -0.3)) scale(1)"
                         : "translateY(calc(var(--item) * -0.3)) scale(0)",
-                      transitionDelay: isActive ? "0.45s" : "0s",
                       opacity: isActive ? 1 : 0,
-                      animation: isActive
-                        ? "nav-pulse 2.4s ease-out infinite 0.6s"
+                      transition: mounted
+                        ? `transform 500ms ${EASE} ${isActive ? "450ms" : "0ms"}, opacity 300ms ease`
+                        : "none",
+                      animation: isActive && mounted
+                        ? "nav-pulse 2.4s ease-out infinite 0.9s"
                         : "none",
                     }}
                   />
+
                 </Link>
               </li>
             );
@@ -207,7 +245,7 @@ export function BottomNav() {
         {/* Floating indicator orb */}
         <span
           aria-hidden
-          className="absolute rounded-full transition-all duration-500"
+          className="absolute rounded-full"
           style={{
             top: "calc(var(--item) * -0.15)",
             left: "calc(var(--item) * 0.85)",
@@ -217,7 +255,10 @@ export function BottomNav() {
             background: active.gradient,
             boxShadow: `0 10px 22px -6px ${active.glow}, 0 0 0 3px rgba(15,10,45,0.9), inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -6px 16px rgba(0,0,0,0.15)`,
             transform: `translateX(calc(var(--item) * ${activeIndex}))`,
+            transition: orbTransition,
+            willChange: "transform",
           }}
+
         >
           {/* inner gloss */}
           <span
