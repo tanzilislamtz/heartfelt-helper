@@ -724,9 +724,42 @@ function Post({
             </div>
           </div>
         </div>
-        <button aria-label="More" className={`shrink-0 rounded-full p-2 ${kc.dark ? "text-slate-400 hover:bg-white/10 hover:text-slate-100" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}>
-          <MoreHorizontal className="h-4 w-4" />
-        </button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              aria-label="More options"
+              className={`shrink-0 rounded-full p-2 transition-colors ${kc.dark ? "text-slate-400 hover:bg-white/10 hover:text-slate-100" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}
+            >
+              <MoreHorizontal className="h-4 w-4" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuItem onSelect={() => toast.success("Post saved")}>
+              <Bookmark className="mr-2 h-4 w-4" /> Save post
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={() => {
+                navigator.clipboard?.writeText(window.location.href);
+                toast.success("Link copied");
+              }}
+            >
+              <Link2 className="mr-2 h-4 w-4" /> Copy link
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => toast.success("Notifications muted for this post")}>
+              <BellOff className="mr-2 h-4 w-4" /> Mute notifications
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onSelect={() => toast.success(`Hidden ${author}'s posts`)}>
+              <UserMinus className="mr-2 h-4 w-4" /> Unfollow {author}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={() => toast.success("Report submitted")}
+              className="text-destructive focus:text-destructive"
+            >
+              <Flag className="mr-2 h-4 w-4" /> Report post
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </header>
 
       <div className="relative mt-4">
