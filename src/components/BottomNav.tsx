@@ -1,7 +1,9 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Home, Lightbulb, MessageSquare, User } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
+import { useUnreadMessages } from "@/hooks/useUnreadMessages";
+
 
 type Item = {
   to: "/" | "/quiz" | "/message" | "/profile";
