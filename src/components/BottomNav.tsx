@@ -253,22 +253,13 @@ export function BottomNav() {
             height: "calc(var(--item) * 0.72)",
             marginLeft: "calc(var(--item) * -0.36)",
             background: active.gradient,
-            boxShadow: `0 10px 22px -6px ${active.glow}, 0 0 0 3px rgba(15,10,45,0.9), inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -6px 16px rgba(0,0,0,0.15)`,
+            boxShadow: `0 10px 22px -6px ${active.glow}, 0 0 0 2px #ffffff, inset 0 -6px 16px rgba(0,0,0,0.15)`,
             transform: `translateX(calc(var(--item) * ${activeIndex}))`,
             transition: orbTransition,
             willChange: "transform",
           }}
+        />
 
-        >
-          {/* inner gloss */}
-          <span
-            className="pointer-events-none absolute inset-[3px] rounded-full"
-            style={{
-              background:
-                "radial-gradient(circle at 30% 25%, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 55%)",
-            }}
-          />
-        </span>
       </div>
 
       <style>{`
