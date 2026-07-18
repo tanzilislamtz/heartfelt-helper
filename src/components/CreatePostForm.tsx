@@ -153,11 +153,43 @@ function VisibilityRow() {
   );
 }
 
+
+function InfoCard({
+  icon: Icon,
+  title,
+  desc,
+  tone,
+}: {
+  icon: React.ElementType;
+  title: string;
+  desc: string;
+  tone: "learning" | "question" | "tutor" | "student";
+}) {
+  const styles = {
+    learning: "border-amber-200/60 bg-amber-50 text-amber-900 [--ic:theme(colors.amber.600)]",
+    question: "border-sky-200/60 bg-sky-50 text-sky-900 [--ic:theme(colors.sky.600)]",
+    tutor: "border-violet-200/60 bg-violet-50 text-violet-900 [--ic:theme(colors.violet.600)]",
+    student: "border-emerald-200/60 bg-emerald-50 text-emerald-900 [--ic:theme(colors.emerald.600)]",
+  }[tone];
+  return (
+    <div className={`mb-8 flex items-start gap-3 rounded-xl border p-4 ${styles}`}>
+      <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-white/70 text-[color:var(--ic)]">
+        <Icon className="h-4.5 w-4.5" strokeWidth={2.2} />
+      </div>
+      <div className="min-w-0">
+        <div className="font-display text-base font-bold text-[color:var(--ic)]">{title}</div>
+        <p className="mt-0.5 text-sm leading-snug opacity-80">{desc}</p>
+      </div>
+    </div>
+  );
+}
+
 /* ─────────────────────────  form bodies  ───────────────────────── */
 
 function LearningForm() {
   return (
     <>
+      <InfoCard icon={BookOpen} tone="learning" title="Share Knowledge" desc="Share educational content, notes, tips, or resources with others." />
       <TitleInput />
 
       <section className="mb-10">
@@ -197,6 +229,7 @@ function LearningForm() {
 function QuestionForm() {
   return (
     <>
+      <InfoCard icon={HelpCircle} tone="question" title="Ask a Question" desc="Get help from the community — the clearer your question, the better the answers." />
       <TitleInput placeholder="What's your question?" />
 
       <section className="mb-10">
@@ -240,6 +273,11 @@ function TutorRequestForm({ mode }: { mode: "tutor" | "student" }) {
   const isTutor = mode === "tutor";
   return (
     <>
+      {isTutor ? (
+        <InfoCard icon={UserSearch} tone="tutor" title="Find a Tutor" desc="Tell us what you need — subjects, schedule, location — and connect with the right tutor." />
+      ) : (
+        <InfoCard icon={GraduationCap} tone="student" title="Offer Your Teaching" desc="Share your expertise and reach students looking for a tutor like you." />
+      )}
       <TitleInput placeholder={isTutor ? "Looking for a tutor — briefly describe…" : "Offering to teach — briefly describe…"} />
 
       <section className="mb-10">
