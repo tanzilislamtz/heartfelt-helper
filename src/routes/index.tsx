@@ -262,46 +262,131 @@ function Leaderboard() {
 
 
 function Composer() {
+  const [open, setOpen] = useState(false);
+  const [text, setText] = useState("");
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
   return (
-    <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
-      <div className="flex gap-3">
-        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
-          A
-        </div>
-        <div className="min-w-0 flex-1">
-          <textarea
-            rows={2}
-            placeholder="Share a thought, ask a question, drop a note…"
-            className="w-full resize-none rounded-xl border border-transparent bg-muted/60 px-4 py-3 text-sm placeholder:text-muted-foreground focus:border-primary/30 focus:bg-surface focus:outline-none focus:ring-4 focus:ring-primary/10"
-          />
-          <div className="mt-3 flex flex-wrap items-center gap-1">
-            <ComposerBtn icon={ImageIcon} label="Image" />
-            <ComposerBtn icon={Paperclip} label="Attach" />
-            <ComposerBtn icon={BarChart3} label="Poll" />
-            <ComposerBtn icon={BookOpen} label="Note" />
-            <div className="ml-auto flex items-center gap-2">
-              <span className="hidden text-xs text-muted-foreground sm:inline">
-                Posting to <span className="font-medium text-foreground">Everyone</span>
-              </span>
-              <button className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-95">
-                Post
-              </button>
-            </div>
+    <>
+      <div className="rounded-full border border-border bg-surface px-3 py-2 shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+            A
+          </div>
+          <button
+            onClick={() => setOpen(true)}
+            className="flex-1 truncate rounded-full bg-muted/60 px-4 py-2 text-left text-sm text-muted-foreground transition hover:bg-muted"
+          >
+            Share a thought, ask a question, drop a note…
+          </button>
+          <div className="hidden items-center gap-1 sm:flex">
+            <ComposerBtn icon={ImageIcon} label="Image" onClick={() => setOpen(true)} />
+            <ComposerBtn icon={BarChart3} label="Poll" onClick={() => setOpen(true)} />
           </div>
         </div>
       </div>
-    </div>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[80] flex items-start justify-center bg-black/50 p-4 pt-16 backdrop-blur-sm"
+            onClick={() => setOpen(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 20, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 10, scale: 0.98 }}
+              transition={{ type: "spring", damping: 22, stiffness: 260 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-xl overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl"
+            >
+              <div className="flex items-center justify-between border-b border-border px-5 py-3">
+                <h3 className="text-base font-semibold">Create post</h3>
+                <button
+                  onClick={() => setOpen(false)}
+                  className="grid h-8 w-8 place-items-center rounded-full text-muted-foreground transition hover:bg-muted"
+                  aria-label="Close"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="px-5 py-4">
+                <div className="mb-3 flex items-center gap-3">
+                  <div className="grid h-10 w-10 place-items-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+                    A
+                  </div>
+                  <div>
+                    <div className="text-sm font-semibold">You</div>
+                    <div className="text-xs text-muted-foreground">
+                      Posting to <span className="font-medium text-foreground">Everyone</span>
+                    </div>
+                  </div>
+                </div>
+
+                <textarea
+                  autoFocus
+                  rows={5}
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  placeholder="What do you want to share?"
+                  className="w-full resize-none rounded-xl border border-transparent bg-muted/40 px-4 py-3 text-sm placeholder:text-muted-foreground focus:border-primary/30 focus:bg-surface focus:outline-none focus:ring-4 focus:ring-primary/10"
+                />
+
+                <div className="mt-4 flex items-center justify-between rounded-xl border border-border px-3 py-2">
+                  <span className="text-xs font-medium text-muted-foreground">Add to your post</span>
+                  <div className="flex items-center gap-1">
+                    <ComposerBtn icon={ImageIcon} label="Image" />
+                    <ComposerBtn icon={Paperclip} label="Attach" />
+                    <ComposerBtn icon={BarChart3} label="Poll" />
+                    <ComposerBtn icon={BookOpen} label="Note" />
+                  </div>
+                </div>
+
+                <button
+                  disabled={!text.trim()}
+                  onClick={() => {
+                    setText("");
+                    setOpen(false);
+                  }}
+                  className="mt-4 w-full rounded-full bg-primary py-2.5 text-sm font-semibold text-primary-foreground transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  Post
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 
-function ComposerBtn({ icon: Icon, label }: { icon: React.ElementType; label: string }) {
+function ComposerBtn({ icon: Icon, label, onClick }: { icon: React.ElementType; label: string; onClick?: () => void }) {
   return (
-    <button className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-medium text-foreground/70 transition hover:bg-muted hover:text-foreground">
+    <button
+      onClick={onClick}
+      className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-medium text-foreground/70 transition hover:bg-muted hover:text-foreground"
+    >
       <Icon className="h-4 w-4 text-tutor" />
       {label}
     </button>
   );
 }
+
 
 function TopicChips() {
   const topics = ["For You", "Popular", "Q&A", "Trending Tutors"];
