@@ -3,12 +3,13 @@ import {
   Search,
   Bell,
   MessageCircle,
-  GraduationCap,
   Menu,
   Plus,
   ArrowLeft,
   Command,
 } from "lucide-react";
+import logoAsset from "@/assets/learns-academy-logo.png.asset.json";
+
 
 type Variant = "app" | "auth";
 

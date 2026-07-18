@@ -262,14 +262,9 @@ function RegisterPage() {
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       >
         <div className="flex items-center gap-2">
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary text-primary-foreground">
-            <GraduationCap className="h-5 w-5" />
-          </span>
-          <span className="text-lg font-semibold">
-            <span className="font-display italic">Learns</span>
-            <span className="ml-1 text-primary">Academy</span>
-          </span>
+          <img src={logoAsset.url} alt="Learns Academy" className="h-11 w-auto" />
         </div>
+
 
         <div className="mt-8 flex items-baseline justify-between gap-3">
           <h1 className="font-display text-2xl font-semibold sm:text-3xl">Create account</h1>
