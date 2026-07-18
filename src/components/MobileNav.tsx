@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { X, Home, FileText, Flame, MessageSquare, UserSearch, BookOpenCheck, UserCheck, Sparkles, GraduationCap } from "lucide-react";
+import { X, Home, FileText, Flame, MessageSquare, UserSearch, BookOpenCheck, UserCheck, GraduationCap } from "lucide-react";
 import { useEffect } from "react";
 
 const items = [
@@ -78,24 +78,6 @@ export function MobileNav({ open, onClose }: { open: boolean; onClose: () => voi
               ))}
             </nav>
 
-            <div className="mt-6 rounded-2xl border border-border bg-muted/40 p-4">
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                <Sparkles className="h-3.5 w-3.5 text-accent" />
-                Your progress
-              </div>
-              <div className="mt-3 flex items-baseline gap-1">
-                <span className="font-display text-3xl font-semibold">72</span>
-                <span className="text-xs text-muted-foreground">/ 100 XP</span>
-              </div>
-              <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-background">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: "72%" }}
-                  transition={{ duration: 0.9, ease: "easeOut" }}
-                  className="h-full rounded-full bg-tutor"
-                />
-              </div>
-            </div>
           </motion.aside>
         </>
       )}
