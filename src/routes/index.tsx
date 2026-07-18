@@ -505,77 +505,58 @@ const kindConfig: Record<
   {
     label: string;
     Icon: typeof HelpCircle;
-    banner: string; // gradient / bg
-    accent: string; // text color
-    ring: string; // container ring
-    dot: string;
-    chip: string; // tag chip bg/text
-    frame: string; // outer border/bg tint
-    corner: string; // corner ribbon color
-    subtitle: string;
+    accent: string;
+    chip: string;
+    ring: string;
+    frame: string;
+    dark?: boolean;
   }
 > = {
   learning: {
-    label: "Learning",
+    label: "Article",
     Icon: BookOpen,
-    banner: "",
     accent: "text-primary",
-    ring: "ring-border",
-    dot: "bg-primary",
     chip: "bg-primary/10 text-primary",
+    ring: "ring-primary/30",
     frame: "border-border bg-surface",
-    corner: "",
-    subtitle: "",
   },
   question: {
     label: "Question",
     Icon: HelpCircle,
-    banner: "bg-gradient-to-r from-amber-400/25 via-orange-400/20 to-rose-400/10",
-    accent: "text-amber-700 dark:text-amber-300",
-    ring: "ring-amber-400/50",
-    dot: "bg-amber-500",
-    chip: "bg-amber-500/15 text-amber-700 dark:text-amber-300",
-    frame: "border-amber-500/25 bg-amber-50/40 dark:bg-amber-500/5",
-    corner: "from-amber-500 to-orange-500",
-    subtitle: "Needs an answer",
+    accent: "text-amber-800",
+    chip: "bg-amber-500/20 text-amber-900",
+    ring: "ring-amber-500/60",
+    frame:
+      "border-2 border-dashed border-amber-500/60 bg-[linear-gradient(135deg,#fff7db_0%,#fef3c7_45%,#ffe4b5_100%)]",
   },
   "seeking-tutor": {
-    label: "Looking for Tutor",
+    label: "Seeking Tutor",
     Icon: UserSearch,
-    banner: "bg-gradient-to-r from-sky-400/25 via-cyan-400/20 to-blue-400/10",
-    accent: "text-sky-700 dark:text-sky-300",
-    ring: "ring-sky-400/50",
-    dot: "bg-sky-500",
-    chip: "bg-sky-500/15 text-sky-700 dark:text-sky-300",
-    frame: "border-sky-500/25 bg-sky-50/40 dark:bg-sky-500/5",
-    corner: "from-sky-500 to-cyan-500",
-    subtitle: "Tutor wanted",
+    accent: "text-cyan-300",
+    chip: "bg-cyan-400/15 text-cyan-100 border border-cyan-400/30",
+    ring: "ring-cyan-400/60",
+    frame:
+      "border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-slate-100",
+    dark: true,
   },
   "offering-tutor": {
     label: "Available Tutor",
     Icon: UserCheck,
-    banner: "bg-gradient-to-r from-emerald-400/25 via-teal-400/20 to-green-400/10",
-    accent: "text-emerald-700 dark:text-emerald-300",
-    ring: "ring-emerald-400/50",
-    dot: "bg-emerald-500",
-    chip: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300",
-    frame: "border-emerald-500/25 bg-emerald-50/40 dark:bg-emerald-500/5",
-    corner: "from-emerald-500 to-teal-500",
-    subtitle: "Open for classes",
+    accent: "text-emerald-800",
+    chip: "bg-emerald-500/20 text-emerald-900",
+    ring: "ring-emerald-500/60",
+    frame: "border border-emerald-500/30 bg-gradient-to-r from-emerald-50 via-teal-50/70 to-white",
   },
   "seeking-student": {
-    label: "Looking for Student",
+    label: "Admission Open",
     Icon: BookOpenCheck,
-    banner: "bg-gradient-to-r from-fuchsia-400/25 via-purple-400/20 to-indigo-400/10",
-    accent: "text-fuchsia-700 dark:text-fuchsia-300",
-    ring: "ring-fuchsia-400/50",
-    dot: "bg-fuchsia-500",
-    chip: "bg-fuchsia-500/15 text-fuchsia-700 dark:text-fuchsia-300",
-    frame: "border-fuchsia-500/25 bg-fuchsia-50/40 dark:bg-fuchsia-500/5",
-    corner: "from-fuchsia-500 to-purple-500",
-    subtitle: "Seats open",
+    accent: "text-fuchsia-800",
+    chip: "bg-fuchsia-500/20 text-fuchsia-900",
+    ring: "ring-fuchsia-500/60",
+    frame: "border border-fuchsia-400/40 bg-gradient-to-br from-fuchsia-50 via-purple-50/60 to-white",
   },
 };
+
 
 function Post({
   author,
