@@ -453,10 +453,10 @@ export function CreatePostForm({ initialTab = "learning" }: { initialTab?: PostT
               <h1 className="font-serif text-2xl leading-tight text-foreground sm:text-3xl">
                 Create New Post
               </h1>
-              <p className="mt-0.5 text-[11px] text-muted-foreground sm:text-xs">
-                Posting as <span className="font-semibold text-foreground">You</span> · to{" "}
-                <span className="font-semibold text-foreground">Everyone</span>
-              </p>
+              <div className="mt-1 flex items-center gap-1.5 text-[11px] text-muted-foreground sm:text-xs">
+                <span>Posting as <span className="font-semibold text-foreground">You</span> · to</span>
+                <AudiencePicker />
+              </div>
             </div>
             <div className="hidden sm:block">
               <ActionButtons />
