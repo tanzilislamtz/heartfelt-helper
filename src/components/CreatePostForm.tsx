@@ -273,6 +273,11 @@ function TutorRequestForm({ mode }: { mode: "tutor" | "student" }) {
   const isTutor = mode === "tutor";
   return (
     <>
+      {isTutor ? (
+        <InfoCard icon={UserSearch} tone="tutor" title="Find a Tutor" desc="Tell us what you need — subjects, schedule, location — and connect with the right tutor." />
+      ) : (
+        <InfoCard icon={GraduationCap} tone="student" title="Offer Your Teaching" desc="Share your expertise and reach students looking for a tutor like you." />
+      )}
       <TitleInput placeholder={isTutor ? "Looking for a tutor — briefly describe…" : "Offering to teach — briefly describe…"} />
 
       <section className="mb-10">
