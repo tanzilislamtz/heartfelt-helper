@@ -53,6 +53,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { BellOff, Copy, Flag, Link2, UserMinus } from "lucide-react";
 import { hasWelcomed, isAuthed } from "@/lib/session";
+import { posts, type Role, type Kind } from "@/lib/posts";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
