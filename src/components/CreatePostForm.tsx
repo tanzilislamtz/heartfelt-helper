@@ -329,11 +329,21 @@ function ContentEditor({ placeholder }: { placeholder: string }) {
 
 function VisibilityRow() {
   return (
-    <div className="flex flex-wrap items-center justify-end gap-6 border-t border-border pt-6">
-      <div className="flex flex-col gap-2">
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Interactions</span>
-        <Toggle label="Allow comments" />
+    <div className="mt-2 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border bg-gradient-to-r from-muted/40 via-surface to-primary/5 px-5 py-4">
+      <div className="flex items-center gap-3">
+        <div className="grid h-9 w-9 place-items-center rounded-xl bg-primary/10 text-primary">
+          <MessageSquare className="h-4 w-4" />
+        </div>
+        <div>
+          <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+            Interactions
+          </div>
+          <div className="text-sm font-semibold text-foreground">
+            Let others comment on this post
+          </div>
+        </div>
       </div>
+      <Toggle label="Allow comments" />
     </div>
   );
 }
