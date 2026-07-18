@@ -97,9 +97,6 @@ export function FeedToolbar() {
           <SlidersHorizontal className="h-4 w-4" />
         </button>
 
-        <button className="hidden shrink-0 items-center gap-1.5 rounded-full bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground shadow-sm transition hover:opacity-95 sm:inline-flex">
-          <Plus className="h-3.5 w-3.5" /> New
-        </button>
       </div>
 
       {/* Meta row */}
