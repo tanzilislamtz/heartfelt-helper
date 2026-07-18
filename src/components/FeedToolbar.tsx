@@ -18,7 +18,7 @@ export function FeedToolbar() {
   const [view, setView] = useState<"list" | "grid">("list");
 
   return (
-    <div className="sticky top-[64px] z-40 -mx-4 border-y border-border bg-background/95 px-4 py-2.5 backdrop-blur-xl supports-[backdrop-filter]:bg-background/75 sm:mx-0 sm:rounded-2xl sm:border sm:px-3 sm:py-2">
+    <div className="-mx-4 border-y border-border bg-background/80 px-4 py-2.5 sm:mx-0 sm:rounded-2xl sm:border sm:px-3 sm:py-2">
       <div className="flex items-center gap-2">
         {/* Tab chips */}
         <div className="relative flex min-w-0 flex-1 gap-1.5 overflow-x-auto pr-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
