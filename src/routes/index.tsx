@@ -746,85 +746,92 @@ function RightRail() {
   return (
     <aside className="hidden space-y-5 lg:block">
       <div className="sticky top-24 space-y-5">
-        {/* Sponsored */}
-        <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
-          <div className="mb-2 flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-foreground">Sponsored</h3>
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Ad
-            </span>
-          </div>
-          <a
-            href="#"
-            className="group block overflow-hidden rounded-xl border border-border bg-muted"
-          >
-            <img
-              src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&auto=format&fit=crop"
-              alt="Exotic Collection — Unstitched Fabrics"
-              loading="lazy"
-              className="aspect-[16/10] w-full object-cover transition group-hover:scale-[1.02]"
-            />
-          </a>
-          <div className="mt-3">
-            <p className="text-sm font-semibold text-foreground">Exotic Collection</p>
-            <p className="mt-0.5 text-xs text-muted-foreground">
+        {/* Sponsored — navy immersive card */}
+        <div className="relative overflow-hidden rounded-3xl bg-primary p-5 text-primary-foreground shadow-brand">
+          <span className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-accent/20 blur-2xl" />
+          <span className="absolute -bottom-16 -left-8 h-32 w-32 rounded-full bg-white/10 blur-2xl" />
+          <div className="relative">
+            <div className="mb-3 flex items-center justify-between">
+              <span className="overline text-primary-foreground/60">Sponsored</span>
+              <span className="text-[10px] font-semibold text-primary-foreground/50">Ad</span>
+            </div>
+            <a href="#" className="mb-4 block overflow-hidden rounded-2xl ring-1 ring-white/10">
+              <img
+                src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&auto=format&fit=crop"
+                alt="Exotic Collection — Unstitched Fabrics"
+                loading="lazy"
+                className="aspect-[16/10] w-full object-cover transition hover:scale-[1.03]"
+              />
+            </a>
+            <h4 className="font-display text-lg font-semibold">Exotic Collection</h4>
+            <p className="mt-1 text-xs text-primary-foreground/70">
               Unstitched fabrics · New arrivals for Eid
             </p>
+            <button className="mt-4 w-full rounded-xl bg-accent py-2.5 text-sm font-bold text-accent-foreground shadow-sm transition hover:-translate-y-px">
+              Shop Now
+            </button>
           </div>
         </div>
 
         {/* Message List */}
-        <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
+        <div className="rounded-3xl border border-border bg-surface p-5 shadow-sm">
           <div className="mb-3 flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-foreground">Message List</h3>
-            <button className="text-xs font-medium text-primary hover:underline">See all</button>
+            <h3 className="font-display text-lg font-semibold text-foreground">Messages</h3>
+            <button className="grid h-8 w-8 place-items-center rounded-xl text-primary hover:bg-primary/5">
+              <MessageCircle className="h-4 w-4" />
+            </button>
           </div>
-          <div className="mb-3 grid grid-cols-2 rounded-full bg-muted p-1 text-xs font-semibold">
+          <div className="mb-3 flex gap-5 border-b border-border">
             <button
               onClick={() => setMsgTab("active")}
-              className={`rounded-full py-1.5 transition ${
-                msgTab === "active" ? "bg-surface text-foreground shadow-sm" : "text-muted-foreground"
+              className={`-mb-px border-b-2 pb-2.5 text-xs font-bold transition ${
+                msgTab === "active" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
-              Active
+              Active (0)
             </button>
             <button
               onClick={() => setMsgTab("all")}
-              className={`rounded-full py-1.5 transition ${
-                msgTab === "all" ? "bg-surface text-foreground shadow-sm" : "text-muted-foreground"
+              className={`-mb-px border-b-2 pb-2.5 text-xs font-bold transition ${
+                msgTab === "all" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
-              All <span className="opacity-70">(3)</span>
+              All Messages (3)
             </button>
           </div>
 
           {msgTab === "active" ? (
-            <div className="rounded-xl border border-dashed border-border py-6 text-center">
+            <div className="rounded-2xl bg-muted/50 py-6 text-center">
               <p className="text-xs text-muted-foreground">
                 No one is online right now.{" "}
-                <button className="font-semibold text-primary hover:underline">Show all</button>
+                <button onClick={() => setMsgTab("all")} className="font-semibold text-primary hover:underline">
+                  Show all
+                </button>
               </p>
             </div>
           ) : (
             <ul className="space-y-3">
               {[
-                { name: "Nadia Karim", msg: "Sent the notes ✓", time: "2m", unread: 2 },
-                { name: "Tanvir Ahmed", msg: "See you at 8pm class", time: "1h", unread: 0 },
-                { name: "Meherun Nisa", msg: "Thanks for the feedback!", time: "3h", unread: 0 },
+                { name: "Nadia Karim", msg: "Sent the notes ✓", time: "2m", unread: 2, online: true },
+                { name: "Tanvir Ahmed", msg: "See you at 8pm class", time: "1h", unread: 0, online: true },
+                { name: "Meherun Nisa", msg: "Thanks for the feedback!", time: "3h", unread: 0, online: false },
               ].map((m) => (
-                <li key={m.name} className="flex items-center gap-3">
-                  <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
-                    {m.name.charAt(0)}
+                <li key={m.name} className="group flex items-center gap-3 rounded-xl px-1 py-1.5 transition hover:bg-muted/50">
+                  <div className="relative shrink-0">
+                    <div className="grid h-10 w-10 place-items-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
+                      {m.name.charAt(0)}
+                    </div>
+                    <span className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full ring-2 ring-surface ${m.online ? "bg-tutor" : "bg-muted-foreground/40"}`} />
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="truncate text-sm font-medium text-foreground">{m.name}</span>
+                      <span className="truncate text-sm font-bold text-foreground group-hover:text-primary">{m.name}</span>
                       <span className="shrink-0 text-[10px] text-muted-foreground">{m.time}</span>
                     </div>
                     <p className="truncate text-xs text-muted-foreground">{m.msg}</p>
                   </div>
                   {m.unread > 0 && (
-                    <span className="grid h-5 min-w-[20px] place-items-center rounded-full bg-destructive px-1.5 text-[10px] font-bold text-destructive-foreground">
+                    <span className="grid h-5 min-w-[20px] place-items-center rounded-full bg-primary px-1.5 text-[10px] font-bold text-primary-foreground">
                       {m.unread}
                     </span>
                   )}
@@ -833,6 +840,7 @@ function RightRail() {
             </ul>
           )}
         </div>
+
 
         <p className="px-2 text-[11px] text-muted-foreground">
           © Learns Academy · About · Privacy · Terms · Help
