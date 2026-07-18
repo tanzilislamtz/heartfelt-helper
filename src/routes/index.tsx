@@ -405,8 +405,6 @@ function BestTutorCard() {
   );
 }
 
-type Role = "tutor" | "student" | "guest";
-type Kind = "learning" | "question" | "seeking-tutor" | "offering-tutor" | "seeking-student";
 
 const kindConfig: Record<
   Kind,
