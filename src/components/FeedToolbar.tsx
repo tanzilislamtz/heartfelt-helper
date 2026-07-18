@@ -91,27 +91,6 @@ export function FeedToolbar() {
           ))}
         </div>
 
-        {/* View toggle */}
-        <div className="hidden items-center rounded-full bg-foreground/[0.06] p-0.5 ring-1 ring-inset ring-border sm:flex">
-          <button
-            onClick={() => setView("list")}
-            aria-label="List view"
-            className={`grid h-7 w-7 place-items-center rounded-full transition ${
-              view === "list" ? "bg-foreground text-background shadow-sm" : "text-foreground/60 hover:text-foreground"
-            }`}
-          >
-            <Rows3 className="h-3.5 w-3.5" />
-          </button>
-          <button
-            onClick={() => setView("grid")}
-            aria-label="Grid view"
-            className={`grid h-7 w-7 place-items-center rounded-full transition ${
-              view === "grid" ? "bg-foreground text-background shadow-sm" : "text-foreground/60 hover:text-foreground"
-            }`}
-          >
-            <LayoutGrid className="h-3.5 w-3.5" />
-          </button>
-        </div>
 
         <button
           aria-label="Filters"
