@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
-import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import {
   SlidersHorizontal,
   Sparkles,
@@ -19,9 +19,33 @@ const TABS = [
 ];
 const SORTS = ["Latest", "Top", "Rising"];
 
+const POST_TYPES = ["Questions", "Notes", "Tutor posts", "Study groups"];
+const TIME_RANGES = ["Today", "This week", "This month", "All time"];
+
 export function FeedToolbar() {
   const [active, setActive] = useState(0);
   const [sort, setSort] = useState(0);
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [types, setTypes] = useState<string[]>([]);
+  const [range, setRange] = useState(1);
+  const [verifiedOnly, setVerifiedOnly] = useState(false);
+  const filterRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!filterOpen) return;
+    const onDown = (e: MouseEvent) => {
+      if (filterRef.current && !filterRef.current.contains(e.target as Node)) {
+        setFilterOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [filterOpen]);
+
+  const toggleType = (t: string) =>
+    setTypes((prev) => (prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]));
+  const activeCount = types.length + (verifiedOnly ? 1 : 0) + (range !== 1 ? 1 : 0);
+
   
 
   return (
@@ -90,12 +114,104 @@ export function FeedToolbar() {
         </div>
 
 
-        <button
-          aria-label="Filters"
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border bg-surface text-foreground/70 transition hover:border-primary/40 hover:text-primary"
-        >
-          <SlidersHorizontal className="h-4 w-4" />
-        </button>
+        <div ref={filterRef} className="relative shrink-0">
+          <button
+            aria-label="Filters"
+            onClick={() => setFilterOpen((o) => !o)}
+            className={`relative grid h-9 w-9 place-items-center rounded-full border transition ${
+              filterOpen || activeCount > 0
+                ? "border-primary/40 bg-primary/10 text-primary"
+                : "border-border bg-surface text-foreground/70 hover:border-primary/40 hover:text-primary"
+            }`}
+          >
+            <SlidersHorizontal className="h-4 w-4" />
+            {activeCount > 0 && (
+              <span className="absolute -right-1 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
+                {activeCount}
+              </span>
+            )}
+          </button>
+
+          <AnimatePresence>
+            {filterOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -6, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -6, scale: 0.98 }}
+                transition={{ duration: 0.15 }}
+                className="absolute right-0 top-11 z-50 w-72 rounded-2xl border border-border bg-background p-3 shadow-lg"
+              >
+                <div className="mb-2 flex items-center justify-between">
+                  <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">Filters</p>
+                  <button
+                    onClick={() => {
+                      setTypes([]);
+                      setRange(1);
+                      setVerifiedOnly(false);
+                    }}
+                    className="text-xs font-semibold text-primary hover:underline"
+                  >
+                    Reset
+                  </button>
+                </div>
+
+                <p className="mb-1.5 text-[11px] font-semibold text-foreground/70">Post type</p>
+                <div className="mb-3 flex flex-wrap gap-1.5">
+                  {POST_TYPES.map((t) => {
+                    const on = types.includes(t);
+                    return (
+                      <button
+                        key={t}
+                        onClick={() => toggleType(t)}
+                        className={`rounded-full border px-2.5 py-1 text-xs font-medium transition ${
+                          on
+                            ? "border-primary bg-primary text-primary-foreground"
+                            : "border-border bg-surface text-foreground/70 hover:border-primary/40"
+                        }`}
+                      >
+                        {t}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <p className="mb-1.5 text-[11px] font-semibold text-foreground/70">Time range</p>
+                <div className="mb-3 grid grid-cols-2 gap-1.5">
+                  {TIME_RANGES.map((r, i) => (
+                    <button
+                      key={r}
+                      onClick={() => setRange(i)}
+                      className={`rounded-lg border px-2 py-1.5 text-xs font-medium transition ${
+                        range === i
+                          ? "border-primary bg-primary/10 text-primary"
+                          : "border-border bg-surface text-foreground/70 hover:border-primary/40"
+                      }`}
+                    >
+                      {r}
+                    </button>
+                  ))}
+                </div>
+
+                <label className="flex cursor-pointer items-center justify-between rounded-lg border border-border bg-surface px-2.5 py-2">
+                  <span className="text-xs font-medium text-foreground">Verified tutors only</span>
+                  <input
+                    type="checkbox"
+                    checked={verifiedOnly}
+                    onChange={(e) => setVerifiedOnly(e.target.checked)}
+                    className="h-4 w-4 accent-primary"
+                  />
+                </label>
+
+                <button
+                  onClick={() => setFilterOpen(false)}
+                  className="mt-3 w-full rounded-lg bg-foreground py-2 text-xs font-semibold text-background transition hover:opacity-90"
+                >
+                  Apply filters
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
 
       {/* Meta row */}
