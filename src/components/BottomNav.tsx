@@ -54,9 +54,16 @@ export function BottomNav() {
   const active = items[activeIndex];
   const unread = useUnreadMessages();
 
-  // 70% of viewport width, divided across the tabs, with a sensible clamp
+  // Bar takes ~70% of viewport width (clamped for tiny + large screens).
+  // --item is derived from the inner track so 4 tabs perfectly fill the bar,
+  // and the floating orb / icons all scale from --item.
   const style = {
-    ["--item" as string]: "clamp(44px, calc(70vw / 4), 64px)",
+    ["--bar" as string]: "clamp(260px, 70vw, 420px)",
+    ["--pad" as string]: "clamp(6px, 2.2vw, 12px)",
+    // inner track = bar - 2*pad, divided across tabs
+    ["--item" as string]:
+      "calc((clamp(260px, 70vw, 420px) - (clamp(6px, 2.2vw, 12px) * 2)) / 4)",
+    ["--h" as string]: "clamp(52px, 14vw, 64px)",
   } as React.CSSProperties;
 
 
@@ -75,17 +82,19 @@ export function BottomNav() {
         className="pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-[999px] blur-2xl transition-all duration-700"
         style={{
           bottom: "calc(0.4rem + env(safe-area-inset-bottom))",
-          width: "calc(var(--item) * 3.4)",
-          height: "calc(var(--item) * 1.1)",
+          width: "calc(var(--bar) * 0.85)",
+          height: "calc(var(--h) * 1.1)",
           background: active.gradient,
           opacity: 0.35,
         }}
       />
 
       <div
-        className="relative flex items-center justify-center rounded-full px-[calc(var(--item)*0.35)] backdrop-blur-xl"
+        className="relative flex items-center justify-center rounded-full backdrop-blur-xl"
         style={{
-          height: "var(--item)",
+          width: "var(--bar)",
+          height: "var(--h)",
+          padding: "0 var(--pad)",
           background:
             "linear-gradient(135deg, rgba(20,22,60,0.92) 0%, rgba(41,44,117,0.9) 55%, rgba(0,103,71,0.88) 100%)",
           border: "1px solid rgba(255,255,255,0.12)",
@@ -93,6 +102,7 @@ export function BottomNav() {
             "0 20px 40px -12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.15), inset 0 -1px 0 rgba(255,255,255,0.05)",
         }}
       >
+
         {/* Sheen highlight */}
         <span
           aria-hidden
