@@ -448,6 +448,85 @@ function BestTutorCard() {
 }
 
 type Role = "tutor" | "student" | "guest";
+type Kind = "learning" | "question" | "seeking-tutor" | "offering-tutor" | "seeking-student";
+
+const kindConfig: Record<
+  Kind,
+  {
+    label: string;
+    Icon: typeof HelpCircle;
+    banner: string; // gradient / bg
+    accent: string; // text color
+    ring: string; // container ring
+    dot: string;
+    chip: string; // tag chip bg/text
+    frame: string; // outer border/bg tint
+    corner: string; // corner ribbon color
+    subtitle: string;
+  }
+> = {
+  learning: {
+    label: "Learning",
+    Icon: BookOpen,
+    banner: "",
+    accent: "text-primary",
+    ring: "ring-border",
+    dot: "bg-primary",
+    chip: "bg-primary/10 text-primary",
+    frame: "border-border bg-surface",
+    corner: "",
+    subtitle: "",
+  },
+  question: {
+    label: "Question",
+    Icon: HelpCircle,
+    banner: "bg-gradient-to-r from-amber-400/25 via-orange-400/20 to-rose-400/10",
+    accent: "text-amber-700 dark:text-amber-300",
+    ring: "ring-amber-400/50",
+    dot: "bg-amber-500",
+    chip: "bg-amber-500/15 text-amber-700 dark:text-amber-300",
+    frame: "border-amber-500/25 bg-amber-50/40 dark:bg-amber-500/5",
+    corner: "from-amber-500 to-orange-500",
+    subtitle: "Needs an answer",
+  },
+  "seeking-tutor": {
+    label: "Looking for Tutor",
+    Icon: UserSearch,
+    banner: "bg-gradient-to-r from-sky-400/25 via-cyan-400/20 to-blue-400/10",
+    accent: "text-sky-700 dark:text-sky-300",
+    ring: "ring-sky-400/50",
+    dot: "bg-sky-500",
+    chip: "bg-sky-500/15 text-sky-700 dark:text-sky-300",
+    frame: "border-sky-500/25 bg-sky-50/40 dark:bg-sky-500/5",
+    corner: "from-sky-500 to-cyan-500",
+    subtitle: "Tutor wanted",
+  },
+  "offering-tutor": {
+    label: "Available Tutor",
+    Icon: UserCheck,
+    banner: "bg-gradient-to-r from-emerald-400/25 via-teal-400/20 to-green-400/10",
+    accent: "text-emerald-700 dark:text-emerald-300",
+    ring: "ring-emerald-400/50",
+    dot: "bg-emerald-500",
+    chip: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300",
+    frame: "border-emerald-500/25 bg-emerald-50/40 dark:bg-emerald-500/5",
+    corner: "from-emerald-500 to-teal-500",
+    subtitle: "Open for classes",
+  },
+  "seeking-student": {
+    label: "Looking for Student",
+    Icon: BookOpenCheck,
+    banner: "bg-gradient-to-r from-fuchsia-400/25 via-purple-400/20 to-indigo-400/10",
+    accent: "text-fuchsia-700 dark:text-fuchsia-300",
+    ring: "ring-fuchsia-400/50",
+    dot: "bg-fuchsia-500",
+    chip: "bg-fuchsia-500/15 text-fuchsia-700 dark:text-fuchsia-300",
+    frame: "border-fuchsia-500/25 bg-fuchsia-50/40 dark:bg-fuchsia-500/5",
+    corner: "from-fuchsia-500 to-purple-500",
+    subtitle: "Seats open",
+  },
+};
+
 function Post({
   author,
   role,
@@ -461,6 +540,8 @@ function Post({
   verified,
   media,
   mediaUrl,
+  kind = "learning",
+  meta,
 }: {
   author: string;
   role: Role;
@@ -474,6 +555,8 @@ function Post({
   verified?: boolean;
   media?: boolean;
   mediaUrl?: string;
+  kind?: Kind;
+  meta?: { label: string; value: string }[];
 }) {
   const roleStyles: Record<Role, { badge: string; ring: string; label: string }> = {
     tutor: { badge: "bg-tutor text-tutor-foreground", ring: "ring-tutor", label: "Tutor" },
@@ -481,6 +564,8 @@ function Post({
     guest: { badge: "bg-accent text-accent-foreground", ring: "ring-accent", label: "Guest" },
   };
   const rs = roleStyles[role];
+  const kc = kindConfig[kind];
+  const isLearning = kind === "learning";
 
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(stats.likes);
@@ -515,11 +600,31 @@ function Post({
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       whileHover={{ y: -3, boxShadow: "0 18px 40px -20px rgba(41,44,117,0.25)" }}
-      className="group rounded-2xl border border-border bg-surface p-5 shadow-sm"
+      className={`group relative overflow-hidden rounded-2xl border p-5 shadow-sm ${kc.frame}`}
     >
+      {/* Kind banner strip (non-learning) */}
+      {!isLearning && (
+        <>
+          <div className={`pointer-events-none absolute inset-x-0 top-0 h-1.5 ${kc.banner}`} />
+          <div className="-mx-5 -mt-5 mb-4 flex items-center justify-between gap-3 border-b border-current/10 px-5 py-2.5">
+            <div className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wider ${kc.accent}`}>
+              <span className="relative flex h-2 w-2">
+                <span className={`absolute inline-flex h-full w-full animate-ping rounded-full ${kc.dot} opacity-60`} />
+                <span className={`relative inline-flex h-2 w-2 rounded-full ${kc.dot}`} />
+              </span>
+              <kc.Icon className="h-4 w-4" />
+              {kc.label}
+            </div>
+            <span className={`text-[10px] font-medium uppercase tracking-wider ${kc.accent} opacity-80`}>
+              {kc.subtitle}
+            </span>
+          </div>
+        </>
+      )}
+
       <header className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 sm:flex sm:items-center">
         <div className="flex min-w-0 items-center gap-3">
-          <div className={`grid h-11 w-11 shrink-0 place-items-center rounded-full bg-muted font-semibold text-foreground ring-2 ${rs.ring}`}>
+          <div className={`grid h-11 w-11 shrink-0 place-items-center rounded-full bg-muted font-semibold text-foreground ring-2 ${isLearning ? rs.ring : kc.ring}`}>
             {author.charAt(0)}
           </div>
           <div className="min-w-0">
@@ -541,11 +646,34 @@ function Post({
       </header>
 
       <div className="mt-4">
-        <h2 className="text-xl font-semibold leading-snug text-foreground">
-          {title}
-        </h2>
-        <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-foreground/75">{body}</p>
+        {kind === "question" ? (
+          <div className="relative pl-6">
+            <span className="absolute -top-3 left-0 font-serif text-5xl leading-none text-amber-500/60">?</span>
+            <h2 className="text-lg font-semibold leading-snug text-foreground">{title}</h2>
+            <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-foreground/80">{body}</p>
+          </div>
+        ) : (
+          <>
+            <h2 className="text-xl font-semibold leading-snug text-foreground">{title}</h2>
+            <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-foreground/75">{body}</p>
+          </>
+        )}
       </div>
+
+      {/* Structured meta tiles for tutor/student-seeking */}
+      {meta && meta.length > 0 && (
+        <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {meta.map((m) => (
+            <div
+              key={m.label}
+              className={`rounded-xl border border-current/15 bg-background/60 px-3 py-2 ${kc.accent}`}
+            >
+              <div className="text-[10px] font-semibold uppercase tracking-wider opacity-70">{m.label}</div>
+              <div className="mt-0.5 truncate text-sm font-semibold text-foreground">{m.value}</div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {mediaUrl ? (
         <div className="mt-4 overflow-hidden rounded-xl border border-border bg-muted">
@@ -570,7 +698,7 @@ function Post({
       ) : null}
 
       <div className="mt-4 flex flex-wrap items-center gap-1.5">
-        <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
+        <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium ${kc.chip}`}>
           #{tag}
         </span>
         {tags?.map((t) => (
@@ -582,6 +710,8 @@ function Post({
           </span>
         ))}
       </div>
+
+
 
 
       <footer className="mt-4 flex items-center gap-1 border-t border-border pt-3">
