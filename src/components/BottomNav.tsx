@@ -50,6 +50,8 @@ export function BottomNav() {
     items.findIndex((i) => i.to === pathname),
   );
   const d = buildPath(activeIndex);
+  const unread = useUnreadMessages();
+
 
   return (
     <nav
