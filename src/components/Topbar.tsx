@@ -45,14 +45,9 @@ export function Topbar({
         )}
 
         <Link to="/" className="flex items-center gap-2">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-foreground shadow-sm">
-            <GraduationCap className="h-5 w-5" strokeWidth={2.2} />
-          </span>
-          <span className="hidden text-lg font-semibold tracking-tight sm:inline">
-            <span className="font-display italic">Learns</span>
-            <span className="ml-1 text-primary">Academy</span>
-          </span>
+          <img src={logoAsset.url} alt="Learns Academy" className="h-10 w-auto" />
         </Link>
+
 
         {variant === "app" ? (
           <>
