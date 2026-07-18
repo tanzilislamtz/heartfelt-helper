@@ -218,7 +218,7 @@ export function BottomNav() {
 
                   {/* Pulse ring around indicator */}
                   <span
-                    className="pointer-events-none absolute block rounded-full transition-all duration-500"
+                    className="pointer-events-none absolute block rounded-full"
                     style={{
                       width: "calc(var(--item) * 0.6)",
                       height: "calc(var(--item) * 0.6)",
@@ -226,13 +226,16 @@ export function BottomNav() {
                       transform: isActive
                         ? "translateY(calc(var(--item) * -0.3)) scale(1)"
                         : "translateY(calc(var(--item) * -0.3)) scale(0)",
-                      transitionDelay: isActive ? "0.45s" : "0s",
                       opacity: isActive ? 1 : 0,
-                      animation: isActive
-                        ? "nav-pulse 2.4s ease-out infinite 0.6s"
+                      transition: mounted
+                        ? `transform 500ms ${EASE} ${isActive ? "450ms" : "0ms"}, opacity 300ms ease`
+                        : "none",
+                      animation: isActive && mounted
+                        ? "nav-pulse 2.4s ease-out infinite 0.9s"
                         : "none",
                     }}
                   />
+
                 </Link>
               </li>
             );
