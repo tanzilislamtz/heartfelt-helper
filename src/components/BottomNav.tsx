@@ -165,7 +165,7 @@ export function BottomNav() {
                   className="relative flex h-full w-full flex-col items-center justify-center text-center font-medium"
                 >
                   <span
-                    className="relative grid place-items-center text-white transition-all duration-500"
+                    className="relative grid place-items-center text-white"
                     style={{
                       transform: isActive
                         ? "translateY(calc(var(--item) * -0.28)) scale(1.05)"
@@ -174,8 +174,11 @@ export function BottomNav() {
                         ? "drop-shadow(0 2px 4px rgba(0,0,0,0.35))"
                         : "none",
                       opacity: isActive ? 1 : 0.72,
+                      transition: iconTransition,
+                      willChange: "transform",
                     }}
                   >
+
                     <Icon
                       className="h-[clamp(20px,5.5vw,24px)] w-[clamp(20px,5.5vw,24px)]"
                       strokeWidth={2.1}
