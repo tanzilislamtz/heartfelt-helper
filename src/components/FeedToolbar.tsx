@@ -51,11 +51,11 @@ export function FeedToolbar() {
                 {isActive && (
                   <motion.span
                     layoutId="feed-tab-pill"
-                    className="absolute inset-0 -z-10 rounded-full bg-foreground shadow-sm"
+                    className="absolute inset-0 rounded-full bg-foreground shadow-sm"
                     transition={{ type: "spring", stiffness: 400, damping: 32 }}
                   />
                 )}
-                <span className="inline-flex items-center gap-1.5">
+                <span className="relative inline-flex items-center gap-1.5">
                   <Icon className="h-3.5 w-3.5" strokeWidth={2.2} />
                   {t.label}
                 </span>
