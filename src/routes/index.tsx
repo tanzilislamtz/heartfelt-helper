@@ -667,10 +667,13 @@ function Post({
         </>
       )}
       {kind === "offering-tutor" && (
-        <span
-          aria-hidden
-          className="pointer-events-none absolute inset-y-0 left-[92px] hidden border-l-2 border-dashed border-emerald-500/30 sm:block"
-        />
+        <>
+          {/* Ticket-stub notches on left & right edges */}
+          <span aria-hidden className="pointer-events-none absolute -left-2 top-1/2 h-4 w-4 -translate-y-1/2 rounded-full bg-background ring-1 ring-emerald-500/30" />
+          <span aria-hidden className="pointer-events-none absolute -right-2 top-1/2 h-4 w-4 -translate-y-1/2 rounded-full bg-background ring-1 ring-emerald-500/30" />
+          {/* Subtle diagonal shine */}
+          <span aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-br from-transparent via-emerald-500/5 to-transparent" />
+        </>
       )}
       {kind === "seeking-student" && (
         <div className="pointer-events-none absolute right-3 top-3 rotate-[-8deg] rounded-md border-2 border-fuchsia-600 bg-white px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-fuchsia-700 shadow-md">
