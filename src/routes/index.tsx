@@ -136,9 +136,11 @@ function LeftNav() {
 function Feed() {
   return (
     <section className="space-y-5">
-      <FeedToolbar />
       <Leaderboard />
+      <FeedToolbar />
       <Composer />
+
+
 
 
 
