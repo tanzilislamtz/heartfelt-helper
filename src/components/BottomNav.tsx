@@ -11,34 +11,38 @@ type Item = {
   glow: string;
 };
 
+const BRAND_GRADIENT =
+  "linear-gradient(135deg,#292C75 0%,#006747 60%,#F4C430 100%)";
+const BRAND_GLOW = "rgba(41,44,117,0.55)";
+
 const items: Item[] = [
   {
     to: "/",
     label: "Home",
     Icon: Home,
-    gradient: "linear-gradient(135deg,#60a5fa 0%,#a855f7 50%,#ec4899 100%)",
-    glow: "rgba(168,85,247,0.55)",
+    gradient: BRAND_GRADIENT,
+    glow: BRAND_GLOW,
   },
   {
     to: "/quiz",
     label: "Quiz",
     Icon: Lightbulb,
-    gradient: "linear-gradient(135deg,#fbbf24 0%,#f97316 55%,#ef4444 100%)",
-    glow: "rgba(249,115,22,0.55)",
+    gradient: BRAND_GRADIENT,
+    glow: BRAND_GLOW,
   },
   {
     to: "/message",
     label: "Chat",
     Icon: MessageSquare,
-    gradient: "linear-gradient(135deg,#22d3ee 0%,#3b82f6 55%,#8b5cf6 100%)",
-    glow: "rgba(59,130,246,0.55)",
+    gradient: BRAND_GRADIENT,
+    glow: BRAND_GLOW,
   },
   {
     to: "/profile",
     label: "You",
     Icon: User,
-    gradient: "linear-gradient(135deg,#34d399 0%,#14b8a6 55%,#6366f1 100%)",
-    glow: "rgba(20,184,166,0.55)",
+    gradient: BRAND_GRADIENT,
+    glow: BRAND_GLOW,
   },
 ];
 
@@ -50,9 +54,11 @@ export function BottomNav() {
   const active = items[activeIndex];
   const unread = useUnreadMessages();
 
+  // 70% of viewport width, divided across the tabs, with a sensible clamp
   const style = {
-    ["--item" as string]: "clamp(48px, 13.5vw, 60px)",
+    ["--item" as string]: "clamp(44px, calc(70vw / 4), 64px)",
   } as React.CSSProperties;
+
 
   return (
     <nav
