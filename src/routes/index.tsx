@@ -541,7 +541,7 @@ function Post({
       </header>
 
       <div className="mt-4">
-        <h2 className="font-display text-xl font-semibold leading-snug text-foreground">
+        <h2 className="text-xl font-semibold leading-snug text-foreground">
           {title}
         </h2>
         <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-foreground/75">{body}</p>
