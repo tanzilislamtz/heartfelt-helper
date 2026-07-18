@@ -42,16 +42,16 @@ export function FeedToolbar() {
               <button
                 key={t.label}
                 onClick={() => setActive(i)}
-                className={`relative shrink-0 rounded-full px-3.5 py-1.5 text-sm font-medium transition ${
+                className={`relative shrink-0 rounded-full px-3.5 py-1.5 text-sm font-semibold transition ${
                   isActive
-                    ? "text-primary-foreground"
+                    ? "text-background"
                     : "text-foreground/60 hover:text-foreground"
                 }`}
               >
                 {isActive && (
                   <motion.span
                     layoutId="feed-tab-pill"
-                    className="absolute inset-0 -z-10 rounded-full bg-gradient-to-br from-primary to-primary/85 shadow-[0_6px_20px_-8px_hsl(var(--primary))]"
+                    className="absolute inset-0 -z-10 rounded-full bg-foreground shadow-sm"
                     transition={{ type: "spring", stiffness: 400, damping: 32 }}
                   />
                 )}
