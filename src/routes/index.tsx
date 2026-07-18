@@ -297,7 +297,7 @@ function Composer() {
             <ComposerIconBtn icon={ImageIcon} onClick={go} title="Image" />
             <ComposerIconBtn icon={Paperclip} onClick={go} title="Attach" />
             <ComposerIconBtn icon={BarChart3} onClick={go} title="Poll" />
-            <ComposerIconBtn icon={BookOpen} onClick={go} title="Note" />
+            
           </span>
         </button>
 
