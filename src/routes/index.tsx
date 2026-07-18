@@ -93,7 +93,7 @@ function Index() {
         <Feed />
         <RightRail />
       </main>
-      <MobileTabBar />
+      {/* Bottom nav rendered globally in __root.tsx */}
     </div>
   );
 }
