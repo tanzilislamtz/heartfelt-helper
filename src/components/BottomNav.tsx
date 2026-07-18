@@ -168,11 +168,11 @@ export function BottomNav() {
                   <span
                     className="pointer-events-none absolute block rounded-full transition-all duration-500"
                     style={{
-                      width: "calc(var(--item) * 0.78)",
-                      height: "calc(var(--item) * 0.78)",
+                      width: "calc(var(--item) * 0.6)",
+                      height: "calc(var(--item) * 0.6)",
                       border: "1.5px solid rgba(255,255,255,0.55)",
                       transform: isActive
-                        ? "translateY(calc(var(--item) * -0.55)) scale(1)"
+                        ? "translateY(calc(var(--item) * -0.5)) scale(1)"
                         : "translateY(calc(var(--item) * -0.55)) scale(0)",
                       transitionDelay: isActive ? "0.45s" : "0s",
                       opacity: isActive ? 1 : 0,
