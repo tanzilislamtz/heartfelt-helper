@@ -147,9 +147,22 @@ function LeftNav() {
 function Feed() {
   return (
     <section className="space-y-5">
-      
       <Composer />
       <FeedToolbar />
+      <Leaderboard />
+
+      <Post
+        author="SOJIB KHAN"
+        role="student"
+        handle="Verified Student"
+        time="10 days ago"
+        verified
+        title="A Conversation Between Lily and Her Father"
+        body={"Lily: Hello, Baba!\nBaba: Lily? How are you?\nLily: Fine, Baba. I just got my exam result. I've got an A in my English test!\nBaba: That's wonderful, my dear. I'm so proud of you."}
+        tag="Learning Content"
+        stats={{ likes: 214, comments: 36, shares: 11 }}
+      />
+
       <NearbyTutors />
 
       <Post
@@ -202,6 +215,64 @@ function Feed() {
         mediaUrl="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1200&auto=format&fit=crop"
       />
     </section>
+  );
+}
+
+function Leaderboard() {
+  const entries = [
+    { rank: 1, name: "Md. Rajwanur R.", sub: "University of Dhaka", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&auto=format&fit=crop", following: false },
+    { rank: 2, name: "Papul Halder", sub: "Chittagong College", img: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=400&auto=format&fit=crop", following: false },
+    { rank: 3, name: "Sojib Khan", sub: "Rajshahi University", img: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&auto=format&fit=crop", following: false },
+    { rank: 4, name: "Sabuj Hossain", sub: "Notre Dame College", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&auto=format&fit=crop", following: false },
+    { rank: 5, name: "Protiq Halder", sub: "Khulna Model School", img: "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?w=400&auto=format&fit=crop", following: true },
+  ];
+  return (
+    <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
+      <div className="mb-3 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="grid h-7 w-7 place-items-center rounded-lg bg-accent/40 text-primary">
+            <Trophy className="h-4 w-4" />
+          </span>
+          <h3 className="text-sm font-semibold text-foreground">
+            Leaderboard <span className="text-muted-foreground">· top by points</span>
+          </h3>
+        </div>
+        <button className="inline-flex items-center gap-0.5 text-xs font-medium text-primary hover:underline">
+          See all <ChevronRight className="h-3 w-3" />
+        </button>
+      </div>
+      <div className="-mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {entries.map((e) => (
+          <motion.div
+            key={e.rank}
+            whileHover={{ y: -3 }}
+            className="relative w-40 shrink-0 snap-start overflow-hidden rounded-2xl border border-border bg-surface shadow-sm"
+          >
+            <div className="relative aspect-[4/5] overflow-hidden">
+              <img src={e.img} alt={e.name} loading="lazy" className="h-full w-full object-cover" />
+              <span className="absolute left-2 top-2 rounded-lg bg-background/95 px-1.5 py-0.5 text-[10px] font-bold text-primary shadow-sm">
+                #{e.rank}
+              </span>
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-foreground/85 via-foreground/40 to-transparent p-2">
+                <p className="truncate text-xs font-semibold text-background">{e.name}</p>
+                <p className="truncate text-[10px] text-background/80">{e.sub}</p>
+              </div>
+            </div>
+            <div className="p-2">
+              <button
+                className={`w-full rounded-full py-1.5 text-[11px] font-semibold transition ${
+                  e.following
+                    ? "bg-foreground text-background"
+                    : "bg-primary text-primary-foreground hover:opacity-95"
+                }`}
+              >
+                {e.following ? "Following" : "Follow"}
+              </button>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
   );
 }
 
