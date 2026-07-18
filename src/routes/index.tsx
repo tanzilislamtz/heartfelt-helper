@@ -37,6 +37,7 @@ import {
   HelpCircle,
   Upload,
   X,
+  ChevronUp,
 } from "lucide-react";
 
 
@@ -505,77 +506,58 @@ const kindConfig: Record<
   {
     label: string;
     Icon: typeof HelpCircle;
-    banner: string; // gradient / bg
-    accent: string; // text color
-    ring: string; // container ring
-    dot: string;
-    chip: string; // tag chip bg/text
-    frame: string; // outer border/bg tint
-    corner: string; // corner ribbon color
-    subtitle: string;
+    accent: string;
+    chip: string;
+    ring: string;
+    frame: string;
+    dark?: boolean;
   }
 > = {
   learning: {
-    label: "Learning",
+    label: "Article",
     Icon: BookOpen,
-    banner: "",
     accent: "text-primary",
-    ring: "ring-border",
-    dot: "bg-primary",
     chip: "bg-primary/10 text-primary",
+    ring: "ring-primary/30",
     frame: "border-border bg-surface",
-    corner: "",
-    subtitle: "",
   },
   question: {
     label: "Question",
     Icon: HelpCircle,
-    banner: "bg-gradient-to-r from-amber-400/25 via-orange-400/20 to-rose-400/10",
-    accent: "text-amber-700 dark:text-amber-300",
-    ring: "ring-amber-400/50",
-    dot: "bg-amber-500",
-    chip: "bg-amber-500/15 text-amber-700 dark:text-amber-300",
-    frame: "border-amber-500/25 bg-amber-50/40 dark:bg-amber-500/5",
-    corner: "from-amber-500 to-orange-500",
-    subtitle: "Needs an answer",
+    accent: "text-amber-800",
+    chip: "bg-amber-500/20 text-amber-900",
+    ring: "ring-amber-500/60",
+    frame:
+      "border-2 border-dashed border-amber-500/60 bg-[linear-gradient(135deg,#fff7db_0%,#fef3c7_45%,#ffe4b5_100%)]",
   },
   "seeking-tutor": {
-    label: "Looking for Tutor",
+    label: "Seeking Tutor",
     Icon: UserSearch,
-    banner: "bg-gradient-to-r from-sky-400/25 via-cyan-400/20 to-blue-400/10",
-    accent: "text-sky-700 dark:text-sky-300",
-    ring: "ring-sky-400/50",
-    dot: "bg-sky-500",
-    chip: "bg-sky-500/15 text-sky-700 dark:text-sky-300",
-    frame: "border-sky-500/25 bg-sky-50/40 dark:bg-sky-500/5",
-    corner: "from-sky-500 to-cyan-500",
-    subtitle: "Tutor wanted",
+    accent: "text-cyan-300",
+    chip: "bg-cyan-400/15 text-cyan-100 border border-cyan-400/30",
+    ring: "ring-cyan-400/60",
+    frame:
+      "border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-slate-100",
+    dark: true,
   },
   "offering-tutor": {
     label: "Available Tutor",
     Icon: UserCheck,
-    banner: "bg-gradient-to-r from-emerald-400/25 via-teal-400/20 to-green-400/10",
-    accent: "text-emerald-700 dark:text-emerald-300",
-    ring: "ring-emerald-400/50",
-    dot: "bg-emerald-500",
-    chip: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300",
-    frame: "border-emerald-500/25 bg-emerald-50/40 dark:bg-emerald-500/5",
-    corner: "from-emerald-500 to-teal-500",
-    subtitle: "Open for classes",
+    accent: "text-emerald-800",
+    chip: "bg-emerald-500/20 text-emerald-900",
+    ring: "ring-emerald-500/60",
+    frame: "border border-emerald-500/30 bg-gradient-to-r from-emerald-50 via-teal-50/70 to-white",
   },
   "seeking-student": {
-    label: "Looking for Student",
+    label: "Admission Open",
     Icon: BookOpenCheck,
-    banner: "bg-gradient-to-r from-fuchsia-400/25 via-purple-400/20 to-indigo-400/10",
-    accent: "text-fuchsia-700 dark:text-fuchsia-300",
-    ring: "ring-fuchsia-400/50",
-    dot: "bg-fuchsia-500",
-    chip: "bg-fuchsia-500/15 text-fuchsia-700 dark:text-fuchsia-300",
-    frame: "border-fuchsia-500/25 bg-fuchsia-50/40 dark:bg-fuchsia-500/5",
-    corner: "from-fuchsia-500 to-purple-500",
-    subtitle: "Seats open",
+    accent: "text-fuchsia-800",
+    chip: "bg-fuchsia-500/20 text-fuchsia-900",
+    ring: "ring-fuchsia-500/60",
+    frame: "border border-fuchsia-400/40 bg-gradient-to-br from-fuchsia-50 via-purple-50/60 to-white",
   },
 };
+
 
 function Post({
   author,
@@ -652,78 +634,136 @@ function Post({
       whileHover={{ y: -3, boxShadow: "0 18px 40px -20px rgba(41,44,117,0.25)" }}
       className={`group relative overflow-hidden rounded-2xl border p-5 shadow-sm ${kc.frame}`}
     >
-      {/* Kind banner strip (non-learning) */}
-      {!isLearning && (
+      {/* Per-kind decorative motifs */}
+      {kind === "question" && (
         <>
-          <div className={`pointer-events-none absolute inset-x-0 top-0 h-1.5 ${kc.banner}`} />
-          <div className="-mx-5 -mt-5 mb-4 flex items-center justify-between gap-3 border-b border-current/10 px-5 py-2.5">
-            <div className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wider ${kc.accent}`}>
-              <span className="relative flex h-2 w-2">
-                <span className={`absolute inline-flex h-full w-full animate-ping rounded-full ${kc.dot} opacity-60`} />
-                <span className={`relative inline-flex h-2 w-2 rounded-full ${kc.dot}`} />
-              </span>
-              <kc.Icon className="h-4 w-4" />
-              {kc.label}
-            </div>
-            <span className={`text-[10px] font-medium uppercase tracking-wider ${kc.accent} opacity-80`}>
-              {kc.subtitle}
-            </span>
-          </div>
+          {/* Sticky-tape strips */}
+          <span className="pointer-events-none absolute -top-2 left-8 h-5 w-16 rotate-[-6deg] rounded-sm bg-amber-200/70 shadow-sm" />
+          <span className="pointer-events-none absolute -top-2 right-12 h-5 w-14 rotate-[4deg] rounded-sm bg-amber-200/70 shadow-sm" />
+          {/* Huge ? watermark */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -right-4 -bottom-10 select-none text-[220px] font-black leading-none text-amber-500/10"
+          >
+            ?
+          </span>
         </>
       )}
-
-      <header className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 sm:flex sm:items-center">
-        <div className="flex min-w-0 items-center gap-3">
-          <div className={`grid h-11 w-11 shrink-0 place-items-center rounded-full bg-muted font-semibold text-foreground ring-2 ${isLearning ? rs.ring : kc.ring}`}>
-            {author.charAt(0)}
+      {kind === "seeking-tutor" && (
+        <>
+          {/* Corner ribbon */}
+          <div className="pointer-events-none absolute -right-12 top-6 rotate-45 bg-cyan-400 px-14 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-slate-950 shadow-lg">
+            Wanted
           </div>
+          {/* Grid dot pattern */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 opacity-[0.07]"
+            style={{
+              backgroundImage: "radial-gradient(#67e8f9 1px, transparent 1px)",
+              backgroundSize: "16px 16px",
+            }}
+          />
+        </>
+      )}
+      {kind === "offering-tutor" && (
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 left-[92px] hidden border-l-2 border-dashed border-emerald-500/30 sm:block"
+        />
+      )}
+      {kind === "seeking-student" && (
+        <div className="pointer-events-none absolute right-3 top-3 rotate-[-8deg] rounded-md border-2 border-fuchsia-600 bg-white px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-fuchsia-700 shadow-md">
+          Admission Open
+        </div>
+      )}
+
+      {/* Kind label chip (all except learning shows a small type pill in header row) */}
+      {!isLearning && (
+        <div className="relative mb-3 flex items-center gap-2">
+          <span
+            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${kc.chip}`}
+          >
+            <kc.Icon className="h-3.5 w-3.5" />
+            {kc.label}
+          </span>
+        </div>
+      )}
+
+      <header className="relative grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 sm:flex sm:items-center">
+        <div className="flex min-w-0 items-center gap-3">
+          {kind === "offering-tutor" ? (
+            <div className={`grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 font-display text-2xl font-black text-white shadow-[0_8px_20px_-6px_rgba(16,185,129,0.5)] ring-2 ring-white`}>
+              {author.charAt(0)}
+            </div>
+          ) : (
+            <div className={`grid h-11 w-11 shrink-0 place-items-center rounded-full bg-muted font-semibold text-foreground ring-2 ${isLearning ? rs.ring : kc.ring}`}>
+              {author.charAt(0)}
+            </div>
+          )}
           <div className="min-w-0">
             <div className="flex items-center gap-1.5">
-              <span className="truncate text-sm font-semibold text-foreground">{author}</span>
-              {verified && <CheckCircle2 className="h-4 w-4 shrink-0 text-tutor" />}
+              <span className={`truncate text-sm font-semibold ${kc.dark ? "text-slate-50" : "text-foreground"}`}>{author}</span>
+              {verified && <CheckCircle2 className={`h-4 w-4 shrink-0 ${kc.dark ? "text-cyan-300" : "text-tutor"}`} />}
               <span className={`ml-1 shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${rs.badge}`}>
                 {rs.label}
               </span>
             </div>
-            <div className="truncate text-xs text-muted-foreground">
+            <div className={`truncate text-xs ${kc.dark ? "text-slate-400" : "text-muted-foreground"}`}>
               {handle} · {time}
             </div>
           </div>
         </div>
-        <button aria-label="More" className="shrink-0 rounded-full p-2 text-muted-foreground hover:bg-muted hover:text-foreground">
+        <button aria-label="More" className={`shrink-0 rounded-full p-2 ${kc.dark ? "text-slate-400 hover:bg-white/10 hover:text-slate-100" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}>
           <MoreHorizontal className="h-4 w-4" />
         </button>
       </header>
 
-      <div className="mt-4">
+      <div className="relative mt-4">
         {kind === "question" ? (
-          <div className="relative pl-6">
-            <span className="absolute -top-3 left-0 font-serif text-5xl leading-none text-amber-500/60">?</span>
-            <h2 className="text-lg font-semibold leading-snug text-foreground">{title}</h2>
-            <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-foreground/80">{body}</p>
+          <div className="flex gap-3">
+            {/* Vote rail */}
+            <div className="flex shrink-0 flex-col items-center gap-0.5 rounded-xl border border-amber-500/40 bg-white/60 px-2 py-2 text-amber-900">
+              <ChevronUp className="h-4 w-4" />
+              <span className="text-sm font-black tabular-nums">{Math.max(1, Math.round(stats.likes / 3))}</span>
+              <ChevronDown className="h-4 w-4 opacity-40" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h2 className="text-lg font-bold leading-snug text-amber-950">{title}</h2>
+              <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-amber-950/80">{body}</p>
+            </div>
           </div>
         ) : (
           <>
-            <h2 className="text-xl font-semibold leading-snug text-foreground">{title}</h2>
-            <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-foreground/75">{body}</p>
+            <h2 className={`text-xl font-semibold leading-snug ${kc.dark ? "text-slate-50" : "text-foreground"}`}>{title}</h2>
+            <p className={`mt-2 whitespace-pre-line text-sm leading-relaxed ${kc.dark ? "text-slate-300" : "text-foreground/75"}`}>{body}</p>
           </>
         )}
       </div>
 
       {/* Structured meta tiles for tutor/student-seeking */}
       {meta && meta.length > 0 && (
-        <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <div className={`relative mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4 ${kind === "seeking-tutor" ? "font-mono" : ""}`}>
           {meta.map((m) => (
             <div
               key={m.label}
-              className={`rounded-xl border border-current/15 bg-background/60 px-3 py-2 ${kc.accent}`}
+              className={
+                kc.dark
+                  ? "rounded-xl border border-cyan-400/20 bg-white/5 px-3 py-2 backdrop-blur-sm"
+                  : kind === "offering-tutor"
+                  ? "rounded-xl border border-emerald-500/25 bg-white/70 px-3 py-2 shadow-sm"
+                  : kind === "seeking-student"
+                  ? "rounded-xl border border-fuchsia-400/30 bg-white/70 px-3 py-2 shadow-sm"
+                  : "rounded-xl border border-current/15 bg-background/60 px-3 py-2"
+              }
             >
-              <div className="text-[10px] font-semibold uppercase tracking-wider opacity-70">{m.label}</div>
-              <div className="mt-0.5 truncate text-sm font-semibold text-foreground">{m.value}</div>
+              <div className={`text-[10px] font-semibold uppercase tracking-wider ${kc.dark ? "text-cyan-300/80" : "opacity-70"} ${!kc.dark ? kc.accent : ""}`}>{m.label}</div>
+              <div className={`mt-0.5 truncate text-sm font-semibold ${kc.dark ? "text-slate-50" : "text-foreground"}`}>{m.value}</div>
             </div>
           ))}
         </div>
       )}
+
 
       {mediaUrl ? (
         <div className="mt-4 overflow-hidden rounded-xl border border-border bg-muted">
