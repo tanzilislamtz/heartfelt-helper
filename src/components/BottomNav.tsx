@@ -63,6 +63,19 @@ export function BottomNav() {
     return () => cancelAnimationFrame(id);
   }, []);
 
+  // Debug overlay: toggle with `?navdebug=1` in the URL, or Alt+D.
+  const [debug, setDebug] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return new URLSearchParams(window.location.search).has("navdebug");
+  });
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.altKey && (e.key === "d" || e.key === "D")) setDebug((v) => !v);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   // Springy easing for state changes (bar/orb/icons)
   const EASE = "cubic-bezier(0.34, 1.56, 0.64, 1)";
   const orbTransition = mounted
