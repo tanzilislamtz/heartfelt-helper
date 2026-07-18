@@ -172,8 +172,8 @@ export function BottomNav() {
                       height: "calc(var(--item) * 0.6)",
                       border: "1.5px solid rgba(255,255,255,0.55)",
                       transform: isActive
-                        ? "translateY(calc(var(--item) * -0.5)) scale(1)"
-                        : "translateY(calc(var(--item) * -0.5)) scale(0)",
+                        ? "translateY(calc(var(--item) * -0.3)) scale(1)"
+                        : "translateY(calc(var(--item) * -0.3)) scale(0)",
                       transitionDelay: isActive ? "0.45s" : "0s",
                       opacity: isActive ? 1 : 0,
                       animation: isActive
