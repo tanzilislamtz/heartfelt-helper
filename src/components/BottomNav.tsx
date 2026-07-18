@@ -11,34 +11,38 @@ type Item = {
   glow: string;
 };
 
+const BRAND_GRADIENT =
+  "linear-gradient(135deg,#292C75 0%,#006747 60%,#F4C430 100%)";
+const BRAND_GLOW = "rgba(41,44,117,0.55)";
+
 const items: Item[] = [
   {
     to: "/",
     label: "Home",
     Icon: Home,
-    gradient: "linear-gradient(135deg,#60a5fa 0%,#a855f7 50%,#ec4899 100%)",
-    glow: "rgba(168,85,247,0.55)",
+    gradient: BRAND_GRADIENT,
+    glow: BRAND_GLOW,
   },
   {
     to: "/quiz",
     label: "Quiz",
     Icon: Lightbulb,
-    gradient: "linear-gradient(135deg,#fbbf24 0%,#f97316 55%,#ef4444 100%)",
-    glow: "rgba(249,115,22,0.55)",
+    gradient: BRAND_GRADIENT,
+    glow: BRAND_GLOW,
   },
   {
     to: "/message",
     label: "Chat",
     Icon: MessageSquare,
-    gradient: "linear-gradient(135deg,#22d3ee 0%,#3b82f6 55%,#8b5cf6 100%)",
-    glow: "rgba(59,130,246,0.55)",
+    gradient: BRAND_GRADIENT,
+    glow: BRAND_GLOW,
   },
   {
     to: "/profile",
     label: "You",
     Icon: User,
-    gradient: "linear-gradient(135deg,#34d399 0%,#14b8a6 55%,#6366f1 100%)",
-    glow: "rgba(20,184,166,0.55)",
+    gradient: BRAND_GRADIENT,
+    glow: BRAND_GLOW,
   },
 ];
 
@@ -50,9 +54,11 @@ export function BottomNav() {
   const active = items[activeIndex];
   const unread = useUnreadMessages();
 
+  // 70% of viewport width, divided across the tabs, with a sensible clamp
   const style = {
-    ["--item" as string]: "clamp(48px, 13.5vw, 60px)",
+    ["--item" as string]: "clamp(44px, calc(70vw / 4), 64px)",
   } as React.CSSProperties;
+
 
   return (
     <nav
@@ -81,7 +87,7 @@ export function BottomNav() {
         style={{
           height: "var(--item)",
           background:
-            "linear-gradient(135deg, rgba(15,10,45,0.85) 0%, rgba(30,15,60,0.85) 50%, rgba(60,15,55,0.85) 100%)",
+            "linear-gradient(135deg, rgba(20,22,60,0.92) 0%, rgba(41,44,117,0.9) 55%, rgba(0,103,71,0.88) 100%)",
           border: "1px solid rgba(255,255,255,0.12)",
           boxShadow:
             "0 20px 40px -12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.15), inset 0 -1px 0 rgba(255,255,255,0.05)",
