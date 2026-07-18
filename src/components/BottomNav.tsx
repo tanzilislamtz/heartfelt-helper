@@ -123,7 +123,7 @@ export function BottomNav() {
                     className="relative grid place-items-center text-white transition-all duration-500"
                     style={{
                       transform: isActive
-                        ? "translateY(calc(var(--item) * -0.48)) scale(1.05)"
+                        ? "translateY(calc(var(--item) * -0.28)) scale(1.05)"
                         : "translateY(0) scale(1)",
                       filter: isActive
                         ? "drop-shadow(0 2px 4px rgba(0,0,0,0.35))"
