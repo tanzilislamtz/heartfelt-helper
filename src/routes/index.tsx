@@ -131,9 +131,10 @@ function LeftNav() {
 function Feed() {
   return (
     <section className="space-y-5">
+      <Leaderboard />
       <Composer />
       <FeedToolbar />
-      <Leaderboard />
+
 
       <Post
         author="SOJIB KHAN"
