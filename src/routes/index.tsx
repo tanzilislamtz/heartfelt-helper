@@ -38,7 +38,6 @@ import {
   Upload,
   X,
   ChevronUp,
-  ChevronDown,
 } from "lucide-react";
 
 
