@@ -14,6 +14,12 @@ import {
   Lock,
   Users,
   Check,
+  Image as ImageIcon,
+  Video,
+  Hash,
+  X,
+  MessageSquare,
+  Sparkles,
 } from "lucide-react";
 
 export type PostTab = "learning" | "question" | "tutor" | "student";
@@ -167,12 +173,98 @@ function Select({ placeholder }: { placeholder: string }) {
 
 function UploadBox() {
   return (
-    <div className="group cursor-pointer rounded-xl border-2 border-dashed border-border bg-muted/30 px-4 py-6 text-center transition hover:border-primary/50 hover:bg-primary/5">
-      <div className="mx-auto mb-1.5 flex items-center justify-center gap-1.5 text-sm font-semibold text-foreground/80 group-hover:text-primary">
-        <Upload className="h-4 w-4" /> Click to upload or drag and drop
+    <div className="group relative cursor-pointer overflow-hidden rounded-2xl border-2 border-dashed border-border bg-gradient-to-br from-muted/40 via-surface to-primary/5 p-6 transition hover:border-primary/60 hover:from-primary/5 hover:to-primary/10">
+      <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-primary/10 opacity-0 blur-2xl transition group-hover:opacity-100" />
+      <div className="flex items-start gap-4">
+        <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-primary to-primary/70 text-white shadow-md shadow-primary/20 transition group-hover:scale-105">
+          <Upload className="h-5 w-5" strokeWidth={2.4} />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="text-sm font-semibold text-foreground group-hover:text-primary">
+            Click to upload or drag & drop
+          </div>
+          <div className="mt-0.5 text-[11px] text-muted-foreground">
+            Max 5 MB per file · 50 MB per video
+          </div>
+          <div className="mt-2.5 flex flex-wrap gap-1.5">
+            {[
+              { icon: ImageIcon, label: "Images" },
+              { icon: Video, label: "Video" },
+              { icon: FileText, label: "PDF · DOC · PPT · XLS · TXT" },
+            ].map(({ icon: I, label }) => (
+              <span
+                key={label}
+                className="inline-flex items-center gap-1 rounded-full border border-border bg-surface/80 px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
+              >
+                <I className="h-3 w-3" /> {label}
+              </span>
+            ))}
+          </div>
+        </div>
       </div>
-      <div className="text-[11px] text-muted-foreground">
-        Images, video, PDF, DOC, PPT, XLS, TXT · ≤5 MB file / ≤50 MB video
+    </div>
+  );
+}
+
+const SUGGESTED_TAGS = ["math", "physics", "hsc", "notes", "help", "chemistry"];
+
+function TagsInput({ placeholder = "Add a tag and press enter" }: { placeholder?: string }) {
+  const [tags, setTags] = useState<string[]>([]);
+  const [value, setValue] = useState("");
+
+  const addTag = (t: string) => {
+    const clean = t.trim().replace(/^#/, "").toLowerCase();
+    if (!clean || tags.includes(clean) || tags.length >= 8) return;
+    setTags((prev) => [...prev, clean]);
+    setValue("");
+  };
+
+  return (
+    <div>
+      <div className="group flex flex-wrap items-center gap-1.5 rounded-xl border border-border bg-muted/40 px-2.5 py-2 transition focus-within:border-primary/50 focus-within:bg-surface focus-within:ring-4 focus-within:ring-primary/10">
+        {tags.map((t) => (
+          <span
+            key={t}
+            className="inline-flex items-center gap-1 rounded-full bg-primary/10 py-1 pl-2 pr-1 text-xs font-semibold text-primary"
+          >
+            <Hash className="h-3 w-3" />
+            {t}
+            <button
+              type="button"
+              onClick={() => setTags((prev) => prev.filter((x) => x !== t))}
+              className="grid h-4 w-4 place-items-center rounded-full text-primary/70 hover:bg-primary/20 hover:text-primary"
+            >
+              <X className="h-3 w-3" />
+            </button>
+          </span>
+        ))}
+        <input
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === ",") {
+              e.preventDefault();
+              addTag(value);
+            } else if (e.key === "Backspace" && !value && tags.length) {
+              setTags((prev) => prev.slice(0, -1));
+            }
+          }}
+          placeholder={tags.length ? "" : placeholder}
+          className="min-w-[8ch] flex-1 bg-transparent px-1.5 py-1 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none"
+        />
+      </div>
+      <div className="mt-2 flex flex-wrap items-center gap-1.5">
+        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Suggested</span>
+        {SUGGESTED_TAGS.filter((s) => !tags.includes(s)).slice(0, 5).map((s) => (
+          <button
+            key={s}
+            type="button"
+            onClick={() => addTag(s)}
+            className="rounded-full border border-border bg-surface px-2 py-0.5 text-[11px] font-medium text-muted-foreground transition hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
+          >
+            #{s}
+          </button>
+        ))}
       </div>
     </div>
   );
@@ -237,11 +329,21 @@ function ContentEditor({ placeholder }: { placeholder: string }) {
 
 function VisibilityRow() {
   return (
-    <div className="flex flex-wrap items-center justify-end gap-6 border-t border-border pt-6">
-      <div className="flex flex-col gap-2">
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Interactions</span>
-        <Toggle label="Allow comments" />
+    <div className="mt-2 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border bg-gradient-to-r from-muted/40 via-surface to-primary/5 px-5 py-4">
+      <div className="flex items-center gap-3">
+        <div className="grid h-9 w-9 place-items-center rounded-xl bg-primary/10 text-primary">
+          <MessageSquare className="h-4 w-4" />
+        </div>
+        <div>
+          <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+            Interactions
+          </div>
+          <div className="text-sm font-semibold text-foreground">
+            Let others comment on this post
+          </div>
+        </div>
       </div>
+      <Toggle label="Allow comments" />
     </div>
   );
 }
@@ -309,8 +411,11 @@ function LearningForm() {
         </div>
         <div>
           <SectionHeader title="Tags" />
-          <input className={inputCls} placeholder="Add tags and press enter" />
-          <p className="mt-2 text-xs text-muted-foreground">Tip: posts with tags get 3× more engagement.</p>
+          <TagsInput placeholder="Add tags and press enter" />
+          <p className="mt-2 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+            <Sparkles className="h-3 w-3 text-primary" />
+            Posts with tags get <span className="font-semibold text-foreground">3× more</span> engagement.
+          </p>
         </div>
       </section>
 
@@ -349,7 +454,7 @@ function QuestionForm() {
         </div>
         <div>
           <SectionHeader title="Tags" />
-          <input className={inputCls} placeholder="Add tags (optional)" />
+          <TagsInput placeholder="Add tags (optional)" />
           <label className="mt-3 flex items-center gap-2 text-sm text-foreground">
             <input type="checkbox" className="h-4 w-4 rounded border-border accent-primary" />
             Mark as solved when you get an accepted answer
