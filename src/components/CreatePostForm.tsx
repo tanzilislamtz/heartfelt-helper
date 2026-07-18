@@ -559,14 +559,15 @@ function TutorRequestForm({ mode }: { mode: "tutor" | "student" }) {
 
 function ActionButtons({ compact = false }: { compact?: boolean }) {
   return (
-    <div className={`flex items-center gap-2 ${compact ? "" : "sm:gap-3"}`}>
-      <button className="rounded-lg px-3 py-2 text-xs font-semibold text-muted-foreground transition hover:text-foreground sm:text-sm">
-        Save Draft
+    <div className={`flex items-center gap-1.5 ${compact ? "" : "sm:gap-3"}`}>
+      <button className="whitespace-nowrap rounded-lg px-2 py-2 text-xs font-semibold text-muted-foreground transition hover:text-foreground sm:px-3 sm:text-sm">
+        <span className="sm:hidden">Save</span>
+        <span className="hidden sm:inline">Save Draft</span>
       </button>
-      <button className="rounded-lg border border-border bg-surface px-3 py-2 text-xs font-semibold text-foreground transition hover:border-primary/40 hover:text-primary sm:px-4 sm:text-sm">
+      <button className="whitespace-nowrap rounded-lg border border-border bg-surface px-2.5 py-2 text-xs font-semibold text-foreground transition hover:border-primary/40 hover:text-primary sm:px-4 sm:text-sm">
         Preview
       </button>
-      <button className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-md shadow-primary/20 transition hover:opacity-95 sm:px-6 sm:text-sm">
+      <button className="whitespace-nowrap rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground shadow-md shadow-primary/20 transition hover:opacity-95 sm:px-6 sm:text-sm">
         Post Now
       </button>
     </div>
@@ -711,8 +712,9 @@ export function CreatePostForm({ initialTab = "learning" }: { initialTab?: PostT
           </div>
 
           {/* Sticky mobile action bar */}
-          <div className="sticky bottom-0 z-10 flex items-center justify-between gap-2 border-t border-border bg-surface/95 px-5 py-3 shadow-[0_-6px_20px_rgba(0,0,0,0.04)] backdrop-blur sm:hidden">
-            <span className="text-[10px] text-muted-foreground">Draft saved automatically</span>
+          <div className="sticky bottom-0 z-10 flex items-center justify-between gap-2 border-t border-border bg-surface/95 px-3 py-2.5 shadow-[0_-6px_20px_rgba(0,0,0,0.04)] backdrop-blur sm:hidden">
+            <span className="hidden text-[10px] text-muted-foreground xs:inline">Draft saved</span>
+            <span className="text-[10px] text-muted-foreground xs:hidden">Saved</span>
             <ActionButtons compact />
           </div>
         </main>
