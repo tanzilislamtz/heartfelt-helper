@@ -454,7 +454,7 @@ function QuestionForm() {
         </div>
         <div>
           <SectionHeader title="Tags" />
-          <input className={inputCls} placeholder="Add tags (optional)" />
+          <TagsInput placeholder="Add tags (optional)" />
           <label className="mt-3 flex items-center gap-2 text-sm text-foreground">
             <input type="checkbox" className="h-4 w-4 rounded border-border accent-primary" />
             Mark as solved when you get an accepted answer
