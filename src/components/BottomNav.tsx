@@ -51,7 +51,7 @@ export function BottomNav() {
   const unread = useUnreadMessages();
 
   const style = {
-    ["--item" as string]: "clamp(58px, 17vw, 74px)",
+    ["--item" as string]: "clamp(48px, 13.5vw, 60px)",
   } as React.CSSProperties;
 
   return (
