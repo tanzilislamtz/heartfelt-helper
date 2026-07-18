@@ -41,11 +41,6 @@ export function BottomNav() {
         ...style,
       }}
     >
-      {/* Background pad so the notch cut-out has something to bite into */}
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-0"
-        style={{ background: BG, height: "calc(var(--item) + 2.25rem)" }}
-      />
 
       <div
         className="relative flex items-center justify-center rounded-[16px]"
@@ -136,37 +131,11 @@ export function BottomNav() {
             width: "var(--item)",
             height: "var(--item)",
             background: "linear-gradient(45deg, #2196f3, #e91e63)",
-            border: `6px solid ${BG}`,
+            boxShadow: "0 10px 24px -6px rgba(233, 30, 99, 0.45)",
             transform: `translateX(calc(var(--item) * ${activeIndex}))`,
           }}
-        >
-          {/* Left notch curve */}
-          <span
-            aria-hidden
-            className="absolute"
-            style={{
-              top: "50%",
-              left: -22,
-              width: 20,
-              height: 20,
-              borderTopRightRadius: 20,
-              boxShadow: `1px -10px 0 ${BG}`,
-            }}
-          />
-          {/* Right notch curve */}
-          <span
-            aria-hidden
-            className="absolute"
-            style={{
-              top: "50%",
-              right: -22,
-              width: 20,
-              height: 20,
-              borderTopLeftRadius: 20,
-              boxShadow: `-1px -10px 0 ${BG}`,
-            }}
-          />
-        </span>
+        />
+
       </div>
     </nav>
   );
