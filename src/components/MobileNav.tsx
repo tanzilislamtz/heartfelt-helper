@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { X, Home, FileText, Flame, MessageSquare, UserSearch, BookOpenCheck, UserCheck, Sparkles, GraduationCap } from "lucide-react";
+import { X, Home, FileText, Flame, MessageSquare, UserSearch, BookOpenCheck, UserCheck, GraduationCap } from "lucide-react";
 import { useEffect } from "react";
 
 const items = [
