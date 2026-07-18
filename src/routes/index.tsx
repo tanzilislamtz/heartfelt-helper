@@ -19,7 +19,6 @@ import {
   TrendingUp,
   ArrowUpRight,
 
-  ArrowUpRight,
   GraduationCap,
   Menu,
   FileText,
