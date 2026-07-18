@@ -2,8 +2,6 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import {
   SlidersHorizontal,
-  LayoutGrid,
-  Rows3,
   Sparkles,
   Flame,
   MessageCircleQuestion,
