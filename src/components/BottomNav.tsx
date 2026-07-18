@@ -63,6 +63,19 @@ export function BottomNav() {
     return () => cancelAnimationFrame(id);
   }, []);
 
+  // Debug overlay: toggle with `?navdebug=1` in the URL, or Alt+D.
+  const [debug, setDebug] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return new URLSearchParams(window.location.search).has("navdebug");
+  });
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.altKey && (e.key === "d" || e.key === "D")) setDebug((v) => !v);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   // Springy easing for state changes (bar/orb/icons)
   const EASE = "cubic-bezier(0.34, 1.56, 0.64, 1)";
   const orbTransition = mounted
@@ -264,7 +277,106 @@ export function BottomNav() {
           }}
         />
 
+        {/* ────────── Debug overlay ────────── */}
+        {debug && (
+          <>
+            {/* Bar bounds outline */}
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-0 rounded-full"
+              style={{ border: "1px dashed rgba(255,80,80,0.9)" }}
+            />
+            {/* Bar center horizontal + vertical crosshair */}
+            <span
+              aria-hidden
+              className="pointer-events-none absolute left-0 right-0 top-1/2"
+              style={{ height: 1, background: "rgba(255,255,0,0.7)" }}
+            />
+            <span
+              aria-hidden
+              className="pointer-events-none absolute bottom-0 top-0 left-1/2"
+              style={{ width: 1, background: "rgba(255,255,0,0.5)" }}
+            />
+            {/* Per-tab center + lift range */}
+            {items.map((it, i) => (
+              <span
+                key={`dbg-tab-${it.to}`}
+                aria-hidden
+                className="pointer-events-none absolute top-0"
+                style={{
+                  left: "calc(var(--pad) + var(--item) * 0.5)",
+                  transform: `translateX(calc(var(--item) * ${i}))`,
+                  height: "var(--h)",
+                  width: 0,
+                  borderLeft: "1px dashed rgba(0,255,180,0.9)",
+                }}
+              >
+                {/* tab index label */}
+                <span
+                  style={{
+                    position: "absolute",
+                    top: -14,
+                    left: -6,
+                    fontSize: 9,
+                    color: "#0ff",
+                    fontWeight: 700,
+                  }}
+                >
+                  {i}
+                </span>
+              </span>
+            ))}
+            {/* Orb lift range (from bar top down to bar top + orb height, centered) */}
+            <span
+              aria-hidden
+              className="pointer-events-none absolute"
+              style={{
+                top: "calc(var(--item) * -0.32)",
+                left: "calc(var(--pad) + var(--item) * 0.5)",
+                width: "calc(var(--item) * 0.72)",
+                height: "calc(var(--item) * 0.72)",
+                marginLeft: "calc(var(--item) * -0.36)",
+                transform: `translateX(calc(var(--item) * ${activeIndex}))`,
+                border: "1px solid rgba(255,0,255,0.9)",
+                borderRadius: "999px",
+                transition: orbTransition,
+              }}
+            />
+            {/* Orb center dot */}
+            <span
+              aria-hidden
+              className="pointer-events-none absolute"
+              style={{
+                top: "calc(var(--item) * -0.32 + var(--item) * 0.36)",
+                left: "calc(var(--pad) + var(--item) * 0.5)",
+                width: 6,
+                height: 6,
+                marginLeft: -3,
+                marginTop: -3,
+                background: "#ff0",
+                borderRadius: 999,
+                boxShadow: "0 0 0 1px #000",
+                transform: `translateX(calc(var(--item) * ${activeIndex}))`,
+                transition: orbTransition,
+              }}
+            />
+            {/* Legend */}
+            <span
+              aria-hidden
+              className="pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap rounded px-2 py-1 text-[10px] font-mono"
+              style={{
+                background: "rgba(0,0,0,0.75)",
+                color: "#fff",
+                border: "1px solid rgba(255,255,255,0.2)",
+              }}
+            >
+              active={activeIndex} · orb ⌀ 0.72·item · lift −0.32·item · Alt+D toggle
+            </span>
+          </>
+        )}
+
       </div>
+
 
       <style>{`
         @keyframes nav-pulse {
