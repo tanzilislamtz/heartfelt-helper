@@ -4,7 +4,6 @@ import { Home, Lightbulb, MessageSquare, User } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 
-
 type Item = {
   to: "/" | "/quiz" | "/message" | "/profile";
   label: string;
@@ -18,111 +17,68 @@ const items: Item[] = [
   { to: "/profile", label: "Profile", Icon: User },
 ];
 
-// Build the bar SVG path with a scooped notch under the active tab.
-// viewBox is 400 x 88, tabs centered at x = 50, 150, 250, 350.
-function buildPath(activeIndex: number) {
-  const cx = 50 + activeIndex * 100;
-  const scoopLeft = cx - 34;
-  const scoopRight = cx + 34;
-
-  const left =
-    activeIndex === 0
-      ? `M 0,88 L 0,26`
-      : `M 0,88 L 0,50 Q 0,26 24,26`;
-
-  const scoop =
-    `L ${scoopLeft},26` +
-    ` C ${cx - 18},26 ${cx - 18},50 ${cx},50` +
-    ` C ${cx + 18},50 ${cx + 18},26 ${scoopRight},26`;
-
-  const right =
-    activeIndex === 3
-      ? `L 400,26 L 400,88 Z`
-      : `L 376,26 Q 400,26 400,50 L 400,88 Z`;
-
-  return `${left} ${scoop} ${right}`;
-}
-
 export function BottomNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const activeIndex = Math.max(
     0,
     items.findIndex((i) => i.to === pathname),
   );
-  const d = buildPath(activeIndex);
   const unread = useUnreadMessages();
-
 
   return (
     <nav
       aria-label="Primary"
-      className="fixed inset-x-0 bottom-0 z-40 lg:hidden"
-      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-4 pb-3 lg:hidden"
+      style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
     >
-      <div className="relative h-[88px] w-full">
-        {/* Curved bar background */}
-        <svg
-          className="absolute inset-0 h-full w-full drop-shadow-[0_-8px_24px_rgba(15,23,42,0.10)]"
-          viewBox="0 0 400 88"
-          preserveAspectRatio="none"
+      <div
+        className="relative w-full max-w-[420px] rounded-[32px] border border-white/60 bg-white/75 p-2 shadow-[0_20px_50px_-12px_rgba(79,70,229,0.28),0_4px_16px_-6px_rgba(15,23,42,0.08)] backdrop-blur-2xl"
+      >
+        {/* Sliding active indicator */}
+        <motion.div
           aria-hidden
+          className="absolute top-2 bottom-2 rounded-[24px] bg-gradient-to-tr from-indigo-600 via-violet-600 to-fuchsia-500 shadow-[0_10px_24px_-6px_rgba(124,58,237,0.55)]"
+          style={{ width: `calc(25% - 4px)` }}
+          initial={false}
+          animate={{ left: `calc(${activeIndex} * 25% + 2px)` }}
+          transition={{ type: "spring", stiffness: 380, damping: 30 }}
         >
-          <motion.path
-            d={d}
-            initial={false}
-            animate={{ d }}
-            transition={{ type: "spring", stiffness: 260, damping: 26 }}
-            fill="var(--color-surface)"
-          />
-        </svg>
+          {/* subtle iridescent sheen */}
+          <span className="pointer-events-none absolute inset-0 rounded-[24px] bg-gradient-to-b from-white/25 to-transparent" />
+        </motion.div>
 
         {/* Tabs */}
-        <ul className="relative grid h-full grid-cols-4 items-end pb-3">
+        <ul className="relative grid grid-cols-4">
           {items.map((item, i) => {
             const active = i === activeIndex;
             const Icon = item.Icon;
             const showBadge = item.to === "/message" && unread > 0;
             const badgeLabel = unread > 99 ? "99+" : String(unread);
             return (
-              <li key={item.to} className="relative flex justify-center">
+              <li key={item.to} className="flex">
                 <Link
                   to={item.to}
                   aria-label={showBadge ? `${item.label} (${unread} unread)` : item.label}
                   aria-current={active ? "page" : undefined}
-                  className="group relative flex w-full flex-col items-center gap-1 outline-none"
+                  className="group relative flex min-h-[56px] w-full flex-col items-center justify-center gap-1 rounded-[24px] outline-none"
                 >
-
-                  {active ? (
-                    <>
-                      {/* Elevated floating circle */}
-                      <motion.span
-                        layoutId="bnav-elevated"
-                        transition={{ type: "spring", stiffness: 320, damping: 26 }}
-                        className="absolute -top-8 grid h-14 w-14 place-items-center rounded-full bg-surface shadow-[0_12px_24px_-8px_rgba(49,46,129,0.45)] ring-[3px] ring-background"
-                      >
-                        <span className="relative grid h-11 w-11 place-items-center rounded-full">
-                          <Icon
-                            className="h-[22px] w-[22px] text-primary"
-                            strokeWidth={2.2}
-                            fill="currentColor"
-                            fillOpacity={0.12}
-                          />
-                          {showBadge && <Badge label={badgeLabel} elevated />}
-                        </span>
-                      </motion.span>
-                      {/* Spacer so label stays at bottom of bar */}
-                      <span className="h-8" aria-hidden />
-                    </>
-                  ) : (
-                    <span className="relative grid h-8 w-8 place-items-center text-muted-foreground/70 transition-colors group-hover:text-foreground">
-                      <Icon className="h-[22px] w-[22px]" strokeWidth={1.6} />
-                      {showBadge && <Badge label={badgeLabel} />}
-                    </span>
-                  )}
-
+                  <motion.span
+                    className="relative grid place-items-center"
+                    animate={{ scale: active ? 1.05 : 1, y: active ? -1 : 0 }}
+                    whileTap={{ scale: 0.88 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 22 }}
+                  >
+                    <Icon
+                      className={`h-[22px] w-[22px] transition-colors duration-200 ${
+                        active ? "text-white" : "text-slate-400 group-hover:text-indigo-600"
+                      }`}
+                      strokeWidth={active ? 2.4 : 2}
+                    />
+                    {showBadge && <Badge label={badgeLabel} />}
+                  </motion.span>
                   <span
-                    className={`text-[11px] font-medium tracking-tight ${
-                      active ? "text-primary" : "text-muted-foreground"
+                    className={`text-[10.5px] font-semibold tracking-wide transition-colors duration-200 ${
+                      active ? "text-white" : "text-slate-500 group-hover:text-indigo-600"
                     }`}
                   >
                     {item.label}
@@ -137,7 +93,7 @@ export function BottomNav() {
   );
 }
 
-function Badge({ label, elevated = false }: { label: string; elevated?: boolean }) {
+function Badge({ label }: { label: string }) {
   const wide = label.length > 1;
   return (
     <AnimatePresence>
@@ -147,9 +103,9 @@ function Badge({ label, elevated = false }: { label: string; elevated?: boolean 
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.4, opacity: 0 }}
         transition={{ type: "spring", stiffness: 500, damping: 22 }}
-        className={`pointer-events-none absolute ${
-          elevated ? "-right-1 -top-1" : "-right-2 -top-1"
-        } z-10 flex ${wide ? "h-[18px] min-w-[22px] px-1" : "h-[18px] w-[18px]"} items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold leading-none text-white ring-2 ring-surface shadow-[0_4px_10px_-2px_rgba(244,63,94,0.55)]`}
+        className={`pointer-events-none absolute -right-2 -top-1.5 z-10 flex ${
+          wide ? "h-[18px] min-w-[22px] px-1" : "h-[18px] w-[18px]"
+        } items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold leading-none text-white ring-2 ring-white shadow-[0_4px_10px_-2px_rgba(244,63,94,0.55)]`}
         aria-hidden
       >
         {label}
@@ -158,4 +114,3 @@ function Badge({ label, elevated = false }: { label: string; elevated?: boolean 
     </AnimatePresence>
   );
 }
-
