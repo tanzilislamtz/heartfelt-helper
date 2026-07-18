@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as QuizRouteImport } from './routes/quiz'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as MessageRouteImport } from './routes/message'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as CreatePostRouteImport } from './routes/create-post'
@@ -31,6 +32,11 @@ const RegisterRoute = RegisterRouteImport.update({
 const QuizRoute = QuizRouteImport.update({
   id: '/quiz',
   path: '/quiz',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MessageRoute = MessageRouteImport.update({
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/create-post': typeof CreatePostRoute
   '/login': typeof LoginRoute
   '/message': typeof MessageRoute
+  '/profile': typeof ProfileRoute
   '/quiz': typeof QuizRoute
   '/register': typeof RegisterRoute
   '/welcome': typeof WelcomeRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/create-post': typeof CreatePostRoute
   '/login': typeof LoginRoute
   '/message': typeof MessageRoute
+  '/profile': typeof ProfileRoute
   '/quiz': typeof QuizRoute
   '/register': typeof RegisterRoute
   '/welcome': typeof WelcomeRoute
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/create-post': typeof CreatePostRoute
   '/login': typeof LoginRoute
   '/message': typeof MessageRoute
+  '/profile': typeof ProfileRoute
   '/quiz': typeof QuizRoute
   '/register': typeof RegisterRoute
   '/welcome': typeof WelcomeRoute
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/create-post'
     | '/login'
     | '/message'
+    | '/profile'
     | '/quiz'
     | '/register'
     | '/welcome'
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/create-post'
     | '/login'
     | '/message'
+    | '/profile'
     | '/quiz'
     | '/register'
     | '/welcome'
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/create-post'
     | '/login'
     | '/message'
+    | '/profile'
     | '/quiz'
     | '/register'
     | '/welcome'
@@ -128,6 +140,7 @@ export interface RootRouteChildren {
   CreatePostRoute: typeof CreatePostRoute
   LoginRoute: typeof LoginRoute
   MessageRoute: typeof MessageRoute
+  ProfileRoute: typeof ProfileRoute
   QuizRoute: typeof QuizRoute
   RegisterRoute: typeof RegisterRoute
   WelcomeRoute: typeof WelcomeRoute
@@ -155,6 +168,13 @@ declare module '@tanstack/react-router' {
       path: '/quiz'
       fullPath: '/quiz'
       preLoaderRoute: typeof QuizRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/message': {
@@ -200,6 +220,7 @@ const rootRouteChildren: RootRouteChildren = {
   CreatePostRoute: CreatePostRoute,
   LoginRoute: LoginRoute,
   MessageRoute: MessageRoute,
+  ProfileRoute: ProfileRoute,
   QuizRoute: QuizRoute,
   RegisterRoute: RegisterRoute,
   WelcomeRoute: WelcomeRoute,
