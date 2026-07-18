@@ -296,7 +296,7 @@ function Composer() {
           <span className="ml-2 hidden items-center gap-0.5 sm:flex">
             <ComposerIconBtn icon={ImageIcon} onClick={go} title="Image" />
             <ComposerIconBtn icon={Paperclip} onClick={go} title="Attach" />
-            <ComposerIconBtn icon={BarChart3} onClick={go} title="Poll" />
+            
             
           </span>
         </button>
