@@ -411,8 +411,11 @@ function LearningForm() {
         </div>
         <div>
           <SectionHeader title="Tags" />
-          <input className={inputCls} placeholder="Add tags and press enter" />
-          <p className="mt-2 text-xs text-muted-foreground">Tip: posts with tags get 3× more engagement.</p>
+          <TagsInput placeholder="Add tags and press enter" />
+          <p className="mt-2 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+            <Sparkles className="h-3 w-3 text-primary" />
+            Posts with tags get <span className="font-semibold text-foreground">3× more</span> engagement.
+          </p>
         </div>
       </section>
 
