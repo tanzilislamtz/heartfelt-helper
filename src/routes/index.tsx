@@ -767,10 +767,14 @@ function Post({
         {kind === "question" ? (
           <div className="flex gap-3">
             {/* Vote rail */}
-            <div className="flex shrink-0 flex-col items-center gap-0.5 rounded-xl border border-amber-500/40 bg-white/60 px-2 py-2 text-amber-900">
-              <ChevronUp className="h-4 w-4" />
-              <span className="text-sm font-black tabular-nums">{Math.max(1, Math.round(stats.likes / 3))}</span>
-              <ChevronDown className="h-4 w-4 opacity-40" />
+            <div className="flex h-fit shrink-0 flex-col items-center justify-between gap-1 rounded-full border border-amber-500/40 bg-white/70 px-2 py-2 text-amber-900">
+              <button aria-label="Upvote" className="grid place-items-center rounded-full p-1 transition-colors hover:bg-amber-500/20">
+                <ChevronUp className="h-4 w-4" strokeWidth={2.5} />
+              </button>
+              <span className="text-base font-black leading-none tabular-nums">{Math.max(1, Math.round(stats.likes / 3))}</span>
+              <button aria-label="Downvote" className="grid place-items-center rounded-full p-1 text-amber-900/50 transition-colors hover:bg-amber-500/20 hover:text-amber-900">
+                <ChevronDown className="h-4 w-4" strokeWidth={2.5} />
+              </button>
             </div>
             <div className="min-w-0 flex-1">
               <h2 className="text-lg font-bold leading-snug text-amber-950">{title}</h2>
