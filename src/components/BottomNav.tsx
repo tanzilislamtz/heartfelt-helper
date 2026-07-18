@@ -41,11 +41,6 @@ export function BottomNav() {
         ...style,
       }}
     >
-      {/* Background pad so the notch cut-out has something to bite into */}
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-0"
-        style={{ background: BG, height: "calc(var(--item) + 2.25rem)" }}
-      />
 
       <div
         className="relative flex items-center justify-center rounded-[16px]"
