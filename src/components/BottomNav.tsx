@@ -1,7 +1,9 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Home, Lightbulb, MessageSquare, User } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
+import { useUnreadMessages } from "@/hooks/useUnreadMessages";
+
 
 type Item = {
   to: "/" | "/quiz" | "/message" | "/profile";
@@ -48,6 +50,8 @@ export function BottomNav() {
     items.findIndex((i) => i.to === pathname),
   );
   const d = buildPath(activeIndex);
+  const unread = useUnreadMessages();
+
 
   return (
     <nav
@@ -77,14 +81,17 @@ export function BottomNav() {
           {items.map((item, i) => {
             const active = i === activeIndex;
             const Icon = item.Icon;
+            const showBadge = item.to === "/message" && unread > 0;
+            const badgeLabel = unread > 99 ? "99+" : String(unread);
             return (
               <li key={item.to} className="relative flex justify-center">
                 <Link
                   to={item.to}
-                  aria-label={item.label}
+                  aria-label={showBadge ? `${item.label} (${unread} unread)` : item.label}
                   aria-current={active ? "page" : undefined}
                   className="group relative flex w-full flex-col items-center gap-1 outline-none"
                 >
+
                   {active ? (
                     <>
                       {/* Elevated floating circle */}
@@ -93,23 +100,26 @@ export function BottomNav() {
                         transition={{ type: "spring", stiffness: 320, damping: 26 }}
                         className="absolute -top-8 grid h-14 w-14 place-items-center rounded-full bg-surface shadow-[0_12px_24px_-8px_rgba(49,46,129,0.45)] ring-[3px] ring-background"
                       >
-                        <span className="grid h-11 w-11 place-items-center rounded-full">
+                        <span className="relative grid h-11 w-11 place-items-center rounded-full">
                           <Icon
                             className="h-[22px] w-[22px] text-primary"
                             strokeWidth={2.2}
                             fill="currentColor"
                             fillOpacity={0.12}
                           />
+                          {showBadge && <Badge label={badgeLabel} elevated />}
                         </span>
                       </motion.span>
                       {/* Spacer so label stays at bottom of bar */}
                       <span className="h-8" aria-hidden />
                     </>
                   ) : (
-                    <span className="grid h-8 w-8 place-items-center text-muted-foreground/70 transition-colors group-hover:text-foreground">
+                    <span className="relative grid h-8 w-8 place-items-center text-muted-foreground/70 transition-colors group-hover:text-foreground">
                       <Icon className="h-[22px] w-[22px]" strokeWidth={1.6} />
+                      {showBadge && <Badge label={badgeLabel} />}
                     </span>
                   )}
+
                   <span
                     className={`text-[11px] font-medium tracking-tight ${
                       active ? "text-primary" : "text-muted-foreground"
@@ -126,3 +136,26 @@ export function BottomNav() {
     </nav>
   );
 }
+
+function Badge({ label, elevated = false }: { label: string; elevated?: boolean }) {
+  const wide = label.length > 1;
+  return (
+    <AnimatePresence>
+      <motion.span
+        key={label}
+        initial={{ scale: 0.4, opacity: 0, y: -2 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.4, opacity: 0 }}
+        transition={{ type: "spring", stiffness: 500, damping: 22 }}
+        className={`pointer-events-none absolute ${
+          elevated ? "-right-1 -top-1" : "-right-2 -top-1"
+        } z-10 flex ${wide ? "h-[18px] min-w-[22px] px-1" : "h-[18px] w-[18px]"} items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold leading-none text-white ring-2 ring-surface shadow-[0_4px_10px_-2px_rgba(244,63,94,0.55)]`}
+        aria-hidden
+      >
+        {label}
+        <span className="absolute inset-0 -z-10 animate-ping rounded-full bg-rose-500/60" />
+      </motion.span>
+    </AnimatePresence>
+  );
+}
+
