@@ -123,22 +123,6 @@ function LeftNav() {
           </a>
         ))}
 
-        <div className="mt-6 rounded-2xl border border-border bg-surface p-4">
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            <Sparkles className="h-3.5 w-3.5 text-accent" />
-            Your progress
-          </div>
-          <div className="mt-3 flex items-baseline gap-1">
-            <span className="font-display text-3xl font-semibold text-foreground">72</span>
-            <span className="text-xs text-muted-foreground">/ 100 XP</span>
-          </div>
-          <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-muted">
-            <div className="h-full w-[72%] rounded-full bg-tutor" />
-          </div>
-          <p className="mt-2 text-xs text-muted-foreground">
-            28 XP to <span className="font-medium text-foreground">Level 4</span>
-          </p>
-        </div>
       </nav>
     </aside>
   );
