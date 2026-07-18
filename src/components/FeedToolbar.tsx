@@ -82,11 +82,11 @@ export function FeedToolbar() {
               {sort === i && (
                 <motion.span
                   layoutId="feed-sort-pill"
-                  className="absolute inset-0 -z-10 rounded-full bg-foreground shadow-sm"
+                  className="absolute inset-0 rounded-full bg-foreground shadow-sm"
                   transition={{ type: "spring", stiffness: 420, damping: 34 }}
                 />
               )}
-              {s}
+              <span className="relative">{s}</span>
             </button>
           ))}
         </div>
