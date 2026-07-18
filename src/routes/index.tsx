@@ -4,12 +4,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import {
   Search,
   Home,
-  Compass,
   BookOpen,
-  Bell,
   MessageCircle,
   Bookmark,
-  Award,
   Users,
   Sparkles,
   Image as ImageIcon,
@@ -20,8 +17,8 @@ import {
   MoreHorizontal,
   CheckCircle2,
   TrendingUp,
-  Plus,
   ArrowUpRight,
+
   GraduationCap,
   Menu,
   FileText,
@@ -93,7 +90,7 @@ function Index() {
         <Feed />
         <RightRail />
       </main>
-      <MobileTabBar />
+      {/* Bottom nav rendered globally in __root.tsx */}
     </div>
   );
 }
@@ -1045,34 +1042,5 @@ function RightRail() {
   );
 }
 
-function MobileTabBar() {
-  const items = [
-    { icon: Home, label: "Home", active: true },
-    { icon: Compass, label: "Explore" },
-    { icon: Plus, label: "Post", primary: true },
-    { icon: Bell, label: "Alerts" },
-    { icon: Award, label: "You" },
-  ];
-  return (
-    <nav className="sticky bottom-0 z-40 border-t border-border bg-background/90 backdrop-blur-xl lg:hidden">
-      <ul className="mx-auto flex max-w-md items-center justify-around px-2 py-2">
-        {items.map(({ icon: Icon, label, active, primary }) => (
-          <li key={label}>
-            <button
-              className={`grid place-items-center gap-0.5 rounded-2xl px-3 py-1.5 text-[10px] font-medium ${
-                primary
-                  ? "bg-primary text-primary-foreground shadow-md"
-                  : active
-                    ? "text-primary"
-                    : "text-muted-foreground"
-              }`}
-            >
-              <Icon className="h-5 w-5" />
-              {!primary && <span>{label}</span>}
-            </button>
-          </li>
-        ))}
-      </ul>
-    </nav>
-  );
-}
+
+
