@@ -126,7 +126,7 @@ export function BottomNav() {
           className="absolute flex items-center justify-center rounded-full transition-transform duration-500"
           style={{
             top: "-50%",
-            left: 0,
+            left: "calc(var(--item) * 0.35)",
             width: "var(--item)",
             height: "var(--item)",
             background: "linear-gradient(45deg, #2196f3, #e91e63)",
