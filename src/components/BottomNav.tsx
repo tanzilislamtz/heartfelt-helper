@@ -127,7 +127,8 @@ export function BottomNav() {
               <li
                 key={item.to}
                 className="relative z-10 list-none"
-                style={{ width: "var(--item)", height: "var(--item)" }}
+                style={{ width: "var(--item)", height: "var(--h)" }}
+
               >
                 <Link
                   to={item.to}
