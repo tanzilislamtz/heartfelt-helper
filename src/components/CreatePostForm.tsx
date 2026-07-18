@@ -712,8 +712,9 @@ export function CreatePostForm({ initialTab = "learning" }: { initialTab?: PostT
           </div>
 
           {/* Sticky mobile action bar */}
-          <div className="sticky bottom-0 z-10 flex items-center justify-between gap-2 border-t border-border bg-surface/95 px-5 py-3 shadow-[0_-6px_20px_rgba(0,0,0,0.04)] backdrop-blur sm:hidden">
-            <span className="text-[10px] text-muted-foreground">Draft saved automatically</span>
+          <div className="sticky bottom-0 z-10 flex items-center justify-between gap-2 border-t border-border bg-surface/95 px-3 py-2.5 shadow-[0_-6px_20px_rgba(0,0,0,0.04)] backdrop-blur sm:hidden">
+            <span className="hidden text-[10px] text-muted-foreground xs:inline">Draft saved</span>
+            <span className="text-[10px] text-muted-foreground xs:hidden">Saved</span>
             <ActionButtons compact />
           </div>
         </main>
