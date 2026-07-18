@@ -168,7 +168,7 @@ export function BottomNav() {
                     className="relative grid place-items-center text-white"
                     style={{
                       transform: isActive
-                        ? "translateY(calc(var(--item) * -0.28)) scale(1.05)"
+                        ? "translateY(calc(var(--item) * -0.38)) scale(1.05)"
                         : "translateY(0) scale(1)",
                       filter: isActive
                         ? "drop-shadow(0 2px 4px rgba(0,0,0,0.35))"
@@ -199,13 +199,14 @@ export function BottomNav() {
                   </span>
 
                   <span
-                    className="absolute font-semibold tracking-wide text-white"
+                    className="absolute left-1/2 -translate-x-1/2 font-semibold tracking-wide text-white"
                     style={{
+                      bottom: "calc(var(--h) * 0.12)",
                       fontSize: "clamp(0.62rem, 1.8vw, 0.72rem)",
                       opacity: isActive ? 1 : 0,
                       transform: isActive
-                        ? "translateY(14px)"
-                        : "translateY(22px)",
+                        ? "translate(-50%, 0)"
+                        : "translate(-50%, 6px)",
                       textShadow: "0 1px 2px rgba(0,0,0,0.4)",
                       transition: mounted
                         ? "opacity 320ms ease, transform 500ms cubic-bezier(0.22,1,0.36,1)"
@@ -218,14 +219,16 @@ export function BottomNav() {
 
                   {/* Pulse ring around indicator */}
                   <span
-                    className="pointer-events-none absolute block rounded-full"
+                    className="pointer-events-none absolute left-1/2 top-1/2 block rounded-full"
                     style={{
-                      width: "calc(var(--item) * 0.6)",
-                      height: "calc(var(--item) * 0.6)",
+                      width: "calc(var(--item) * 0.72)",
+                      height: "calc(var(--item) * 0.72)",
+                      marginLeft: "calc(var(--item) * -0.36)",
+                      marginTop: "calc(var(--item) * -0.36)",
                       border: "1.5px solid rgba(255,255,255,0.55)",
                       transform: isActive
-                        ? "translateY(calc(var(--item) * -0.3)) scale(1)"
-                        : "translateY(calc(var(--item) * -0.3)) scale(0)",
+                        ? `translateY(calc(var(--item) * -0.38)) scale(1)`
+                        : `translateY(calc(var(--item) * -0.38)) scale(0)`,
                       opacity: isActive ? 1 : 0,
                       transition: mounted
                         ? `transform 500ms ${EASE} ${isActive ? "450ms" : "0ms"}, opacity 300ms ease`
@@ -242,16 +245,17 @@ export function BottomNav() {
           })}
         </ul>
 
-        {/* Floating indicator orb */}
+        {/* Floating indicator orb — vertically centered on the bar's top edge, slightly lifted; horizontally aligned to each tab's center. */}
         <span
           aria-hidden
           className="absolute rounded-full"
           style={{
-            top: "calc(var(--item) * -0.15)",
-            left: "calc(var(--item) * 0.85)",
+            top: 0,
+            left: "calc(var(--pad) + var(--item) * 0.5)",
             width: "calc(var(--item) * 0.72)",
             height: "calc(var(--item) * 0.72)",
             marginLeft: "calc(var(--item) * -0.36)",
+            marginTop: "calc(var(--item) * -0.32)",
             background: active.gradient,
             boxShadow: `0 10px 22px -6px ${active.glow}, 0 0 0 2px #ffffff, inset 0 -6px 16px rgba(0,0,0,0.15)`,
             transform: `translateX(calc(var(--item) * ${activeIndex}))`,
