@@ -325,7 +325,7 @@ export function CreatePostForm({ initialTab = "learning" }: { initialTab?: PostT
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
       {/* Sidebar — post type picker */}
-      <aside className="lg:sticky lg:top-6 lg:self-start">
+      <aside className="hidden lg:sticky lg:top-6 lg:block lg:self-start">
         <div className="rounded-2xl border border-border bg-surface p-3 shadow-sm">
           <div className="mb-2 px-2 pt-1 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
             Post type
