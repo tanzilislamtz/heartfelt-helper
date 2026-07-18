@@ -209,7 +209,7 @@ function TitleInput({ placeholder = "Enter a compelling title for your post…" 
     <input
       type="text"
       placeholder={placeholder}
-      className="mb-8 w-full border-none bg-transparent p-0 font-serif text-3xl leading-tight text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-0 sm:text-4xl"
+      className="mb-8 w-full border-none bg-transparent p-0 text-2xl font-semibold leading-tight text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-0 sm:text-3xl"
     />
   );
 }
