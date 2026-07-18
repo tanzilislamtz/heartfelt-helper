@@ -1,11 +1,12 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, FileText } from "lucide-react";
 import { motion } from "framer-motion";
 import { CreatePostForm } from "@/components/CreatePostForm";
 import { Topbar } from "@/components/Topbar";
 import { MobileNav } from "@/components/MobileNav";
-import { isSignedIn } from "@/lib/session";
+import { isAuthed } from "@/lib/session";
+
 
 export const Route = createFileRoute("/create-post")({
   component: CreatePostPage,
