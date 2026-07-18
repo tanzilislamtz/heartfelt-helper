@@ -123,7 +123,7 @@ export function BottomNav() {
                     className="relative grid place-items-center text-white transition-all duration-500"
                     style={{
                       transform: isActive
-                        ? "translateY(calc(var(--item) * -0.48)) scale(1.05)"
+                        ? "translateY(calc(var(--item) * -0.28)) scale(1.05)"
                         : "translateY(0) scale(1)",
                       filter: isActive
                         ? "drop-shadow(0 2px 4px rgba(0,0,0,0.35))"
@@ -172,8 +172,8 @@ export function BottomNav() {
                       height: "calc(var(--item) * 0.6)",
                       border: "1.5px solid rgba(255,255,255,0.55)",
                       transform: isActive
-                        ? "translateY(calc(var(--item) * -0.5)) scale(1)"
-                        : "translateY(calc(var(--item) * -0.5)) scale(0)",
+                        ? "translateY(calc(var(--item) * -0.3)) scale(1)"
+                        : "translateY(calc(var(--item) * -0.3)) scale(0)",
                       transitionDelay: isActive ? "0.45s" : "0s",
                       opacity: isActive ? 1 : 0,
                       animation: isActive
@@ -192,7 +192,7 @@ export function BottomNav() {
           aria-hidden
           className="absolute rounded-full transition-all duration-500"
           style={{
-            top: "calc(var(--item) * -0.36)",
+            top: "calc(var(--item) * -0.15)",
             left: "calc(var(--item) * 0.85)",
             width: "calc(var(--item) * 0.72)",
             height: "calc(var(--item) * 0.72)",
