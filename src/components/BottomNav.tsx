@@ -192,7 +192,7 @@ export function BottomNav() {
           aria-hidden
           className="absolute rounded-full transition-all duration-500"
           style={{
-            top: "calc(var(--item) * -0.36)",
+            top: "calc(var(--item) * -0.15)",
             left: "calc(var(--item) * 0.85)",
             width: "calc(var(--item) * 0.72)",
             height: "calc(var(--item) * 0.72)",
