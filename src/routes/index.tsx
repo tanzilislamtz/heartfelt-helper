@@ -778,16 +778,37 @@ function Post({
                 <ChevronDown className="h-4 w-4" strokeWidth={2.5} />
               </button>
             </div>
-            <div className="min-w-0 flex-1">
-              <h2 className="text-lg font-bold leading-snug text-amber-950">{title}</h2>
-              <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-amber-950/80">{body}</p>
+            <div
+              className="min-w-0 flex-1 cursor-pointer"
+              onClick={() => !expanded && setExpanded(true)}
+            >
+              <h2 className={`text-lg font-bold leading-snug text-amber-950 ${expanded ? "" : "line-clamp-2"}`}>{title}</h2>
+              <p className={`mt-2 whitespace-pre-line text-sm leading-relaxed text-amber-950/80 ${expanded ? "" : "line-clamp-3"}`}>{body}</p>
+              {canExpand && (
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); setExpanded((v) => !v); }}
+                  className="mt-1 text-xs font-semibold text-amber-800 hover:underline"
+                >
+                  {expanded ? "See less" : "See more"}
+                </button>
+              )}
             </div>
           </div>
         ) : (
-          <>
-            <h2 className={`text-xl font-semibold leading-snug ${kc.dark ? "text-slate-50" : "text-foreground"}`}>{title}</h2>
-            <p className={`mt-2 whitespace-pre-line text-sm leading-relaxed ${kc.dark ? "text-slate-300" : "text-foreground/75"}`}>{body}</p>
-          </>
+          <div className="cursor-pointer" onClick={() => !expanded && setExpanded(true)}>
+            <h2 className={`text-xl font-semibold leading-snug ${kc.dark ? "text-slate-50" : "text-foreground"} ${expanded ? "" : "line-clamp-2"}`}>{title}</h2>
+            <p className={`mt-2 whitespace-pre-line text-sm leading-relaxed ${kc.dark ? "text-slate-300" : "text-foreground/75"} ${expanded ? "" : "line-clamp-3"}`}>{body}</p>
+            {canExpand && (
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); setExpanded((v) => !v); }}
+                className={`mt-1 text-xs font-semibold hover:underline ${kc.dark ? "text-cyan-300" : "text-primary"}`}
+              >
+                {expanded ? "See less" : "See more"}
+              </button>
+            )}
+          </div>
         )}
       </div>
 
