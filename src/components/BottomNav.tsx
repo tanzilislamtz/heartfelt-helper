@@ -1,5 +1,4 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { motion } from "framer-motion";
 import { Home, Lightbulb, MessageSquare, User } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
@@ -17,104 +16,134 @@ const items: Item[] = [
   { to: "/profile", label: "You", Icon: User },
 ];
 
+// Background color behind the nav — used for the notch cut-out illusion.
+const BG = "#06021b";
+const ITEM = 70; // px per item
+const COUNT = items.length;
+const BAR_WIDTH = ITEM * COUNT;
+
 export function BottomNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const activeIndex = Math.max(
-    0,
-    items.findIndex((i) => i.to === pathname),
-  );
+  const activeIndex = Math.max(0, items.findIndex((i) => i.to === pathname));
   const unread = useUnreadMessages();
 
   return (
     <nav
       aria-label="Primary"
-      className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center px-5 lg:hidden"
-      style={{ paddingBottom: "calc(0.6rem + env(safe-area-inset-bottom))" }}
+      className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-4 lg:hidden"
+      style={{ paddingBottom: "calc(0.9rem + env(safe-area-inset-bottom))" }}
     >
-      <div className="pointer-events-auto relative w-full max-w-[340px]">
-        {/* Floating gradient orb that lifts above the bar */}
-        <motion.div
-          aria-hidden
-          className="absolute -top-5 h-11 w-11"
-          style={{ left: `calc(${activeIndex} * 25% + 12.5% - 22px)` }}
-          initial={false}
-          animate={{ left: `calc(${activeIndex} * 25% + 12.5% - 22px)` }}
-          transition={{ type: "spring", stiffness: 420, damping: 28 }}
-        >
-          <div className="relative h-full w-full">
-            <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-indigo-600 via-violet-600 to-fuchsia-500 shadow-[0_10px_24px_-4px_rgba(124,58,237,0.55)]" />
-            <div className="absolute inset-0 rounded-full ring-4 ring-white/95" />
-            <span className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-b from-white/30 to-transparent" />
-          </div>
-        </motion.div>
+      {/* Background pad so the notch cut-out has something to bite into */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24" style={{ background: BG }} />
 
-        {/* Slim capsule bar */}
-        <div
-          className="relative h-14 rounded-full border border-white/70 bg-white/70 shadow-[0_14px_36px_-14px_rgba(79,70,229,0.35),0_2px_10px_-2px_rgba(15,23,42,0.08)]"
-          style={{ backdropFilter: "blur(20px) saturate(160%)" }}
-        >
-          <ul className="grid h-full grid-cols-4">
-            {items.map((item, i) => {
-              const active = i === activeIndex;
-              const Icon = item.Icon;
-              const showBadge = item.to === "/message" && unread > 0;
-              const badgeLabel = unread > 99 ? "99+" : String(unread);
+      <div
+        className="relative flex h-[70px] items-center justify-center rounded-[16px]"
+        style={{
+          width: BAR_WIDTH,
+          background: "linear-gradient(45deg, #2196f3, #e91e63)",
+        }}
+      >
+        <ul className="relative flex" style={{ width: BAR_WIDTH }}>
+          {items.map((item, i) => {
+            const active = i === activeIndex;
+            const Icon = item.Icon;
+            const showBadge = item.to === "/message" && unread > 0;
+            const badgeLabel = unread > 99 ? "99+" : String(unread);
 
-              return (
-                <li key={item.to} className="flex">
-                  <Link
-                    to={item.to}
-                    aria-label={showBadge ? `${item.label} (${unread} unread)` : item.label}
-                    aria-current={active ? "page" : undefined}
-                    className="group relative flex w-full items-end justify-center pb-2 outline-none"
+            return (
+              <li
+                key={item.to}
+                className="relative z-10 list-none"
+                style={{ width: ITEM, height: 70 }}
+              >
+                <Link
+                  to={item.to}
+                  aria-label={item.label}
+                  aria-current={active ? "page" : undefined}
+                  className="relative flex h-full w-full flex-col items-center justify-center text-center font-medium"
+                >
+                  <span
+                    className="relative block text-white transition-transform duration-500"
+                    style={{
+                      transform: active ? "translateY(-32px)" : "translateY(0)",
+                      lineHeight: "75px",
+                    }}
                   >
-                    {/* Icon slot — hidden when active because the floating orb takes its place */}
-                    <motion.span
-                      className="relative grid place-items-center"
-                      animate={{
-                        opacity: active ? 0 : 1,
-                        y: active ? -6 : 0,
-                        scale: active ? 0.6 : 1,
-                      }}
-                      whileTap={{ scale: 0.85 }}
-                      transition={{ type: "spring", stiffness: 500, damping: 24 }}
-                    >
-                      <Icon
-                        className="h-[22px] w-[22px] text-slate-400 transition-colors group-hover:text-indigo-600"
-                        strokeWidth={2}
-                      />
-                      {showBadge && !active && (
-                        <span className="absolute -right-2 -top-2 grid min-w-[18px] place-items-center rounded-full bg-gradient-to-tr from-rose-500 to-fuchsia-500 px-1 text-[10px] font-bold leading-none text-white shadow ring-2 ring-white">
-                          {badgeLabel}
-                        </span>
-                      )}
-                    </motion.span>
-
-                    {/* Active label sits below the orb */}
-                    <motion.span
-                      className="pointer-events-none absolute bottom-1.5 text-[10px] font-bold tracking-wide"
-                      animate={{
-                        opacity: active ? 1 : 0,
-                        y: active ? 0 : 4,
-                        color: active ? "#4f46e5" : "#94a3b8",
-                      }}
-                      transition={{ duration: 0.18 }}
-                    >
-                      {item.label}
-                    </motion.span>
-
-                    {/* Badge for active message tab (on the orb) */}
-                    {showBadge && active && (
-                      <span className="absolute -top-3 right-[calc(50%-22px)] z-10 grid min-w-[18px] place-items-center rounded-full bg-white px-1 text-[10px] font-bold leading-none text-rose-600 shadow ring-2 ring-rose-500">
+                    <Icon className="h-6 w-6" strokeWidth={2} />
+                    {showBadge && (
+                      <span className="absolute -right-2 -top-1 grid min-w-[16px] place-items-center rounded-full bg-white px-1 text-[10px] font-bold leading-none text-rose-600 shadow ring-2 ring-rose-500">
                         {badgeLabel}
                       </span>
                     )}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+                  </span>
+
+                  <span
+                    className="absolute text-[0.7rem] font-normal tracking-wide text-white transition-all duration-500"
+                    style={{
+                      opacity: active ? 1 : 0,
+                      transform: active ? "translateY(10px)" : "translateY(20px)",
+                    }}
+                  >
+                    {item.label}
+                  </span>
+
+                  {/* Ring around the indicator */}
+                  <span
+                    className="pointer-events-none absolute block rounded-full border-[1.8px] border-white transition-all duration-500"
+                    style={{
+                      width: 50,
+                      height: 50,
+                      transform: active ? "translateY(-37px) scale(1)" : "translateY(-37px) scale(0)",
+                      transitionDelay: active ? "0.5s" : "0s",
+                    }}
+                  />
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+
+        {/* Floating indicator */}
+        <span
+          aria-hidden
+          className="absolute flex items-center justify-center rounded-full transition-transform duration-500"
+          style={{
+            top: "-50%",
+            left: 0,
+            width: 70,
+            height: 70,
+            background: "linear-gradient(45deg, #2196f3, #e91e63)",
+            border: `6px solid ${BG}`,
+            transform: `translateX(${activeIndex * ITEM}px)`,
+          }}
+        >
+          {/* Left notch curve */}
+          <span
+            aria-hidden
+            className="absolute"
+            style={{
+              top: "50%",
+              left: -22,
+              width: 20,
+              height: 20,
+              borderTopRightRadius: 20,
+              boxShadow: `1px -10px 0 ${BG}`,
+            }}
+          />
+          {/* Right notch curve */}
+          <span
+            aria-hidden
+            className="absolute"
+            style={{
+              top: "50%",
+              right: -22,
+              width: 20,
+              height: 20,
+              borderTopLeftRadius: 20,
+              boxShadow: `-1px -10px 0 ${BG}`,
+            }}
+          />
+        </span>
       </div>
     </nav>
   );
