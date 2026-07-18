@@ -417,9 +417,22 @@ function RegisterPage() {
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2 pt-1">
-                    <SocialBtn label="Google" />
-                    <SocialBtn label="Apple" />
+                  <div className="pt-1">
+                    <div className="mb-3 flex items-center gap-3 text-xs text-muted-foreground">
+                      <div className="h-px flex-1 bg-border" />
+                      or continue with
+                      <div className="h-px flex-1 bg-border" />
+                    </div>
+                    <div className="grid grid-cols-4 gap-2">
+                      <SocialBtn label="Google" compact />
+                      <SocialBtn label="Apple" compact />
+                      <SocialBtn label="Facebook" compact />
+                      <SocialBtn label="LinkedIn" compact />
+                      <SocialBtn label="GitHub" compact />
+                      <SocialBtn label="X" compact />
+                      <SocialBtn label="Microsoft" compact />
+                      <SocialBtn label="Discord" compact />
+                    </div>
                   </div>
                 </div>
               </StepPane>
