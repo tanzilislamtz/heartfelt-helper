@@ -559,14 +559,15 @@ function TutorRequestForm({ mode }: { mode: "tutor" | "student" }) {
 
 function ActionButtons({ compact = false }: { compact?: boolean }) {
   return (
-    <div className={`flex items-center gap-2 ${compact ? "" : "sm:gap-3"}`}>
-      <button className="rounded-lg px-3 py-2 text-xs font-semibold text-muted-foreground transition hover:text-foreground sm:text-sm">
-        Save Draft
+    <div className={`flex items-center gap-1.5 ${compact ? "" : "sm:gap-3"}`}>
+      <button className="whitespace-nowrap rounded-lg px-2 py-2 text-xs font-semibold text-muted-foreground transition hover:text-foreground sm:px-3 sm:text-sm">
+        <span className="sm:hidden">Save</span>
+        <span className="hidden sm:inline">Save Draft</span>
       </button>
-      <button className="rounded-lg border border-border bg-surface px-3 py-2 text-xs font-semibold text-foreground transition hover:border-primary/40 hover:text-primary sm:px-4 sm:text-sm">
+      <button className="whitespace-nowrap rounded-lg border border-border bg-surface px-2.5 py-2 text-xs font-semibold text-foreground transition hover:border-primary/40 hover:text-primary sm:px-4 sm:text-sm">
         Preview
       </button>
-      <button className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-md shadow-primary/20 transition hover:opacity-95 sm:px-6 sm:text-sm">
+      <button className="whitespace-nowrap rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground shadow-md shadow-primary/20 transition hover:opacity-95 sm:px-6 sm:text-sm">
         Post Now
       </button>
     </div>
