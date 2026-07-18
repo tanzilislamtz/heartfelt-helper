@@ -735,8 +735,11 @@ function Post({
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuItem onSelect={() => toast.success("Post saved")}>
-              <Bookmark className="mr-2 h-4 w-4" /> Save post
+            <DropdownMenuItem onSelect={() => toast.success("Marked as interested")}>
+              <Heart className="mr-2 h-4 w-4" /> Interested
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => toast.success("We'll show fewer posts like this")}>
+              <X className="mr-2 h-4 w-4" /> Not interested
             </DropdownMenuItem>
             <DropdownMenuItem
               onSelect={() => {
@@ -750,9 +753,6 @@ function Post({
               <BellOff className="mr-2 h-4 w-4" /> Mute notifications
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onSelect={() => toast.success(`Hidden ${author}'s posts`)}>
-              <UserMinus className="mr-2 h-4 w-4" /> Unfollow {author}
-            </DropdownMenuItem>
             <DropdownMenuItem
               onSelect={() => toast.success("Report submitted")}
               className="text-destructive focus:text-destructive"
