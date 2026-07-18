@@ -741,76 +741,96 @@ function Post({
 
 
 function RightRail() {
+  const [msgTab, setMsgTab] = useState<"active" | "all">("active");
   return (
     <aside className="hidden space-y-5 lg:block">
       <div className="sticky top-24 space-y-5">
-        <div className="rounded-2xl border border-border bg-surface p-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-foreground">Trending now</h3>
-            <TrendingUp className="h-4 w-4 text-tutor" />
+        {/* Sponsored */}
+        <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
+          <div className="mb-2 flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-foreground">Sponsored</h3>
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Ad
+            </span>
           </div>
-          <ul className="mt-3 space-y-3">
-            {[
-              { tag: "Calculus", posts: "1.2k posts", hot: true },
-              { tag: "React 19", posts: "864 posts" },
-              { tag: "IELTS Prep", posts: "512 posts" },
-              { tag: "UX Research", posts: "310 posts" },
-            ].map((t) => (
-              <li key={t.tag} className="group flex items-center justify-between">
-                <div className="min-w-0">
-                  <div className="flex items-center gap-1.5">
-                    <span className="truncate text-sm font-medium text-foreground">#{t.tag}</span>
-                    {t.hot && (
-                      <span className="rounded-full bg-destructive/10 px-1.5 py-0.5 text-[10px] font-semibold text-destructive">
-                        HOT
-                      </span>
-                    )}
+          <a
+            href="#"
+            className="group block overflow-hidden rounded-xl border border-border bg-muted"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&auto=format&fit=crop"
+              alt="Exotic Collection — Unstitched Fabrics"
+              loading="lazy"
+              className="aspect-[16/10] w-full object-cover transition group-hover:scale-[1.02]"
+            />
+          </a>
+          <div className="mt-3">
+            <p className="text-sm font-semibold text-foreground">Exotic Collection</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              Unstitched fabrics · New arrivals for Eid
+            </p>
+          </div>
+        </div>
+
+        {/* Message List */}
+        <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
+          <div className="mb-3 flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-foreground">Message List</h3>
+            <button className="text-xs font-medium text-primary hover:underline">See all</button>
+          </div>
+          <div className="mb-3 grid grid-cols-2 rounded-full bg-muted p-1 text-xs font-semibold">
+            <button
+              onClick={() => setMsgTab("active")}
+              className={`rounded-full py-1.5 transition ${
+                msgTab === "active" ? "bg-surface text-foreground shadow-sm" : "text-muted-foreground"
+              }`}
+            >
+              Active
+            </button>
+            <button
+              onClick={() => setMsgTab("all")}
+              className={`rounded-full py-1.5 transition ${
+                msgTab === "all" ? "bg-surface text-foreground shadow-sm" : "text-muted-foreground"
+              }`}
+            >
+              All <span className="opacity-70">(3)</span>
+            </button>
+          </div>
+
+          {msgTab === "active" ? (
+            <div className="rounded-xl border border-dashed border-border py-6 text-center">
+              <p className="text-xs text-muted-foreground">
+                No one is online right now.{" "}
+                <button className="font-semibold text-primary hover:underline">Show all</button>
+              </p>
+            </div>
+          ) : (
+            <ul className="space-y-3">
+              {[
+                { name: "Nadia Karim", msg: "Sent the notes ✓", time: "2m", unread: 2 },
+                { name: "Tanvir Ahmed", msg: "See you at 8pm class", time: "1h", unread: 0 },
+                { name: "Meherun Nisa", msg: "Thanks for the feedback!", time: "3h", unread: 0 },
+              ].map((m) => (
+                <li key={m.name} className="flex items-center gap-3">
+                  <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
+                    {m.name.charAt(0)}
                   </div>
-                  <div className="text-xs text-muted-foreground">{t.posts}</div>
-                </div>
-                <button className="rounded-full border border-border px-3 py-1 text-xs font-medium text-foreground/70 opacity-0 transition hover:border-foreground/30 hover:text-foreground group-hover:opacity-100">
-                  Follow
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="rounded-2xl border border-border bg-surface p-4">
-          <h3 className="text-sm font-semibold text-foreground">Suggested tutors</h3>
-          <ul className="mt-3 space-y-3">
-            {[
-              { name: "Nadia Karim", subject: "Physics · IUT" },
-              { name: "Tanvir Ahmed", subject: "Web Dev · 8y exp" },
-              { name: "Meherun Nisa", subject: "English · IELTS 8.5" },
-            ].map((u) => (
-              <li key={u.name} className="flex items-center gap-3">
-                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-tutor/15 text-sm font-semibold text-tutor ring-2 ring-tutor/20">
-                  {u.name.charAt(0)}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="truncate text-sm font-medium text-foreground">{u.name}</div>
-                  <div className="truncate text-xs text-muted-foreground">{u.subject}</div>
-                </div>
-                <button className="shrink-0 rounded-full bg-foreground px-3 py-1 text-xs font-semibold text-background transition hover:opacity-90">
-                  Follow
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="overflow-hidden rounded-2xl border border-border bg-accent/60 p-5">
-          <Award className="h-6 w-6 text-primary" />
-          <h3 className="mt-3 font-display text-lg font-semibold text-foreground">
-            Earn your first badge
-          </h3>
-          <p className="mt-1 text-xs text-foreground/70">
-            Post 3 helpful answers this week and unlock the Verified Helper badge.
-          </p>
-          <button className="mt-3 inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-95">
-            Get started <ArrowUpRight className="h-3.5 w-3.5" />
-          </button>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="truncate text-sm font-medium text-foreground">{m.name}</span>
+                      <span className="shrink-0 text-[10px] text-muted-foreground">{m.time}</span>
+                    </div>
+                    <p className="truncate text-xs text-muted-foreground">{m.msg}</p>
+                  </div>
+                  {m.unread > 0 && (
+                    <span className="grid h-5 min-w-[20px] place-items-center rounded-full bg-destructive px-1.5 text-[10px] font-bold text-destructive-foreground">
+                      {m.unread}
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         <p className="px-2 text-[11px] text-muted-foreground">
