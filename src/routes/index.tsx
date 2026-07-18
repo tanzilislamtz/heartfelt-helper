@@ -4,12 +4,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import {
   Search,
   Home,
-  Compass,
   BookOpen,
-  Bell,
   MessageCircle,
   Bookmark,
-  Award,
   Users,
   Sparkles,
   Image as ImageIcon,
@@ -20,7 +17,8 @@ import {
   MoreHorizontal,
   CheckCircle2,
   TrendingUp,
-  Plus,
+  ArrowUpRight,
+
   ArrowUpRight,
   GraduationCap,
   Menu,
