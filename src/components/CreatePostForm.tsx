@@ -189,6 +189,7 @@ function InfoCard({
 function LearningForm() {
   return (
     <>
+      <InfoCard icon={BookOpen} tone="learning" title="Share Knowledge" desc="Share educational content, notes, tips, or resources with others." />
       <TitleInput />
 
       <section className="mb-10">
