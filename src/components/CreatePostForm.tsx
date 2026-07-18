@@ -144,18 +144,7 @@ function ContentEditor({ placeholder }: { placeholder: string }) {
 
 function VisibilityRow() {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-6 border-t border-border pt-6">
-      <div className="flex flex-col gap-2">
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Visibility</span>
-        <div className="flex gap-4">
-          {["Public", "Followers", "Private"].map((v, i) => (
-            <label key={v} className="flex cursor-pointer items-center gap-2">
-              <input type="radio" name="visibility" defaultChecked={i === 0} className="h-4 w-4 accent-primary" />
-              <span className="text-sm text-foreground">{v}</span>
-            </label>
-          ))}
-        </div>
-      </div>
+    <div className="flex flex-wrap items-center justify-end gap-6 border-t border-border pt-6">
       <div className="flex flex-col gap-2">
         <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Interactions</span>
         <Toggle label="Allow comments" />
