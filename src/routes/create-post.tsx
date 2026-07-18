@@ -61,7 +61,7 @@ function CreatePostPage() {
         <CreatePostForm />
       </main>
 
-      <MobileNav />
+      <MobileNav open={menuOpen} onClose={() => setMenuOpen(false)} />
     </div>
   );
 }
