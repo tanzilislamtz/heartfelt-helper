@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -10,6 +10,10 @@ import {
   Upload,
   ArrowLeft,
   FileText,
+  Globe2,
+  Lock,
+  Users,
+  Check,
 } from "lucide-react";
 
 export type PostTab = "learning" | "question" | "tutor" | "student";
