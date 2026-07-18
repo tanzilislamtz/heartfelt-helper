@@ -209,7 +209,7 @@ function TitleInput({ placeholder = "Enter a compelling title for your post…" 
     <input
       type="text"
       placeholder={placeholder}
-      className="mb-8 w-full border-none bg-transparent p-0 font-serif text-3xl leading-tight text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-0 sm:text-4xl"
+      className="mb-8 w-full border-none bg-transparent p-0 text-2xl font-semibold leading-tight text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-0 sm:text-3xl"
     />
   );
 }
@@ -539,7 +539,7 @@ export function CreatePostForm({ initialTab = "learning" }: { initialTab?: PostT
           {/* Header */}
           <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-4 sm:px-8 sm:py-5">
             <div className="min-w-0">
-              <h1 className="font-serif text-2xl leading-tight text-foreground sm:text-3xl">
+              <h1 className="text-2xl font-bold leading-tight text-foreground sm:text-3xl">
                 Create New Post
               </h1>
               <div className="mt-1 flex items-center gap-1.5 text-[11px] text-muted-foreground sm:text-xs">
