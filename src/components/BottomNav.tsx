@@ -43,15 +43,13 @@ export function BottomNav() {
     >
 
       <div
-        className="relative flex items-center justify-center rounded-[16px]"
+        className="relative flex items-center justify-center rounded-full px-[calc(var(--item)*0.35)]"
         style={{
-          width: `calc(var(--item) * ${COUNT})`,
-          maxWidth: "100%",
           height: "var(--item)",
           background: "linear-gradient(45deg, #2196f3, #e91e63)",
-
         }}
       >
+
         <ul
           className="relative flex"
           style={{ width: `calc(var(--item) * ${COUNT})` }}
