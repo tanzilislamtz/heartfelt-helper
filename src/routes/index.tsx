@@ -307,12 +307,6 @@ function Composer() {
           </span>
         </button>
 
-        <button
-          onClick={() => go()}
-          className="h-11 shrink-0 rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground shadow-md transition-all hover:bg-[color-mix(in_oklab,var(--color-primary)_88%,black)] active:scale-95"
-        >
-          Post
-        </button>
       </div>
     </div>
   );
