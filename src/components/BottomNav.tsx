@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { Home, Lightbulb, MessageSquare, User } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
@@ -13,8 +13,8 @@ type Item = {
 const items: Item[] = [
   { to: "/", label: "Home", Icon: Home },
   { to: "/quiz", label: "Quiz", Icon: Lightbulb },
-  { to: "/message", label: "Message", Icon: MessageSquare },
-  { to: "/profile", label: "Profile", Icon: User },
+  { to: "/message", label: "Chat", Icon: MessageSquare },
+  { to: "/profile", label: "You", Icon: User },
 ];
 
 export function BottomNav() {
@@ -28,89 +28,94 @@ export function BottomNav() {
   return (
     <nav
       aria-label="Primary"
-      className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-4 pb-3 lg:hidden"
-      style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
+      className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center px-5 lg:hidden"
+      style={{ paddingBottom: "calc(0.6rem + env(safe-area-inset-bottom))" }}
     >
-      <div
-        className="relative w-full max-w-[420px] rounded-[32px] border border-white/60 bg-white/75 p-2 shadow-[0_20px_50px_-12px_rgba(79,70,229,0.28),0_4px_16px_-6px_rgba(15,23,42,0.08)] backdrop-blur-2xl"
-      >
-        {/* Sliding active indicator */}
+      <div className="pointer-events-auto relative w-full max-w-[340px]">
+        {/* Floating gradient orb that lifts above the bar */}
         <motion.div
           aria-hidden
-          className="absolute top-2 bottom-2 rounded-[24px] bg-gradient-to-tr from-indigo-600 via-violet-600 to-fuchsia-500 shadow-[0_10px_24px_-6px_rgba(124,58,237,0.55)]"
-          style={{ width: `calc(25% - 4px)` }}
+          className="absolute -top-5 h-11 w-11"
+          style={{ left: `calc(${activeIndex} * 25% + 12.5% - 22px)` }}
           initial={false}
-          animate={{ left: `calc(${activeIndex} * 25% + 2px)` }}
-          transition={{ type: "spring", stiffness: 380, damping: 30 }}
+          animate={{ left: `calc(${activeIndex} * 25% + 12.5% - 22px)` }}
+          transition={{ type: "spring", stiffness: 420, damping: 28 }}
         >
-          {/* subtle iridescent sheen */}
-          <span className="pointer-events-none absolute inset-0 rounded-[24px] bg-gradient-to-b from-white/25 to-transparent" />
+          <div className="relative h-full w-full">
+            <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-indigo-600 via-violet-600 to-fuchsia-500 shadow-[0_10px_24px_-4px_rgba(124,58,237,0.55)]" />
+            <div className="absolute inset-0 rounded-full ring-4 ring-white/95" />
+            <span className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-b from-white/30 to-transparent" />
+          </div>
         </motion.div>
 
-        {/* Tabs */}
-        <ul className="relative grid grid-cols-4">
-          {items.map((item, i) => {
-            const active = i === activeIndex;
-            const Icon = item.Icon;
-            const showBadge = item.to === "/message" && unread > 0;
-            const badgeLabel = unread > 99 ? "99+" : String(unread);
-            return (
-              <li key={item.to} className="flex">
-                <Link
-                  to={item.to}
-                  aria-label={showBadge ? `${item.label} (${unread} unread)` : item.label}
-                  aria-current={active ? "page" : undefined}
-                  className="group relative flex min-h-[56px] w-full flex-col items-center justify-center gap-1 rounded-[24px] outline-none"
-                >
-                  <motion.span
-                    className="relative grid place-items-center"
-                    animate={{ scale: active ? 1.05 : 1, y: active ? -1 : 0 }}
-                    whileTap={{ scale: 0.88 }}
-                    transition={{ type: "spring", stiffness: 500, damping: 22 }}
+        {/* Slim capsule bar */}
+        <div
+          className="relative h-14 rounded-full border border-white/70 bg-white/70 shadow-[0_14px_36px_-14px_rgba(79,70,229,0.35),0_2px_10px_-2px_rgba(15,23,42,0.08)]"
+          style={{ backdropFilter: "blur(20px) saturate(160%)" }}
+        >
+          <ul className="grid h-full grid-cols-4">
+            {items.map((item, i) => {
+              const active = i === activeIndex;
+              const Icon = item.Icon;
+              const showBadge = item.to === "/message" && unread > 0;
+              const badgeLabel = unread > 99 ? "99+" : String(unread);
+
+              return (
+                <li key={item.to} className="flex">
+                  <Link
+                    to={item.to}
+                    aria-label={showBadge ? `${item.label} (${unread} unread)` : item.label}
+                    aria-current={active ? "page" : undefined}
+                    className="group relative flex w-full items-end justify-center pb-2 outline-none"
                   >
-                    <Icon
-                      className={`h-[22px] w-[22px] transition-colors duration-200 ${
-                        active ? "text-white" : "text-slate-400 group-hover:text-indigo-600"
-                      }`}
-                      strokeWidth={active ? 2.4 : 2}
-                    />
-                    {showBadge && <Badge label={badgeLabel} />}
-                  </motion.span>
-                  <span
-                    className={`text-[10.5px] font-semibold tracking-wide transition-colors duration-200 ${
-                      active ? "text-white" : "text-slate-500 group-hover:text-indigo-600"
-                    }`}
-                  >
-                    {item.label}
-                  </span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+                    {/* Icon slot — hidden when active because the floating orb takes its place */}
+                    <motion.span
+                      className="relative grid place-items-center"
+                      animate={{
+                        opacity: active ? 0 : 1,
+                        y: active ? -6 : 0,
+                        scale: active ? 0.6 : 1,
+                      }}
+                      whileTap={{ scale: 0.85 }}
+                      transition={{ type: "spring", stiffness: 500, damping: 24 }}
+                    >
+                      <Icon
+                        className="h-[22px] w-[22px] text-slate-400 transition-colors group-hover:text-indigo-600"
+                        strokeWidth={2}
+                      />
+                      {showBadge && !active && (
+                        <span className="absolute -right-2 -top-2 grid min-w-[18px] place-items-center rounded-full bg-gradient-to-tr from-rose-500 to-fuchsia-500 px-1 text-[10px] font-bold leading-none text-white shadow ring-2 ring-white">
+                          {badgeLabel}
+                        </span>
+                      )}
+                    </motion.span>
+
+                    {/* Active label sits below the orb */}
+                    <motion.span
+                      className="pointer-events-none absolute bottom-1.5 text-[10px] font-bold tracking-wide"
+                      animate={{
+                        opacity: active ? 1 : 0,
+                        y: active ? 0 : 4,
+                        color: active ? "#4f46e5" : "#94a3b8",
+                      }}
+                      transition={{ duration: 0.18 }}
+                    >
+                      {item.label}
+                    </motion.span>
+
+                    {/* Badge for active message tab (on the orb) */}
+                    {showBadge && active && (
+                      <span className="absolute -top-3 right-[calc(50%-22px)] z-10 grid min-w-[18px] place-items-center rounded-full bg-white px-1 text-[10px] font-bold leading-none text-rose-600 shadow ring-2 ring-rose-500">
+                        {badgeLabel}
+                      </span>
+                    )}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </div>
     </nav>
-  );
-}
-
-function Badge({ label }: { label: string }) {
-  const wide = label.length > 1;
-  return (
-    <AnimatePresence>
-      <motion.span
-        key={label}
-        initial={{ scale: 0.4, opacity: 0, y: -2 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        exit={{ scale: 0.4, opacity: 0 }}
-        transition={{ type: "spring", stiffness: 500, damping: 22 }}
-        className={`pointer-events-none absolute -right-2 -top-1.5 z-10 flex ${
-          wide ? "h-[18px] min-w-[22px] px-1" : "h-[18px] w-[18px]"
-        } items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold leading-none text-white ring-2 ring-white shadow-[0_4px_10px_-2px_rgba(244,63,94,0.55)]`}
-        aria-hidden
-      >
-        {label}
-        <span className="absolute inset-0 -z-10 animate-ping rounded-full bg-rose-500/60" />
-      </motion.span>
-    </AnimatePresence>
   );
 }
