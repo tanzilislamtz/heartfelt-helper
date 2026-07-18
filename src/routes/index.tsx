@@ -556,18 +556,19 @@ function Post({
       ) : null}
 
       <div className="mt-4 flex flex-wrap items-center gap-1.5">
-        <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
+        <span className="inline-flex items-center rounded-lg bg-primary/8 px-2.5 py-1 text-xs font-semibold text-primary">
           #{tag}
         </span>
         {tags?.map((t) => (
           <span
             key={t}
-            className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-foreground/70"
+            className="inline-flex items-center rounded-lg bg-primary/8 px-2.5 py-1 text-xs font-semibold text-primary"
           >
             #{t}
           </span>
         ))}
       </div>
+
 
 
       <footer className="mt-4 flex items-center gap-1 border-t border-border pt-3">
