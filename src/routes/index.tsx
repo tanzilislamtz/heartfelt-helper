@@ -285,16 +285,6 @@ function Composer() {
           onClick={() => go()}
           className="group flex h-11 min-w-0 flex-1 items-center rounded-full border border-border bg-muted/50 px-4 transition-all hover:border-border/80 hover:bg-muted/70"
         >
-          <div className="mr-3 hidden items-center gap-2 border-r border-border/80 pr-3 sm:flex">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-tutor">To</span>
-            <span className="text-xs font-semibold text-primary">Everyone</span>
-            <span
-              onClick={go}
-              className="rounded-full border border-border bg-surface px-2 py-0.5 text-[10px] font-semibold text-foreground/70 transition hover:border-primary/40 hover:text-primary"
-            >
-              Change
-            </span>
-          </div>
 
           <span className="flex-1 truncate text-left text-sm text-muted-foreground">
             Share a thought, ask a question, drop a note…
