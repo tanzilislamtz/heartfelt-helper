@@ -514,7 +514,6 @@ function Post({
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState<{ id: number; author: string; text: string; time: string }[]>([]);
   const [draft, setDraft] = useState("");
-  const [expanded, setExpanded] = useState(false);
   const canExpand = title.length > 80 || body.length > 180;
 
   const commentCount = stats.comments + comments.length;
