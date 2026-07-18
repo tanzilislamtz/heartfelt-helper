@@ -219,24 +219,20 @@ function Feed() {
 
 function Leaderboard() {
   const entries = [
-    { rank: 1, name: "Md. Rajwanur R.", sub: "University of Dhaka", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&auto=format&fit=crop", following: false },
-    { rank: 2, name: "Papul Halder", sub: "Chittagong College", img: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=400&auto=format&fit=crop", following: false },
-    { rank: 3, name: "Sojib Khan", sub: "Rajshahi University", img: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&auto=format&fit=crop", following: false },
-    { rank: 4, name: "Sabuj Hossain", sub: "Notre Dame College", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&auto=format&fit=crop", following: false },
-    { rank: 5, name: "Protiq Halder", sub: "Khulna Model School", img: "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?w=400&auto=format&fit=crop", following: true },
+    { rank: 1, name: "Md. Rajwanur R.", sub: "University of Dhaka", role: "Platinum", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&auto=format&fit=crop" },
+    { rank: 2, name: "Papul Halder", sub: "Chittagong College", role: "Math Lead", img: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=400&auto=format&fit=crop" },
+    { rank: 3, name: "Sojib Khan", sub: "Rajshahi University", role: "Top Student", img: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&auto=format&fit=crop" },
+    { rank: 4, name: "Sabuj Hossain", sub: "Notre Dame", role: "Physics", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&auto=format&fit=crop" },
+    { rank: 5, name: "Protiq Halder", sub: "Khulna Model", role: "Rising Star", img: "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?w=400&auto=format&fit=crop" },
   ];
   return (
-    <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
-      <div className="mb-3 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="grid h-7 w-7 place-items-center rounded-lg bg-accent/40 text-primary">
-            <Trophy className="h-4 w-4" />
-          </span>
-          <h3 className="text-sm font-semibold text-foreground">
-            Leaderboard <span className="text-muted-foreground">· top by points</span>
-          </h3>
+    <section className="space-y-3">
+      <div className="flex items-end justify-between px-1">
+        <div>
+          <p className="overline text-muted-foreground">Weekly leaderboard</p>
+          <h3 className="font-display text-lg font-semibold text-foreground">Top contributors</h3>
         </div>
-        <button className="inline-flex items-center gap-0.5 text-xs font-medium text-primary hover:underline">
+        <button className="inline-flex items-center gap-0.5 text-xs font-semibold text-primary hover:underline">
           See all <ChevronRight className="h-3 w-3" />
         </button>
       </div>
@@ -245,64 +241,58 @@ function Leaderboard() {
           <motion.div
             key={e.rank}
             whileHover={{ y: -3 }}
-            className="relative w-40 shrink-0 snap-start overflow-hidden rounded-2xl border border-border bg-surface shadow-sm"
+            className="flex min-w-[220px] shrink-0 snap-start items-center justify-between gap-3 rounded-2xl border border-border bg-surface p-3 shadow-sm transition hover:border-primary/30 hover:shadow-lg"
           >
-            <div className="relative aspect-[4/5] overflow-hidden">
-              <img src={e.img} alt={e.name} loading="lazy" className="h-full w-full object-cover" />
-              <span className="absolute left-2 top-2 rounded-lg bg-background/95 px-1.5 py-0.5 text-[10px] font-bold text-primary shadow-sm">
-                #{e.rank}
-              </span>
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-foreground/85 via-foreground/40 to-transparent p-2">
-                <p className="truncate text-xs font-semibold text-background">{e.name}</p>
-                <p className="truncate text-[10px] text-background/80">{e.sub}</p>
+            <div className="flex min-w-0 items-center gap-3">
+              <div className={`relative h-11 w-11 shrink-0 overflow-hidden rounded-full ring-2 ${e.rank === 1 ? "ring-accent" : e.rank <= 3 ? "ring-primary/40" : "ring-border"}`}>
+                <img src={e.img} alt={e.name} loading="lazy" className="h-full w-full object-cover" />
+                <span className="absolute -bottom-0.5 -right-0.5 grid h-5 w-5 place-items-center rounded-full bg-primary text-[9px] font-bold text-primary-foreground ring-2 ring-surface">
+                  {e.rank}
+                </span>
+              </div>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold text-foreground">{e.name}</p>
+                <p className="truncate text-[10px] font-medium text-tutor">{e.role}</p>
               </div>
             </div>
-            <div className="p-2">
-              <button
-                className={`w-full rounded-full py-1.5 text-[11px] font-semibold transition ${
-                  e.following
-                    ? "bg-foreground text-background"
-                    : "bg-primary text-primary-foreground hover:opacity-95"
-                }`}
-              >
-                {e.following ? "Following" : "Follow"}
-              </button>
-            </div>
+            <button className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-primary/5 text-primary transition hover:bg-primary hover:text-primary-foreground">
+              <Plus className="h-4 w-4" />
+            </button>
           </motion.div>
         ))}
       </div>
-    </div>
+    </section>
   );
 }
 
 
 function Composer() {
   return (
-    <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
-      <div className="flex gap-3">
-        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+    <div className="overflow-hidden rounded-3xl border border-border bg-surface shadow-sm">
+      <div className="flex gap-3 p-5">
+        <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-primary text-sm font-bold text-primary-foreground">
           A
         </div>
-        <div className="min-w-0 flex-1">
-          <textarea
-            rows={2}
-            placeholder="Share a thought, ask a question, drop a note…"
-            className="w-full resize-none rounded-xl border border-transparent bg-muted/60 px-4 py-3 text-sm placeholder:text-muted-foreground focus:border-primary/30 focus:bg-surface focus:outline-none focus:ring-4 focus:ring-primary/10"
-          />
-          <div className="mt-3 flex flex-wrap items-center gap-1">
-            <ComposerBtn icon={ImageIcon} label="Image" />
-            <ComposerBtn icon={Paperclip} label="Attach" />
-            <ComposerBtn icon={BarChart3} label="Poll" />
-            <ComposerBtn icon={BookOpen} label="Note" />
-            <div className="ml-auto flex items-center gap-2">
-              <span className="hidden text-xs text-muted-foreground sm:inline">
-                Posting to <span className="font-medium text-foreground">Everyone</span>
-              </span>
-              <button className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-95">
-                Post
-              </button>
-            </div>
-          </div>
+        <textarea
+          rows={2}
+          placeholder="Share a thought, ask a question, drop a note…"
+          className="w-full resize-none border-0 bg-transparent py-2 text-base placeholder:text-muted-foreground focus:outline-none"
+        />
+      </div>
+      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border bg-muted/40 px-3 py-2.5 sm:px-5">
+        <div className="flex flex-wrap items-center gap-1">
+          <ComposerBtn icon={ImageIcon} label="Image" />
+          <ComposerBtn icon={Paperclip} label="Attach" />
+          <ComposerBtn icon={BarChart3} label="Poll" />
+          <ComposerBtn icon={BookOpen} label="Note" />
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="hidden text-xs text-muted-foreground sm:inline">
+            Posting to <span className="font-semibold text-foreground">Everyone</span>
+          </span>
+          <button className="inline-flex items-center gap-1.5 rounded-xl bg-primary px-5 py-2 text-sm font-bold text-primary-foreground shadow-brand transition hover:-translate-y-px">
+            Post
+          </button>
         </div>
       </div>
     </div>
@@ -311,12 +301,13 @@ function Composer() {
 
 function ComposerBtn({ icon: Icon, label }: { icon: React.ElementType; label: string }) {
   return (
-    <button className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-medium text-foreground/70 transition hover:bg-muted hover:text-foreground">
-      <Icon className="h-4 w-4 text-tutor" />
+    <button className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-foreground/70 transition hover:bg-surface hover:text-primary">
+      <Icon className="h-4 w-4" />
       {label}
     </button>
   );
 }
+
 
 function TopicChips() {
   const topics = ["For You", "Popular", "Q&A", "Trending Tutors"];
