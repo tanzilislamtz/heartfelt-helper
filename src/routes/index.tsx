@@ -409,6 +409,28 @@ function ComposerBtn({ icon: Icon, label, onClick }: { icon: React.ElementType; 
   );
 }
 
+function ComposerIconBtn({
+  icon: Icon,
+  onClick,
+  title,
+}: {
+  icon: React.ElementType;
+  onClick?: (e: React.MouseEvent) => void;
+  title?: string;
+}) {
+  return (
+    <span
+      role="button"
+      title={title}
+      onClick={onClick}
+      className="grid h-8 w-8 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-surface hover:text-primary"
+    >
+      <Icon className="h-4 w-4" />
+    </span>
+  );
+}
+
+
 
 function TopicChips() {
   const topics = ["For You", "Popular", "Q&A", "Trending Tutors"];
