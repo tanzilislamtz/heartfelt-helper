@@ -533,12 +533,11 @@ const kindConfig: Record<
   "seeking-tutor": {
     label: "Seeking Tutor",
     Icon: UserSearch,
-    accent: "text-cyan-300",
-    chip: "bg-cyan-400/15 text-cyan-100 border border-cyan-400/30",
-    ring: "ring-cyan-400/60",
+    accent: "text-cyan-700",
+    chip: "bg-cyan-500/15 text-cyan-800 border border-cyan-500/30",
+    ring: "ring-cyan-500/60",
     frame:
-      "border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-slate-100",
-    dark: true,
+      "border border-cyan-300/50 bg-gradient-to-br from-sky-50 via-cyan-50/70 to-white",
   },
   "offering-tutor": {
     label: "Available Tutor",
