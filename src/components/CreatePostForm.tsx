@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -10,6 +10,10 @@ import {
   Upload,
   ArrowLeft,
   FileText,
+  Globe2,
+  Lock,
+  Users,
+  Check,
 } from "lucide-react";
 
 export type PostTab = "learning" | "question" | "tutor" | "student";
@@ -26,6 +30,95 @@ export const POST_TABS: {
   { id: "tutor", label: "Looking for Tutor", short: "Tutor", icon: UserSearch, hint: "Find a tutor near you" },
   { id: "student", label: "Looking for Student", short: "Student", icon: GraduationCap, hint: "Offer your teaching" },
 ];
+
+/* ─────────────────────────  audience picker  ───────────────────────── */
+
+const AUDIENCES = [
+  { id: "public", label: "Public", desc: "Anyone on Learns Academy", icon: Globe2 },
+  { id: "friends", label: "Friends only", desc: "Only your connections", icon: Users },
+  { id: "onlyme", label: "Only me", desc: "Just for you", icon: Lock },
+] as const;
+
+type AudienceId = (typeof AUDIENCES)[number]["id"];
+
+function AudiencePicker() {
+  const [value, setValue] = useState<AudienceId>("public");
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const current = AUDIENCES.find((a) => a.id === value)!;
+  const Icon = current.icon;
+
+  useEffect(() => {
+    if (!open) return;
+    const onClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, [open]);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/50 px-2.5 py-1 text-[11px] font-semibold text-foreground transition hover:border-primary/40 hover:bg-primary/5 sm:text-xs"
+      >
+        <Icon className="h-3.5 w-3.5 text-primary" />
+        <span>{current.label}</span>
+        <ChevronDown className={`h-3 w-3 text-muted-foreground transition ${open ? "rotate-180" : ""}`} />
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -4, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -4, scale: 0.98 }}
+            transition={{ duration: 0.15 }}
+            className="absolute left-0 top-full z-30 mt-2 w-64 overflow-hidden rounded-xl border border-border bg-surface shadow-xl"
+          >
+            <div className="border-b border-border px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+              Who can see this post?
+            </div>
+            <ul className="p-1">
+              {AUDIENCES.map((a) => {
+                const AIcon = a.icon;
+                const active = a.id === value;
+                return (
+                  <li key={a.id}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setValue(a.id);
+                        setOpen(false);
+                      }}
+                      className={`flex w-full items-center gap-3 rounded-lg px-2.5 py-2 text-left transition ${
+                        active ? "bg-primary/10" : "hover:bg-muted"
+                      }`}
+                    >
+                      <span
+                        className={`grid h-8 w-8 place-items-center rounded-full ${
+                          active ? "bg-primary/15 text-primary" : "bg-muted text-foreground/70"
+                        }`}
+                      >
+                        <AIcon className="h-4 w-4" />
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block text-xs font-semibold text-foreground">{a.label}</span>
+                        <span className="block text-[11px] text-muted-foreground">{a.desc}</span>
+                      </span>
+                      {active && <Check className="h-4 w-4 text-primary" />}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 /* ─────────────────────────  primitives  ───────────────────────── */
 
@@ -449,10 +542,10 @@ export function CreatePostForm({ initialTab = "learning" }: { initialTab?: PostT
               <h1 className="font-serif text-2xl leading-tight text-foreground sm:text-3xl">
                 Create New Post
               </h1>
-              <p className="mt-0.5 text-[11px] text-muted-foreground sm:text-xs">
-                Posting as <span className="font-semibold text-foreground">You</span> · to{" "}
-                <span className="font-semibold text-foreground">Everyone</span>
-              </p>
+              <div className="mt-1 flex items-center gap-1.5 text-[11px] text-muted-foreground sm:text-xs">
+                <span>Posting as <span className="font-semibold text-foreground">You</span> · to</span>
+                <AudiencePicker />
+              </div>
             </div>
             <div className="hidden sm:block">
               <ActionButtons />
