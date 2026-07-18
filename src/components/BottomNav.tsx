@@ -199,7 +199,7 @@ export function BottomNav() {
                   </span>
 
                   <span
-                    className="absolute font-semibold tracking-wide text-white transition-all duration-500"
+                    className="absolute font-semibold tracking-wide text-white"
                     style={{
                       fontSize: "clamp(0.62rem, 1.8vw, 0.72rem)",
                       opacity: isActive ? 1 : 0,
@@ -207,8 +207,12 @@ export function BottomNav() {
                         ? "translateY(14px)"
                         : "translateY(22px)",
                       textShadow: "0 1px 2px rgba(0,0,0,0.4)",
+                      transition: mounted
+                        ? "opacity 320ms ease, transform 500ms cubic-bezier(0.22,1,0.36,1)"
+                        : "none",
                     }}
                   >
+
                     {item.label}
                   </span>
 
