@@ -343,42 +343,52 @@ function NearbyTutors() {
   };
   return (
     <div>
-      <div className="mb-2 flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-foreground">Nearby tutors</h3>
-        <button className="text-xs font-medium text-primary hover:underline">See all</button>
+      <div className="mb-3 flex items-end justify-between px-1">
+        <div>
+          <p className="overline text-muted-foreground">Available nearby</p>
+          <h3 className="font-display text-lg font-semibold text-foreground">Nearby tutors</h3>
+        </div>
+        <button className="text-xs font-semibold text-tutor hover:underline">See all</button>
       </div>
       <div className="-mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {tutors.map((t) => (
-          <motion.div
-            key={t.name}
-            whileHover={{ y: -3 }}
-            className="relative w-40 shrink-0 snap-start overflow-hidden rounded-2xl border border-border bg-surface shadow-sm"
-          >
-            <div className={`aspect-[4/5] bg-gradient-to-br ${toneMap[t.tone]}`}>
-              <div className="grid h-full w-full place-items-center">
-                <div className={`grid h-16 w-16 place-items-center rounded-full bg-background text-xl font-bold ring-2 ${toneMap[t.tone].split(" ").find((c) => c.startsWith("ring-"))}`}>
-                  <span className={toneMap[t.tone].split(" ").find((c) => c.startsWith("text-"))}>
-                    {t.name.charAt(0)}
-                  </span>
+        {tutors.map((t) => {
+          const ringCls = toneMap[t.tone].split(" ").find((c) => c.startsWith("ring-"));
+          const textCls = toneMap[t.tone].split(" ").find((c) => c.startsWith("text-"));
+          const km = t.subject.match(/([\d.]+ km)/)?.[1] ?? "";
+          return (
+            <motion.div
+              key={t.name}
+              whileHover={{ y: -4 }}
+              className="flex min-w-[220px] shrink-0 snap-start flex-col rounded-3xl border border-border bg-surface p-4 shadow-sm transition hover:border-tutor/40 hover:shadow-lg"
+            >
+              <div className={`relative mb-3 h-28 overflow-hidden rounded-2xl bg-gradient-to-br ${toneMap[t.tone]}`}>
+                <div className="grid h-full w-full place-items-center">
+                  <div className={`grid h-16 w-16 place-items-center rounded-full bg-background text-xl font-bold ring-2 ${ringCls}`}>
+                    <span className={textCls}>{t.name.charAt(0)}</span>
+                  </div>
                 </div>
+                {km && (
+                  <span className="absolute right-2 top-2 rounded-lg bg-background/95 px-2 py-0.5 text-[10px] font-bold text-tutor shadow-sm">
+                    {km}
+                  </span>
+                )}
+                <span className="absolute left-2 top-2 rounded-full bg-background/95 px-2 py-0.5 text-[10px] font-bold text-foreground shadow-sm">
+                  ★ {t.rating}
+                </span>
               </div>
-              <span className="absolute right-2 top-2 rounded-full bg-background/90 px-2 py-0.5 text-[10px] font-semibold text-foreground shadow-sm">
-                ★ {t.rating}
-              </span>
-            </div>
-            <div className="p-3">
-              <p className="truncate text-sm font-semibold text-foreground">{t.name}</p>
-              <p className="mt-0.5 truncate text-[11px] text-muted-foreground">{t.subject}</p>
-              <button className="mt-2.5 w-full rounded-full bg-primary py-1.5 text-[11px] font-semibold text-primary-foreground transition hover:opacity-95">
-                Follow
+              <p className="truncate text-sm font-bold text-foreground">{t.name}</p>
+              <p className="mt-0.5 truncate text-[11px] text-muted-foreground">{t.subject.replace(/ · [\d.]+ km away/, "")}</p>
+              <button className="mt-3 w-full rounded-xl border border-tutor/60 py-2 text-[11px] font-bold text-tutor transition hover:bg-tutor hover:text-tutor-foreground">
+                Book Session
               </button>
-            </div>
-          </motion.div>
-        ))}
+            </motion.div>
+          );
+        })}
       </div>
     </div>
   );
 }
+
 
 function BestTutorCard() {
   return (
