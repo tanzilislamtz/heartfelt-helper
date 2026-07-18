@@ -10,6 +10,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { hasWelcomed, isAuthed, markWelcomed } from "@/lib/session";
+import logoAsset from "@/assets/learns-academy-logo.png.asset.json";
 
 export const Route = createFileRoute("/welcome")({
   head: () => ({

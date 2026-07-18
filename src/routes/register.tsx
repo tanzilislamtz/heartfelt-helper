@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
+import logoAsset from "@/assets/learns-academy-logo.png.asset.json";
 import {
   Mail,
   Lock,
