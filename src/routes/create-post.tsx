@@ -20,10 +20,12 @@ export const Route = createFileRoute("/create-post")({
 
 function CreatePostPage() {
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    if (!isSignedIn()) navigate({ to: "/login" });
+    if (!isAuthed()) navigate({ to: "/login" });
   }, [navigate]);
+
 
   return (
     <div className="min-h-screen bg-background">
