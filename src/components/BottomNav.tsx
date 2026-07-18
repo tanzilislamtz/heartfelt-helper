@@ -87,7 +87,7 @@ export function BottomNav() {
         style={{
           height: "var(--item)",
           background:
-            "linear-gradient(135deg, rgba(15,10,45,0.85) 0%, rgba(30,15,60,0.85) 50%, rgba(60,15,55,0.85) 100%)",
+            "linear-gradient(135deg, rgba(20,22,60,0.92) 0%, rgba(41,44,117,0.9) 55%, rgba(0,103,71,0.88) 100%)",
           border: "1px solid rgba(255,255,255,0.12)",
           boxShadow:
             "0 20px 40px -12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.15), inset 0 -1px 0 rgba(255,255,255,0.05)",
