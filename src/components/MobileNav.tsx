@@ -1,14 +1,15 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { X, Home, Compass, BookOpen, Users, Award, Bookmark, Sparkles, GraduationCap } from "lucide-react";
+import { X, Home, FileText, Flame, MessageSquare, UserSearch, BookOpenCheck, UserCheck, Sparkles, GraduationCap } from "lucide-react";
 import { useEffect } from "react";
 
 const items = [
   { icon: Home, label: "Home", active: true },
-  { icon: Compass, label: "Explore" },
-  { icon: BookOpen, label: "Courses" },
-  { icon: Users, label: "Communities" },
-  { icon: Award, label: "Rewards" },
-  { icon: Bookmark, label: "Saved" },
+  { icon: FileText, label: "Quiz" },
+  { icon: Flame, label: "Popular" },
+  { icon: MessageSquare, label: "Q&A" },
+  { icon: UserSearch, label: "Looking for Tutor" },
+  { icon: BookOpenCheck, label: "Looking for Student" },
+  { icon: UserCheck, label: "Available Tutor" },
 ];
 
 export function MobileNav({ open, onClose }: { open: boolean; onClose: () => void }) {
