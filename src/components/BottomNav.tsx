@@ -95,21 +95,27 @@ export function BottomNav() {
       className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-3 sm:px-4 lg:hidden"
       style={{
         paddingBottom: "calc(0.9rem + env(safe-area-inset-bottom))",
+        opacity: mounted ? 1 : 0,
+        transform: mounted ? "translateY(0)" : "translateY(12px)",
+        transition: "opacity 380ms ease, transform 480ms cubic-bezier(0.22, 1, 0.36, 1)",
+        willChange: "transform, opacity",
         ...style,
       }}
     >
       {/* Ambient aurora glow that follows the active tab */}
       <span
         aria-hidden
-        className="pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-[999px] blur-2xl transition-all duration-700"
+        className="pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-[999px] blur-2xl"
         style={{
           bottom: "calc(0.4rem + env(safe-area-inset-bottom))",
           width: "calc(var(--bar) * 0.85)",
           height: "calc(var(--h) * 1.1)",
           background: active.gradient,
           opacity: 0.35,
+          transition: glowTransition,
         }}
       />
+
 
       <div
         className="relative flex items-center justify-center rounded-full backdrop-blur-xl"
