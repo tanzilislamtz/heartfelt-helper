@@ -168,12 +168,12 @@ export function BottomNav() {
                   <span
                     className="pointer-events-none absolute block rounded-full transition-all duration-500"
                     style={{
-                      width: "calc(var(--item) * 0.78)",
-                      height: "calc(var(--item) * 0.78)",
+                      width: "calc(var(--item) * 0.6)",
+                      height: "calc(var(--item) * 0.6)",
                       border: "1.5px solid rgba(255,255,255,0.55)",
                       transform: isActive
-                        ? "translateY(calc(var(--item) * -0.55)) scale(1)"
-                        : "translateY(calc(var(--item) * -0.55)) scale(0)",
+                        ? "translateY(calc(var(--item) * -0.5)) scale(1)"
+                        : "translateY(calc(var(--item) * -0.5)) scale(0)",
                       transitionDelay: isActive ? "0.45s" : "0s",
                       opacity: isActive ? 1 : 0,
                       animation: isActive
@@ -192,12 +192,13 @@ export function BottomNav() {
           aria-hidden
           className="absolute rounded-full transition-all duration-500"
           style={{
-            top: "-50%",
-            left: "calc(var(--item) * 0.35)",
-            width: "var(--item)",
-            height: "var(--item)",
+            top: "calc(var(--item) * -0.36)",
+            left: "calc(var(--item) * 0.85)",
+            width: "calc(var(--item) * 0.72)",
+            height: "calc(var(--item) * 0.72)",
+            marginLeft: "calc(var(--item) * -0.36)",
             background: active.gradient,
-            boxShadow: `0 12px 30px -6px ${active.glow}, 0 0 0 4px rgba(15,10,45,0.9), inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -8px 20px rgba(0,0,0,0.15)`,
+            boxShadow: `0 10px 22px -6px ${active.glow}, 0 0 0 3px rgba(15,10,45,0.9), inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -6px 16px rgba(0,0,0,0.15)`,
             transform: `translateX(calc(var(--item) * ${activeIndex}))`,
           }}
         >
