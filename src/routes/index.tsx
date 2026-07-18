@@ -151,10 +151,24 @@ function Feed() {
         handle="Verified Student"
         time="10 days ago"
         verified
+        kind="learning"
         title="A Conversation Between Lily and Her Father"
         body={"Lily: Hello, Baba!\nBaba: Lily? How are you?\nLily: Fine, Baba. I just got my exam result. I've got an A in my English test!\nBaba: That's wonderful, my dear. I'm so proud of you."}
         tag="Learning Content"
         stats={{ likes: 214, comments: 36, shares: 11 }}
+      />
+
+      <Post
+        author="Tania Rahman"
+        role="student"
+        handle="@tania.q"
+        time="1h · Public"
+        kind="question"
+        title="Why does light bend when it enters water from air?"
+        body="Physics class 10 এ পড়াচ্ছে refraction, কিন্তু bending এর reason টা mathematically ঠিকমতো বুঝছি না। কেউ কি Snell's law টা সহজ ভাষায় explain করতে পারবেন?"
+        tag="Physics · Refraction"
+        tags={["Class 10", "Optics"]}
+        stats={{ likes: 87, comments: 24, shares: 5 }}
       />
 
       <NearbyTutors />
@@ -165,19 +179,46 @@ function Feed() {
         handle="@alia.tutors"
         time="2h · Public"
         verified
+        kind="offering-tutor"
         title="Free doubt-solving session tonight — Class 9 & 10 Math"
         body="আজ রাত ৯টায় ফ্রি ডাউট সলভিং সেশন। Algebra, Geometry, Trigonometry — যেকোনো প্রশ্ন নিয়ে আসুন। জুম লিঙ্ক কমেন্টে দেওয়া হবে।"
         tag="Class 9-10 Math"
+        meta={[
+          { label: "Subject", value: "Mathematics" },
+          { label: "Class", value: "9 – 10" },
+          { label: "Mode", value: "Online · Zoom" },
+          { label: "Fee", value: "Free tonight" },
+        ]}
         stats={{ likes: 328, comments: 42, shares: 18 }}
       />
 
       <BestTutorCard />
 
       <Post
+        author="Imran Hossain"
+        role="student"
+        handle="@imran.hsc"
+        time="3h · Public"
+        kind="seeking-tutor"
+        title="Need a Chemistry tutor for HSC — Dhanmondi area"
+        body="HSC 2nd year, Chemistry 2nd paper তে দুর্বলতা আছে। সপ্তাহে ৩ দিন, বিকেল ৫টার পর হলে ভালো হয়। Home tuition or nearby coaching দুটোই চলবে।"
+        tag="HSC · Chemistry"
+        tags={["Dhanmondi", "Home Tuition"]}
+        meta={[
+          { label: "Subject", value: "Chemistry" },
+          { label: "Level", value: "HSC 2nd Yr" },
+          { label: "Location", value: "Dhanmondi" },
+          { label: "Budget", value: "৳4–6k/mo" },
+        ]}
+        stats={{ likes: 96, comments: 31, shares: 7 }}
+      />
+
+      <Post
         author="Nabila Chowdhury"
         role="student"
         handle="@nabila.bio"
         time="4h · Public"
+        kind="learning"
         title="Butterfly on marigold — captured for my Biology assignment"
         body="Field notes for chapter 7 (Pollination). Any tips on identifying this species? Guessing it's a Plain Tiger."
         tag="Biology · Class 10"
@@ -190,10 +231,17 @@ function Feed() {
         role="tutor"
         handle="@rafi.stem"
         time="6h · Public"
-        title="Weekend group class — pick your subjects"
-        body="ছুটির দিনে অনলাইন গ্রুপ ক্লাস নিচ্ছি। প্রতিটি সেশন ৪৫ মিনিট, ছোট ব্যাচ। আগ্রহীরা কমেন্ট করুন কোন সাবজেক্ট চান।"
+        kind="seeking-student"
+        title="Weekend group class — 3 seats left"
+        body="ছুটির দিনে অনলাইন গ্রুপ ব্যাচ শুরু করছি। ছোট ব্যাচ (৫ জনের মধ্যে), interactive সেশন। আগ্রহী হলে DM করুন।"
         tag="Weekend Batch"
-        tags={["Math", "Physics", "Chemistry", "Bangla Math"]}
+        tags={["Math", "Physics", "Chemistry"]}
+        meta={[
+          { label: "Batch", value: "Weekend AM" },
+          { label: "Seats", value: "3 left" },
+          { label: "Duration", value: "45 min × 6" },
+          { label: "Fee", value: "৳2,500/mo" },
+        ]}
         stats={{ likes: 176, comments: 51, shares: 9 }}
       />
 
@@ -202,12 +250,14 @@ function Feed() {
         role="student"
         handle="@rayhan.reads"
         time="Yesterday · Public"
+        kind="learning"
         title="Study setup for finals week"
         body="একটা আপেল, কয়েকটা বই — ব্যস, এটাই এই সপ্তাহের রুটিন। Board exam ঠিক ১২ দিন দূরে।"
         tag="Motivation"
         stats={{ likes: 421, comments: 66, shares: 12 }}
         mediaUrl="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1200&auto=format&fit=crop"
       />
+
     </section>
   );
 }
