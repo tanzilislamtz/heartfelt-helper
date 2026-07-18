@@ -106,42 +106,27 @@ function LeftNav() {
   ];
   return (
     <aside className="hidden lg:block">
-      <div className="sticky top-24 space-y-4">
-        <nav className="rounded-3xl border border-border bg-surface p-3 shadow-sm">
-          <div className="space-y-1">
-            {items.map(({ icon: Icon, label, active }) => (
-              <a
-                key={label}
-                href="#"
-                className={`group flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-medium transition ${
-                  active
-                    ? "bg-primary text-primary-foreground shadow-brand"
-                    : "text-foreground/75 hover:bg-muted hover:text-foreground"
-                }`}
-              >
-                <Icon className="h-4.5 w-4.5" strokeWidth={active ? 2.4 : 2} />
-                {label}
-                {active && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-accent" />}
-              </a>
-            ))}
-          </div>
-        </nav>
+      <nav className="sticky top-24 space-y-1">
+        {items.map(({ icon: Icon, label, active }) => (
+          <a
+            key={label}
+            href="#"
+            className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
+              active
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-foreground/75 hover:bg-muted hover:text-foreground"
+            }`}
+          >
+            <Icon className="h-5 w-5" strokeWidth={active ? 2.4 : 2} />
+            {label}
+            {active && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-accent" />}
+          </a>
+        ))}
 
-        <div className="rounded-2xl border border-tutor/15 bg-tutor/5 p-4">
-          <div className="flex items-center gap-2">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-tutor/50" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-tutor" />
-            </span>
-            <span className="text-xs font-bold text-tutor">42 tutors live</span>
-          </div>
-          <p className="mt-1 text-[11px] font-medium text-tutor/70">Get instant help now</p>
-        </div>
-      </div>
+      </nav>
     </aside>
   );
 }
-
 
 function Feed() {
   return (
@@ -219,20 +204,24 @@ function Feed() {
 
 function Leaderboard() {
   const entries = [
-    { rank: 1, name: "Md. Rajwanur R.", sub: "University of Dhaka", role: "Platinum", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&auto=format&fit=crop" },
-    { rank: 2, name: "Papul Halder", sub: "Chittagong College", role: "Math Lead", img: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=400&auto=format&fit=crop" },
-    { rank: 3, name: "Sojib Khan", sub: "Rajshahi University", role: "Top Student", img: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&auto=format&fit=crop" },
-    { rank: 4, name: "Sabuj Hossain", sub: "Notre Dame", role: "Physics", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&auto=format&fit=crop" },
-    { rank: 5, name: "Protiq Halder", sub: "Khulna Model", role: "Rising Star", img: "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?w=400&auto=format&fit=crop" },
+    { rank: 1, name: "Md. Rajwanur R.", sub: "University of Dhaka", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&auto=format&fit=crop", following: false },
+    { rank: 2, name: "Papul Halder", sub: "Chittagong College", img: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=400&auto=format&fit=crop", following: false },
+    { rank: 3, name: "Sojib Khan", sub: "Rajshahi University", img: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&auto=format&fit=crop", following: false },
+    { rank: 4, name: "Sabuj Hossain", sub: "Notre Dame College", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&auto=format&fit=crop", following: false },
+    { rank: 5, name: "Protiq Halder", sub: "Khulna Model School", img: "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?w=400&auto=format&fit=crop", following: true },
   ];
   return (
-    <section className="space-y-3">
-      <div className="flex items-end justify-between px-1">
-        <div>
-          <p className="overline text-muted-foreground">Weekly leaderboard</p>
-          <h3 className="font-display text-lg font-semibold text-foreground">Top contributors</h3>
+    <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
+      <div className="mb-3 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="grid h-7 w-7 place-items-center rounded-lg bg-accent/40 text-primary">
+            <Trophy className="h-4 w-4" />
+          </span>
+          <h3 className="text-sm font-semibold text-foreground">
+            Leaderboard <span className="text-muted-foreground">· top by points</span>
+          </h3>
         </div>
-        <button className="inline-flex items-center gap-0.5 text-xs font-semibold text-primary hover:underline">
+        <button className="inline-flex items-center gap-0.5 text-xs font-medium text-primary hover:underline">
           See all <ChevronRight className="h-3 w-3" />
         </button>
       </div>
@@ -241,58 +230,64 @@ function Leaderboard() {
           <motion.div
             key={e.rank}
             whileHover={{ y: -3 }}
-            className="flex min-w-[220px] shrink-0 snap-start items-center justify-between gap-3 rounded-2xl border border-border bg-surface p-3 shadow-sm transition hover:border-primary/30 hover:shadow-lg"
+            className="relative w-40 shrink-0 snap-start overflow-hidden rounded-2xl border border-border bg-surface shadow-sm"
           >
-            <div className="flex min-w-0 items-center gap-3">
-              <div className={`relative h-11 w-11 shrink-0 overflow-hidden rounded-full ring-2 ${e.rank === 1 ? "ring-accent" : e.rank <= 3 ? "ring-primary/40" : "ring-border"}`}>
-                <img src={e.img} alt={e.name} loading="lazy" className="h-full w-full object-cover" />
-                <span className="absolute -bottom-0.5 -right-0.5 grid h-5 w-5 place-items-center rounded-full bg-primary text-[9px] font-bold text-primary-foreground ring-2 ring-surface">
-                  {e.rank}
-                </span>
-              </div>
-              <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-foreground">{e.name}</p>
-                <p className="truncate text-[10px] font-medium text-tutor">{e.role}</p>
+            <div className="relative aspect-[4/5] overflow-hidden">
+              <img src={e.img} alt={e.name} loading="lazy" className="h-full w-full object-cover" />
+              <span className="absolute left-2 top-2 rounded-lg bg-background/95 px-1.5 py-0.5 text-[10px] font-bold text-primary shadow-sm">
+                #{e.rank}
+              </span>
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-foreground/85 via-foreground/40 to-transparent p-2">
+                <p className="truncate text-xs font-semibold text-background">{e.name}</p>
+                <p className="truncate text-[10px] text-background/80">{e.sub}</p>
               </div>
             </div>
-            <button className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-primary/5 text-primary transition hover:bg-primary hover:text-primary-foreground">
-              <Plus className="h-4 w-4" />
-            </button>
+            <div className="p-2">
+              <button
+                className={`w-full rounded-full py-1.5 text-[11px] font-semibold transition ${
+                  e.following
+                    ? "bg-foreground text-background"
+                    : "bg-primary text-primary-foreground hover:opacity-95"
+                }`}
+              >
+                {e.following ? "Following" : "Follow"}
+              </button>
+            </div>
           </motion.div>
         ))}
       </div>
-    </section>
+    </div>
   );
 }
 
 
 function Composer() {
   return (
-    <div className="overflow-hidden rounded-3xl border border-border bg-surface shadow-sm">
-      <div className="flex gap-3 p-5">
-        <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-primary text-sm font-bold text-primary-foreground">
+    <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
+      <div className="flex gap-3">
+        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
           A
         </div>
-        <textarea
-          rows={2}
-          placeholder="Share a thought, ask a question, drop a note…"
-          className="w-full resize-none border-0 bg-transparent py-2 text-base placeholder:text-muted-foreground focus:outline-none"
-        />
-      </div>
-      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border bg-muted/40 px-3 py-2.5 sm:px-5">
-        <div className="flex flex-wrap items-center gap-1">
-          <ComposerBtn icon={ImageIcon} label="Image" />
-          <ComposerBtn icon={Paperclip} label="Attach" />
-          <ComposerBtn icon={BarChart3} label="Poll" />
-          <ComposerBtn icon={BookOpen} label="Note" />
-        </div>
-        <div className="flex items-center gap-3">
-          <span className="hidden text-xs text-muted-foreground sm:inline">
-            Posting to <span className="font-semibold text-foreground">Everyone</span>
-          </span>
-          <button className="inline-flex items-center gap-1.5 rounded-xl bg-primary px-5 py-2 text-sm font-bold text-primary-foreground shadow-brand transition hover:-translate-y-px">
-            Post
-          </button>
+        <div className="min-w-0 flex-1">
+          <textarea
+            rows={2}
+            placeholder="Share a thought, ask a question, drop a note…"
+            className="w-full resize-none rounded-xl border border-transparent bg-muted/60 px-4 py-3 text-sm placeholder:text-muted-foreground focus:border-primary/30 focus:bg-surface focus:outline-none focus:ring-4 focus:ring-primary/10"
+          />
+          <div className="mt-3 flex flex-wrap items-center gap-1">
+            <ComposerBtn icon={ImageIcon} label="Image" />
+            <ComposerBtn icon={Paperclip} label="Attach" />
+            <ComposerBtn icon={BarChart3} label="Poll" />
+            <ComposerBtn icon={BookOpen} label="Note" />
+            <div className="ml-auto flex items-center gap-2">
+              <span className="hidden text-xs text-muted-foreground sm:inline">
+                Posting to <span className="font-medium text-foreground">Everyone</span>
+              </span>
+              <button className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-95">
+                Post
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -301,13 +296,12 @@ function Composer() {
 
 function ComposerBtn({ icon: Icon, label }: { icon: React.ElementType; label: string }) {
   return (
-    <button className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-foreground/70 transition hover:bg-surface hover:text-primary">
-      <Icon className="h-4 w-4" />
+    <button className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-medium text-foreground/70 transition hover:bg-muted hover:text-foreground">
+      <Icon className="h-4 w-4 text-tutor" />
       {label}
     </button>
   );
 }
-
 
 function TopicChips() {
   const topics = ["For You", "Popular", "Q&A", "Trending Tutors"];
@@ -343,52 +337,42 @@ function NearbyTutors() {
   };
   return (
     <div>
-      <div className="mb-3 flex items-end justify-between px-1">
-        <div>
-          <p className="overline text-muted-foreground">Available nearby</p>
-          <h3 className="font-display text-lg font-semibold text-foreground">Nearby tutors</h3>
-        </div>
-        <button className="text-xs font-semibold text-tutor hover:underline">See all</button>
+      <div className="mb-2 flex items-center justify-between">
+        <h3 className="text-sm font-semibold text-foreground">Nearby tutors</h3>
+        <button className="text-xs font-medium text-primary hover:underline">See all</button>
       </div>
       <div className="-mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {tutors.map((t) => {
-          const ringCls = toneMap[t.tone].split(" ").find((c) => c.startsWith("ring-"));
-          const textCls = toneMap[t.tone].split(" ").find((c) => c.startsWith("text-"));
-          const km = t.subject.match(/([\d.]+ km)/)?.[1] ?? "";
-          return (
-            <motion.div
-              key={t.name}
-              whileHover={{ y: -4 }}
-              className="flex min-w-[220px] shrink-0 snap-start flex-col rounded-3xl border border-border bg-surface p-4 shadow-sm transition hover:border-tutor/40 hover:shadow-lg"
-            >
-              <div className={`relative mb-3 h-28 overflow-hidden rounded-2xl bg-gradient-to-br ${toneMap[t.tone]}`}>
-                <div className="grid h-full w-full place-items-center">
-                  <div className={`grid h-16 w-16 place-items-center rounded-full bg-background text-xl font-bold ring-2 ${ringCls}`}>
-                    <span className={textCls}>{t.name.charAt(0)}</span>
-                  </div>
-                </div>
-                {km && (
-                  <span className="absolute right-2 top-2 rounded-lg bg-background/95 px-2 py-0.5 text-[10px] font-bold text-tutor shadow-sm">
-                    {km}
+        {tutors.map((t) => (
+          <motion.div
+            key={t.name}
+            whileHover={{ y: -3 }}
+            className="relative w-40 shrink-0 snap-start overflow-hidden rounded-2xl border border-border bg-surface shadow-sm"
+          >
+            <div className={`aspect-[4/5] bg-gradient-to-br ${toneMap[t.tone]}`}>
+              <div className="grid h-full w-full place-items-center">
+                <div className={`grid h-16 w-16 place-items-center rounded-full bg-background text-xl font-bold ring-2 ${toneMap[t.tone].split(" ").find((c) => c.startsWith("ring-"))}`}>
+                  <span className={toneMap[t.tone].split(" ").find((c) => c.startsWith("text-"))}>
+                    {t.name.charAt(0)}
                   </span>
-                )}
-                <span className="absolute left-2 top-2 rounded-full bg-background/95 px-2 py-0.5 text-[10px] font-bold text-foreground shadow-sm">
-                  ★ {t.rating}
-                </span>
+                </div>
               </div>
-              <p className="truncate text-sm font-bold text-foreground">{t.name}</p>
-              <p className="mt-0.5 truncate text-[11px] text-muted-foreground">{t.subject.replace(/ · [\d.]+ km away/, "")}</p>
-              <button className="mt-3 w-full rounded-xl border border-tutor/60 py-2 text-[11px] font-bold text-tutor transition hover:bg-tutor hover:text-tutor-foreground">
-                Book Session
+              <span className="absolute right-2 top-2 rounded-full bg-background/90 px-2 py-0.5 text-[10px] font-semibold text-foreground shadow-sm">
+                ★ {t.rating}
+              </span>
+            </div>
+            <div className="p-3">
+              <p className="truncate text-sm font-semibold text-foreground">{t.name}</p>
+              <p className="mt-0.5 truncate text-[11px] text-muted-foreground">{t.subject}</p>
+              <button className="mt-2.5 w-full rounded-full bg-primary py-1.5 text-[11px] font-semibold text-primary-foreground transition hover:opacity-95">
+                Follow
               </button>
-            </motion.div>
-          );
-        })}
+            </div>
+          </motion.div>
+        ))}
       </div>
     </div>
   );
 }
-
 
 function BestTutorCard() {
   return (
@@ -501,7 +485,7 @@ function Post({
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       whileHover={{ y: -3, boxShadow: "0 18px 40px -20px rgba(41,44,117,0.25)" }}
-      className="group rounded-3xl border border-border bg-surface p-5 shadow-sm transition-colors hover:border-primary/25 sm:p-6"
+      className="group rounded-2xl border border-border bg-surface p-5 shadow-sm"
     >
       <header className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 sm:flex sm:items-center">
         <div className="flex min-w-0 items-center gap-3">
@@ -556,19 +540,18 @@ function Post({
       ) : null}
 
       <div className="mt-4 flex flex-wrap items-center gap-1.5">
-        <span className="inline-flex items-center rounded-lg bg-primary/8 px-2.5 py-1 text-xs font-semibold text-primary">
+        <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
           #{tag}
         </span>
         {tags?.map((t) => (
           <span
             key={t}
-            className="inline-flex items-center rounded-lg bg-primary/8 px-2.5 py-1 text-xs font-semibold text-primary"
+            className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-foreground/70"
           >
             #{t}
           </span>
         ))}
       </div>
-
 
 
       <footer className="mt-4 flex items-center gap-1 border-t border-border pt-3">
@@ -746,92 +729,85 @@ function RightRail() {
   return (
     <aside className="hidden space-y-5 lg:block">
       <div className="sticky top-24 space-y-5">
-        {/* Sponsored — navy immersive card */}
-        <div className="relative overflow-hidden rounded-3xl bg-primary p-5 text-primary-foreground shadow-brand">
-          <span className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-accent/20 blur-2xl" />
-          <span className="absolute -bottom-16 -left-8 h-32 w-32 rounded-full bg-white/10 blur-2xl" />
-          <div className="relative">
-            <div className="mb-3 flex items-center justify-between">
-              <span className="overline text-primary-foreground/60">Sponsored</span>
-              <span className="text-[10px] font-semibold text-primary-foreground/50">Ad</span>
-            </div>
-            <a href="#" className="mb-4 block overflow-hidden rounded-2xl ring-1 ring-white/10">
-              <img
-                src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&auto=format&fit=crop"
-                alt="Exotic Collection — Unstitched Fabrics"
-                loading="lazy"
-                className="aspect-[16/10] w-full object-cover transition hover:scale-[1.03]"
-              />
-            </a>
-            <h4 className="font-display text-lg font-semibold">Exotic Collection</h4>
-            <p className="mt-1 text-xs text-primary-foreground/70">
+        {/* Sponsored */}
+        <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
+          <div className="mb-2 flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-foreground">Sponsored</h3>
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Ad
+            </span>
+          </div>
+          <a
+            href="#"
+            className="group block overflow-hidden rounded-xl border border-border bg-muted"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&auto=format&fit=crop"
+              alt="Exotic Collection — Unstitched Fabrics"
+              loading="lazy"
+              className="aspect-[16/10] w-full object-cover transition group-hover:scale-[1.02]"
+            />
+          </a>
+          <div className="mt-3">
+            <p className="text-sm font-semibold text-foreground">Exotic Collection</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">
               Unstitched fabrics · New arrivals for Eid
             </p>
-            <button className="mt-4 w-full rounded-xl bg-accent py-2.5 text-sm font-bold text-accent-foreground shadow-sm transition hover:-translate-y-px">
-              Shop Now
-            </button>
           </div>
         </div>
 
         {/* Message List */}
-        <div className="rounded-3xl border border-border bg-surface p-5 shadow-sm">
+        <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
           <div className="mb-3 flex items-center justify-between">
-            <h3 className="font-display text-lg font-semibold text-foreground">Messages</h3>
-            <button className="grid h-8 w-8 place-items-center rounded-xl text-primary hover:bg-primary/5">
-              <MessageCircle className="h-4 w-4" />
-            </button>
+            <h3 className="text-sm font-semibold text-foreground">Message List</h3>
+            <button className="text-xs font-medium text-primary hover:underline">See all</button>
           </div>
-          <div className="mb-3 flex gap-5 border-b border-border">
+          <div className="mb-3 grid grid-cols-2 rounded-full bg-muted p-1 text-xs font-semibold">
             <button
               onClick={() => setMsgTab("active")}
-              className={`-mb-px border-b-2 pb-2.5 text-xs font-bold transition ${
-                msgTab === "active" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
+              className={`rounded-full py-1.5 transition ${
+                msgTab === "active" ? "bg-surface text-foreground shadow-sm" : "text-muted-foreground"
               }`}
             >
-              Active (0)
+              Active
             </button>
             <button
               onClick={() => setMsgTab("all")}
-              className={`-mb-px border-b-2 pb-2.5 text-xs font-bold transition ${
-                msgTab === "all" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
+              className={`rounded-full py-1.5 transition ${
+                msgTab === "all" ? "bg-surface text-foreground shadow-sm" : "text-muted-foreground"
               }`}
             >
-              All Messages (3)
+              All <span className="opacity-70">(3)</span>
             </button>
           </div>
 
           {msgTab === "active" ? (
-            <div className="rounded-2xl bg-muted/50 py-6 text-center">
+            <div className="rounded-xl border border-dashed border-border py-6 text-center">
               <p className="text-xs text-muted-foreground">
                 No one is online right now.{" "}
-                <button onClick={() => setMsgTab("all")} className="font-semibold text-primary hover:underline">
-                  Show all
-                </button>
+                <button className="font-semibold text-primary hover:underline">Show all</button>
               </p>
             </div>
           ) : (
             <ul className="space-y-3">
               {[
-                { name: "Nadia Karim", msg: "Sent the notes ✓", time: "2m", unread: 2, online: true },
-                { name: "Tanvir Ahmed", msg: "See you at 8pm class", time: "1h", unread: 0, online: true },
-                { name: "Meherun Nisa", msg: "Thanks for the feedback!", time: "3h", unread: 0, online: false },
+                { name: "Nadia Karim", msg: "Sent the notes ✓", time: "2m", unread: 2 },
+                { name: "Tanvir Ahmed", msg: "See you at 8pm class", time: "1h", unread: 0 },
+                { name: "Meherun Nisa", msg: "Thanks for the feedback!", time: "3h", unread: 0 },
               ].map((m) => (
-                <li key={m.name} className="group flex items-center gap-3 rounded-xl px-1 py-1.5 transition hover:bg-muted/50">
-                  <div className="relative shrink-0">
-                    <div className="grid h-10 w-10 place-items-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
-                      {m.name.charAt(0)}
-                    </div>
-                    <span className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full ring-2 ring-surface ${m.online ? "bg-tutor" : "bg-muted-foreground/40"}`} />
+                <li key={m.name} className="flex items-center gap-3">
+                  <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
+                    {m.name.charAt(0)}
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="truncate text-sm font-bold text-foreground group-hover:text-primary">{m.name}</span>
+                      <span className="truncate text-sm font-medium text-foreground">{m.name}</span>
                       <span className="shrink-0 text-[10px] text-muted-foreground">{m.time}</span>
                     </div>
                     <p className="truncate text-xs text-muted-foreground">{m.msg}</p>
                   </div>
                   {m.unread > 0 && (
-                    <span className="grid h-5 min-w-[20px] place-items-center rounded-full bg-primary px-1.5 text-[10px] font-bold text-primary-foreground">
+                    <span className="grid h-5 min-w-[20px] place-items-center rounded-full bg-destructive px-1.5 text-[10px] font-bold text-destructive-foreground">
                       {m.unread}
                     </span>
                   )}
@@ -840,7 +816,6 @@ function RightRail() {
             </ul>
           )}
         </div>
-
 
         <p className="px-2 text-[11px] text-muted-foreground">
           © Learns Academy · About · Privacy · Terms · Help
