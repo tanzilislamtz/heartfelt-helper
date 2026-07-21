@@ -185,7 +185,7 @@ export function BottomNav() {
                       height: "40px",
                       transition: trans,
                       transform: isActive
-                        ? "translateY(-22px) scale(1)"
+                        ? "translateY(-10px) scale(1)"
                         : "translateY(2px) scale(0.95)",
                       zIndex: 2,
                     }}
