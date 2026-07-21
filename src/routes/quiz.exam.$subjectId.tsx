@@ -480,7 +480,7 @@ function ExamRunner({
           ) : (
             <button
               onClick={onSubmit}
-              className="flex-1 rounded-full bg-emerald-600 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
+              className="flex-1 rounded-full bg-primary py-2.5 text-sm font-medium text-primary-foreground transition hover:opacity-90"
             >
               Submit exam
             </button>
