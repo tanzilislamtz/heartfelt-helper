@@ -34,12 +34,15 @@ function QuizHub() {
   return (
     <main className="min-h-screen bg-background pb-28 text-foreground">
       <div className="mx-auto max-w-2xl px-5 pt-8">
-        {/* Header */}
-        <div>
-          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Learns Academy</p>
-          <h1 className="mt-1 text-3xl font-semibold tracking-tight">Good to see you, {studentName}.</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Choose a subject to start a 25-question board practice.</p>
+        {/* Header — brand gradient to match home */}
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-purple-600 to-fuchsia-600 p-6 text-white shadow-lg">
+          <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/15 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-white/10 blur-3xl" />
+          <p className="text-[11px] uppercase tracking-[0.22em] text-white/80">Learns Academy</p>
+          <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">Good to see you, {studentName}.</h1>
+          <p className="mt-1 text-sm text-white/85">Choose a subject to start a 25-question board practice.</p>
         </div>
+
 
         {/* Profile context card */}
         <section className="mt-6 flex items-center gap-3 rounded-2xl border border-border bg-card p-4">

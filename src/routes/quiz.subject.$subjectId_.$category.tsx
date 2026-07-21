@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, ChevronRight, MapPin } from "lucide-react";
 import { boards, categories, subjects, type CategoryId } from "@/data/quiz";
 
-export const Route = createFileRoute("/quiz/subject/$subjectId/$category")({
+export const Route = createFileRoute("/quiz/subject/$subjectId_/$category")({
   component: BoardPicker,
 });
 
