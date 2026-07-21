@@ -5,7 +5,7 @@ const InputSchema = z.object({
   question: z.string().min(1),
   options: z.array(z.string()).min(2),
   correctIndex: z.number().int().min(0),
-  userIndex: z.number().int().min(0),
+  userIndex: z.number().int(),
   subject: z.string().optional(),
 });
 
