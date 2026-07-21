@@ -18,7 +18,7 @@ export const explainAnswer = createServerFn({ method: "POST" })
     }
 
     const correct = data.options[data.correctIndex] ?? "";
-    const chosen = data.options[data.userIndex] ?? "";
+    const chosen = data.userIndex < 0 ? "(not answered)" : (data.options[data.userIndex] ?? "");
 
     const prompt = `You are a friendly SSC-level tutor. A student answered a multiple-choice question incorrectly.
 Explain in 3-5 short sentences: (1) why the student's choice is wrong, (2) why the correct answer is right, (3) a small tip to remember it. Use simple English. Do not use markdown headings.
