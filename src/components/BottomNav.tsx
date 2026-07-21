@@ -56,7 +56,10 @@ const COUNT = items.length;
 
 export function BottomNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const activeIndex = Math.max(0, items.findIndex((i) => i.to === pathname));
+  const matchIndex = items.findIndex(
+    (i) => i.to !== "/" && (pathname === i.to || pathname.startsWith(i.to + "/")),
+  );
+  const activeIndex = matchIndex >= 0 ? matchIndex : pathname === "/" ? 0 : -1;
   const active = items[activeIndex] ?? items[0];
   const unread = useUnreadMessages();
 
