@@ -14,41 +14,38 @@ type Item = {
   to: "/" | "/quiz" | "/message" | "/profile";
   label: string;
   Icon: IconCmp;
-  accent: string; // per-tab accent gradient
+  accent: string;
   glow: string;
 };
-
-const BRAND_GRADIENT =
-  "linear-gradient(135deg,#292C75 0%,#006747 60%,#F4C430 100%)";
 
 const items: Item[] = [
   {
     to: "/",
     label: "Home",
     Icon: House,
-    accent: "linear-gradient(135deg,#292C75 0%,#4f46e5 100%)",
-    glow: "rgba(79,70,229,0.55)",
+    accent: "linear-gradient(135deg,#3730a3 0%,#6366f1 100%)",
+    glow: "rgba(99,102,241,0.55)",
   },
   {
     to: "/quiz",
     label: "Quiz",
     Icon: Sparkles,
-    accent: "linear-gradient(135deg,#F4C430 0%,#f59e0b 100%)",
-    glow: "rgba(244,196,48,0.6)",
+    accent: "linear-gradient(135deg,#f59e0b 0%,#f4c430 100%)",
+    glow: "rgba(244,196,48,0.55)",
   },
   {
     to: "/message",
     label: "Chat",
     Icon: MessagesSquare,
-    accent: "linear-gradient(135deg,#006747 0%,#10b981 100%)",
-    glow: "rgba(16,185,129,0.55)",
+    accent: "linear-gradient(135deg,#047857 0%,#10b981 100%)",
+    glow: "rgba(16,185,129,0.5)",
   },
   {
     to: "/profile",
     label: "You",
     Icon: CircleUserRound,
-    accent: "linear-gradient(135deg,#ec4899 0%,#8b5cf6 100%)",
-    glow: "rgba(139,92,246,0.55)",
+    accent: "linear-gradient(135deg,#db2777 0%,#a855f7 100%)",
+    glow: "rgba(168,85,247,0.5)",
   },
 ];
 
@@ -67,10 +64,9 @@ export function BottomNav() {
   }, []);
 
   const SPRING = "cubic-bezier(0.34, 1.56, 0.64, 1)";
-  const EASE_OUT = "cubic-bezier(0.22, 1, 0.36, 1)";
+  const EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
   const trans = mounted ? `all 520ms ${SPRING}` : "none";
 
-  // Position math for the sliding blob (percentage of bar width)
   const slotPct = 100 / COUNT;
   const centerPct = slotPct * (activeIndex + 0.5);
 
@@ -79,81 +75,88 @@ export function BottomNav() {
       aria-label="Primary"
       className="fixed inset-x-0 bottom-0 z-40 lg:hidden"
       style={{
-        paddingBottom: "env(safe-area-inset-bottom)",
+        paddingBottom: "calc(env(safe-area-inset-bottom) + 12px)",
+        paddingLeft: "14px",
+        paddingRight: "14px",
         opacity: mounted ? 1 : 0,
-        transform: mounted ? "translateY(0)" : "translateY(14px)",
-        transition: `opacity 380ms ease, transform 520ms ${EASE_OUT}`,
+        transform: mounted ? "translateY(0)" : "translateY(18px)",
+        transition: `opacity 420ms ease, transform 560ms ${EASE}`,
       }}
     >
-      {/* Ambient aurora that follows the active tab, sits ABOVE the bar */}
+      {/* Ambient aurora glow above bar */}
       <div
         aria-hidden
         className="pointer-events-none absolute left-0 right-0"
         style={{
-          bottom: "calc(env(safe-area-inset-bottom) + 40px)",
-          height: "80px",
+          bottom: "calc(env(safe-area-inset-bottom) + 60px)",
+          height: "70px",
           overflow: "visible",
         }}
       >
         <div
           style={{
             position: "absolute",
-            left: `${centerPct}%`,
+            left: `calc(14px + (100% - 28px) * ${centerPct / 100})`,
             bottom: 0,
-            width: "160px",
-            height: "80px",
+            width: "140px",
+            height: "70px",
             transform: "translateX(-50%)",
-            background: `radial-gradient(60% 100% at 50% 100%, ${active.glow} 0%, transparent 70%)`,
-            filter: "blur(6px)",
-            opacity: 0.9,
+            background: `radial-gradient(60% 100% at 50% 100%, ${active.glow} 0%, transparent 72%)`,
+            filter: "blur(8px)",
+            opacity: 0.85,
             transition: trans,
           }}
         />
       </div>
 
-      {/* Bar wrapper */}
+      {/* Floating pill bar */}
       <div
-        className="relative w-full"
+        className="relative mx-auto w-full max-w-md"
         style={{
+          height: "64px",
+          borderRadius: "22px",
           background:
-            "linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(255,255,255,1) 100%)",
-          backdropFilter: "blur(14px)",
-          WebkitBackdropFilter: "blur(14px)",
-          borderTop: "1px solid rgba(15,23,42,0.06)",
+            "linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(250,250,253,1) 100%)",
+          backdropFilter: "blur(16px) saturate(140%)",
+          WebkitBackdropFilter: "blur(16px) saturate(140%)",
+          border: "1px solid rgba(15,23,42,0.06)",
           boxShadow:
-            "0 -12px 32px -16px rgba(15,23,42,0.18), 0 -1px 0 rgba(15,23,42,0.04)",
-          height: "72px",
+            "0 20px 40px -18px rgba(15,23,42,0.28), 0 2px 6px -2px rgba(15,23,42,0.05), inset 0 1px 0 rgba(255,255,255,0.9)",
+          overflow: "visible",
         }}
       >
-        {/* Morphing gradient blob behind active icon */}
+        {/* Floating orb — lifted above the bar */}
         <span
           aria-hidden
           className="absolute"
           style={{
-            top: "10px",
+            top: "-18px",
             left: `${centerPct}%`,
-            width: "52px",
-            height: "52px",
-            marginLeft: "-26px",
-            borderRadius: "22px 26px 22px 26px / 26px 22px 26px 22px",
+            width: "54px",
+            height: "54px",
+            marginLeft: "-27px",
+            borderRadius: "50%",
             background: active.accent,
-            boxShadow: `0 10px 24px -6px ${active.glow}, inset 0 1px 0 rgba(255,255,255,0.35)`,
+            boxShadow: `0 12px 24px -6px ${active.glow}, 0 0 0 4px #fff, inset 0 1px 0 rgba(255,255,255,0.4)`,
             transition: trans,
-            transform: `rotate(${activeIndex * 8 - 4}deg)`,
           }}
         />
 
-        {/* Top hairline gradient underline */}
+        {/* Pulsing halo */}
         <span
           aria-hidden
-          className="absolute top-0"
+          className="absolute rounded-full"
           style={{
-            left: `${activeIndex * slotPct}%`,
-            width: `${slotPct}%`,
-            height: "2px",
-            background: BRAND_GRADIENT,
+            top: "-18px",
+            left: `${centerPct}%`,
+            width: "54px",
+            height: "54px",
+            marginLeft: "-27px",
+            border: `2px solid ${active.glow}`,
+            opacity: 0.6,
             transition: trans,
-            opacity: 0.9,
+            animation: "navHalo 2s ease-out infinite",
+            pointerEvents: "none",
           }}
         />
 
@@ -173,19 +176,18 @@ export function BottomNav() {
                   to={item.to}
                   aria-label={item.label}
                   aria-current={isActive ? "page" : undefined}
-                  className="relative flex h-full w-full flex-col items-center justify-center"
+                  className="relative flex h-full w-full flex-col items-center justify-center gap-1"
                 >
-                  {/* Icon — active one sits on top of the morphing blob */}
                   <span
                     className="relative grid place-items-center"
                     style={{
-                      width: "52px",
-                      height: "52px",
+                      width: "40px",
+                      height: "40px",
                       transition: trans,
                       transform: isActive
-                        ? "translateY(-2px) scale(1)"
-                        : "translateY(6px) scale(0.92)",
-                      zIndex: 1,
+                        ? "translateY(-22px) scale(1)"
+                        : "translateY(2px) scale(0.95)",
+                      zIndex: 2,
                     }}
                   >
                     <Icon
@@ -193,53 +195,19 @@ export function BottomNav() {
                       strokeWidth={isActive ? 2.4 : 2}
                       style={{
                         color: isActive ? "#ffffff" : "#94a3b8",
-                        transition: `color 260ms ease, transform 500ms ${SPRING}`,
-                        transform: isActive ? "scale(1.05)" : "scale(1)",
+                        transition: `color 260ms ease`,
                         filter: isActive
                           ? "drop-shadow(0 2px 3px rgba(0,0,0,0.25))"
                           : "none",
                       }}
                     />
 
-                    {/* Sparkle accents on active — tiny orbiting dots */}
-                    {isActive && (
-                      <>
-                        <span
-                          aria-hidden
-                          className="absolute rounded-full"
-                          style={{
-                            top: "2px",
-                            right: "4px",
-                            width: "4px",
-                            height: "4px",
-                            background: "#fff",
-                            opacity: 0.9,
-                            animation: "navSparkle 1.6s ease-in-out infinite",
-                          }}
-                        />
-                        <span
-                          aria-hidden
-                          className="absolute rounded-full"
-                          style={{
-                            bottom: "6px",
-                            left: "6px",
-                            width: "3px",
-                            height: "3px",
-                            background: "#fff",
-                            opacity: 0.7,
-                            animation:
-                              "navSparkle 1.8s ease-in-out infinite 0.4s",
-                          }}
-                        />
-                      </>
-                    )}
-
                     {showBadge && (
                       <span
                         className="absolute grid min-w-[18px] place-items-center rounded-full px-1 text-[10px] font-bold leading-none text-white"
                         style={{
-                          top: "-2px",
-                          right: "-2px",
+                          top: "-4px",
+                          right: "-6px",
                           height: "18px",
                           background:
                             "linear-gradient(135deg,#f43f5e,#ec4899)",
@@ -252,20 +220,34 @@ export function BottomNav() {
                     )}
                   </span>
 
-                  {/* Label */}
                   <span
-                    className="mt-0.5 text-[10.5px] font-semibold tracking-wide"
+                    className="text-[10.5px] font-semibold tracking-wide"
                     style={{
                       color: isActive ? "#0f172a" : "#94a3b8",
                       transition: `color 260ms ease, transform 500ms ${SPRING}, opacity 260ms ease`,
                       transform: isActive
-                        ? "translateY(0) scale(1)"
-                        : "translateY(-2px) scale(0.95)",
-                      opacity: isActive ? 1 : 0.85,
+                        ? "translateY(-4px)"
+                        : "translateY(0)",
+                      opacity: isActive ? 1 : 0.8,
                     }}
                   >
                     {item.label}
                   </span>
+
+                  {/* Active dot indicator under label */}
+                  <span
+                    aria-hidden
+                    className="absolute rounded-full"
+                    style={{
+                      bottom: "6px",
+                      width: "4px",
+                      height: "4px",
+                      background: active.accent,
+                      opacity: isActive ? 1 : 0,
+                      transform: isActive ? "scale(1)" : "scale(0.4)",
+                      transition: `all 400ms ${SPRING}`,
+                    }}
+                  />
                 </Link>
               </li>
             );
@@ -274,9 +256,10 @@ export function BottomNav() {
       </div>
 
       <style>{`
-        @keyframes navSparkle {
-          0%, 100% { transform: scale(1); opacity: 0.9; }
-          50%      { transform: scale(0.4); opacity: 0.3; }
+        @keyframes navHalo {
+          0%   { transform: scale(1); opacity: 0.6; }
+          70%  { transform: scale(1.35); opacity: 0; }
+          100% { transform: scale(1.35); opacity: 0; }
         }
       `}</style>
     </nav>
