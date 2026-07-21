@@ -1,7 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   House,
-  Sparkles,
+  Brain,
   MessagesSquare,
   CircleUserRound,
 } from "lucide-react";
@@ -32,7 +32,7 @@ const items: Item[] = [
   {
     to: "/quiz",
     label: "Quiz",
-    Icon: Sparkles,
+    Icon: Brain,
     accent: HOME_ACCENT,
     glow: HOME_GLOW,
   },
