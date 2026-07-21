@@ -413,9 +413,10 @@ function ExamRunner({
           <motion.div
             animate={{ width: `${(answered / questions.length) * 100}%` }}
             transition={{ ease: "easeOut", duration: 0.3 }}
-            className="h-full bg-foreground"
+            className="h-full bg-primary"
           />
         </div>
+
       </div>
 
       <div className="mx-auto max-w-3xl px-5 pt-6">
