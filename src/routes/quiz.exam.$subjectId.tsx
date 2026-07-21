@@ -468,7 +468,7 @@ function ExamRunner({
       <div className="pointer-events-none sticky bottom-3 left-0 right-0 z-40 mt-6 flex justify-center px-4">
         <button
           onClick={onSubmit}
-          className="pointer-events-auto flex w-[70%] max-w-md items-center justify-between gap-3 rounded-full bg-primary px-5 py-3.5 text-sm font-semibold text-primary-foreground shadow-xl transition hover:opacity-95"
+          className="pointer-events-auto flex w-[90%] max-w-lg items-center justify-between gap-3 rounded-full bg-primary px-5 py-3.5 text-sm font-semibold text-primary-foreground shadow-xl transition hover:opacity-95"
         >
           <span className="flex items-center gap-2">
             <Timer className={`h-4 w-4 ${time < 60 ? "text-rose-200" : ""}`} />
