@@ -1,15 +1,25 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { Topbar } from "@/components/Topbar";
 
 export const Route = createFileRoute("/quiz")({
   head: () => ({
     meta: [
       { title: "Quiz — Learns Academy" },
-      { name: "description", content: "মক টেস্ট, প্রশ্ন ব্যাংক, AI সলভার, লিডারবোর্ড — একসাথে সব প্রস্তুতি Learns Academy তে।" },
+      { name: "description", content: "Mock tests, question bank, AI solver, leaderboard — all your prep in one place." },
       { property: "og:title", content: "Quiz — Learns Academy" },
-      { property: "og:description", content: "চর্চা করো নিজের গতিতে — বাংলা মিডিয়ামের জন্য সম্পূর্ণ কুইজ প্ল্যাটফর্ম।" },
+      { property: "og:description", content: "Practise at your own pace with board-wise question papers and AI explanations." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: () => <Outlet />,
+  component: QuizLayout,
 });
+
+function QuizLayout() {
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <Topbar variant="app" />
+      <Outlet />
+    </div>
+  );
+}
