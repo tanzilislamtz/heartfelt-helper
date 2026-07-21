@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Check, X, Timer, Trophy, RefreshCw, Sparkles } from "lucide-react";
+import { ArrowLeft, Check, X, Timer, RefreshCw } from "lucide-react";
 import { questions as allQuestions, subjects } from "@/data/quiz";
 import { z } from "zod";
 
@@ -65,46 +65,38 @@ function QuickPractice() {
     const total = pool.length;
     const pct = Math.round((correct / total) * 100);
     return (
-      <main className="min-h-screen bg-gradient-to-b from-indigo-50 via-background to-emerald-50/50 pb-28 font-bangla dark:from-indigo-950/30 dark:to-emerald-950/30">
-        <div className="mx-auto max-w-2xl px-5 pt-8">
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="rounded-3xl border border-border/60 bg-card p-6 text-center shadow-xl"
-          >
-            <div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-xl shadow-amber-500/40">
-              <Trophy className="h-10 w-10" />
-            </div>
-            <h1 className="mt-4 text-2xl font-black">দারুণ! শেষ হলো</h1>
-            <p className="mt-1 text-sm text-muted-foreground">তোমার ফলাফল প্রস্তুত</p>
+      <main className="min-h-screen bg-background pb-28 text-foreground">
+        <div className="mx-auto max-w-lg px-5 pt-16 text-center">
+          <p className="text-xs uppercase tracking-widest text-muted-foreground">Session complete</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight">Nice work.</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Here's how it went.</p>
 
-            <div className="mt-6 grid grid-cols-3 gap-3">
-              <ResultStat label="সঠিক" value={`${correct}`} tint="text-emerald-600" />
-              <ResultStat label="ভুল" value={`${total - correct}`} tint="text-rose-600" />
-              <ResultStat label="স্কোর" value={`${pct}%`} tint="text-indigo-600" />
-            </div>
+          <div className="mt-8 grid grid-cols-3 gap-3">
+            <ResultStat label="Correct" value={`${correct}`} />
+            <ResultStat label="Wrong" value={`${total - correct}`} />
+            <ResultStat label="Score" value={`${pct}%`} />
+          </div>
 
-            <div className="mt-6 flex flex-col gap-2">
-              <button
-                onClick={() => {
-                  setIdx(0);
-                  setSelected(null);
-                  setAnswers([]);
-                  setTime(300);
-                  setDone(false);
-                }}
-                className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-indigo-600 to-emerald-500 py-3 font-bold text-white shadow-lg shadow-indigo-500/30 active:scale-95"
-              >
-                <RefreshCw className="h-4 w-4" /> আবার চেষ্টা করো
-              </button>
-              <button
-                onClick={() => navigate({ to: "/quiz" })}
-                className="rounded-2xl border border-border py-3 font-bold text-foreground active:scale-95"
-              >
-                হোমে ফিরে যাও
-              </button>
-            </div>
-          </motion.div>
+          <div className="mt-8 flex flex-col gap-2">
+            <button
+              onClick={() => {
+                setIdx(0);
+                setSelected(null);
+                setAnswers([]);
+                setTime(300);
+                setDone(false);
+              }}
+              className="flex items-center justify-center gap-2 rounded-full bg-foreground py-3 text-sm font-medium text-background transition hover:opacity-90"
+            >
+              <RefreshCw className="h-4 w-4" /> Try again
+            </button>
+            <button
+              onClick={() => navigate({ to: "/quiz" })}
+              className="rounded-full border border-border py-3 text-sm font-medium transition hover:bg-muted"
+            >
+              Back to home
+            </button>
+          </div>
         </div>
       </main>
     );
@@ -115,28 +107,27 @@ function QuickPractice() {
   const ss = String(time % 60).padStart(2, "0");
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-background via-background to-muted/40 pb-28 font-bangla">
+    <main className="min-h-screen bg-background pb-28 text-foreground">
       <div className="mx-auto max-w-2xl px-5 pt-6">
         <div className="flex items-center justify-between">
-          <Link to="/quiz" className="grid h-10 w-10 place-items-center rounded-2xl border border-border/60 bg-card shadow-sm">
-            <ArrowLeft className="h-5 w-5" />
+          <Link to="/quiz" className="grid h-10 w-10 place-items-center rounded-full border border-border">
+            <ArrowLeft className="h-4 w-4" />
           </Link>
-          <div className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-bold ${time < 30 ? "bg-rose-500/10 text-rose-600" : "bg-indigo-500/10 text-indigo-600"}`}>
+          <div className={`flex items-center gap-1.5 text-sm tabular-nums ${time < 30 ? "text-rose-600" : "text-muted-foreground"}`}>
             <Timer className="h-4 w-4" /> {mm}:{ss}
           </div>
         </div>
 
-        {/* Progress */}
-        <div className="mt-4">
-          <div className="mb-1.5 flex items-center justify-between text-xs text-muted-foreground">
-            <span>প্রশ্ন {idx + 1} / {pool.length}</span>
-            {subjectMeta && <span>{subjectMeta.emoji} {subjectMeta.nameBn}</span>}
+        <div className="mt-6">
+          <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
+            <span>Question {idx + 1} of {pool.length}</span>
+            {subjectMeta && <span>{subjectMeta.emoji} {subjectMeta.name}</span>}
           </div>
-          <div className="h-2 overflow-hidden rounded-full bg-muted">
+          <div className="h-1 overflow-hidden rounded-full bg-muted">
             <motion.div
               animate={{ width: `${((idx + 1) / pool.length) * 100}%` }}
               transition={{ ease: "easeOut", duration: 0.4 }}
-              className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-emerald-500"
+              className="h-full rounded-full bg-foreground"
             />
           </div>
         </div>
@@ -144,25 +135,19 @@ function QuickPractice() {
         <AnimatePresence mode="wait">
           <motion.div
             key={current.id}
-            initial={{ opacity: 0, x: 24 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -24 }}
-            transition={{ duration: 0.25 }}
-            className="mt-5 rounded-3xl border border-border/60 bg-card p-5 shadow-xl"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+            className="mt-8"
           >
-            <div className="mb-3 flex items-center gap-2">
-              <span className="rounded-full bg-indigo-500/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-indigo-600">
-                {current.difficulty}
-              </span>
-              {current.year && (
-                <span className="rounded-full bg-muted px-2.5 py-1 text-[10px] font-bold text-muted-foreground">
-                  {current.board} · {current.year}
-                </span>
-              )}
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <span className="capitalize">{current.difficulty}</span>
+              {current.year && <span>· {current.year}</span>}
             </div>
-            <p className="text-base font-bold leading-relaxed">{current.text}</p>
+            <p className="mt-2 text-xl font-medium leading-snug">{current.text}</p>
 
-            <div className="mt-4 space-y-2">
+            <div className="mt-6 space-y-2">
               {current.options.map((opt, i) => {
                 const isSelected = selected === i;
                 const isAnswered = answers.length > idx;
@@ -174,28 +159,28 @@ function QuickPractice() {
                     key={i}
                     disabled={isAnswered}
                     onClick={() => setSelected(i)}
-                    className={`group flex w-full items-center gap-3 rounded-2xl border-2 p-3 text-left transition ${
+                    className={`flex w-full items-center gap-3 rounded-2xl border p-4 text-left transition ${
                       showCorrect
-                        ? "border-emerald-500 bg-emerald-500/10"
+                        ? "border-emerald-500 bg-emerald-500/5"
                         : showWrong
-                        ? "border-rose-500 bg-rose-500/10"
+                        ? "border-rose-500 bg-rose-500/5"
                         : isSelected
-                        ? "border-indigo-500 bg-indigo-500/5"
-                        : "border-border/70 bg-background hover:border-indigo-300"
+                        ? "border-foreground"
+                        : "border-border hover:border-foreground/40"
                     }`}
                   >
-                    <span className={`grid h-8 w-8 place-items-center rounded-xl text-sm font-black ${
+                    <span className={`grid h-6 w-6 place-items-center rounded-full text-xs ${
                       showCorrect
                         ? "bg-emerald-500 text-white"
                         : showWrong
                         ? "bg-rose-500 text-white"
                         : isSelected
-                        ? "bg-indigo-500 text-white"
+                        ? "bg-foreground text-background"
                         : "bg-muted text-muted-foreground"
                     }`}>
-                      {showCorrect ? <Check className="h-4 w-4" /> : showWrong ? <X className="h-4 w-4" /> : String.fromCharCode(65 + i)}
+                      {showCorrect ? <Check className="h-3.5 w-3.5" /> : showWrong ? <X className="h-3.5 w-3.5" /> : String.fromCharCode(65 + i)}
                     </span>
-                    <span className="flex-1 text-sm font-medium">{opt}</span>
+                    <span className="flex-1 text-sm">{opt}</span>
                   </button>
                 );
               })}
@@ -203,14 +188,12 @@ function QuickPractice() {
 
             {answers.length > idx && (
               <motion.div
-                initial={{ opacity: 0, y: 8 }}
+                initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-4 rounded-2xl bg-gradient-to-br from-indigo-500/10 to-emerald-500/10 p-3"
+                className="mt-4 rounded-2xl border border-border bg-muted/40 p-4"
               >
-                <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-indigo-600">
-                  <Sparkles className="h-3.5 w-3.5" /> ব্যাখ্যা
-                </p>
-                <p className="mt-1 text-sm leading-relaxed">{current.explanation}</p>
+                <p className="text-xs uppercase tracking-widest text-muted-foreground">Explanation</p>
+                <p className="mt-1.5 text-sm leading-relaxed">{current.explanation}</p>
               </motion.div>
             )}
           </motion.div>
@@ -219,20 +202,20 @@ function QuickPractice() {
         <button
           disabled={selected === null || answers.length > idx}
           onClick={submit}
-          className="mt-4 w-full rounded-2xl bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600 py-3.5 font-bold text-white shadow-xl shadow-violet-500/30 transition disabled:opacity-40 active:scale-[0.98]"
+          className="mt-6 w-full rounded-full bg-foreground py-3 text-sm font-medium text-background transition disabled:opacity-30"
         >
-          {answers.length > idx ? "পরবর্তী প্রশ্ন..." : "উত্তর দাও"}
+          {answers.length > idx ? "Next" : "Submit answer"}
         </button>
       </div>
     </main>
   );
 }
 
-function ResultStat({ label, value, tint }: { label: string; value: string; tint: string }) {
+function ResultStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl bg-muted/40 p-3">
-      <p className={`text-2xl font-black ${tint}`}>{value}</p>
-      <p className="text-[10px] text-muted-foreground">{label}</p>
+    <div className="rounded-2xl border border-border bg-card p-4">
+      <p className="text-2xl font-semibold tabular-nums">{value}</p>
+      <p className="mt-0.5 text-xs text-muted-foreground">{label}</p>
     </div>
   );
 }
