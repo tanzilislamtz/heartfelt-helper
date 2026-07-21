@@ -1,42 +1,31 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
-  HomeIcon,
-  SparklesIcon,
-  ChatBubbleOvalLeftEllipsisIcon,
-  UserCircleIcon,
-} from "@heroicons/react/24/solid";
-import {
-  HomeIcon as HomeOutline,
-  SparklesIcon as SparklesOutline,
-  ChatBubbleOvalLeftEllipsisIcon as ChatOutline,
-  UserCircleIcon as UserOutline,
-} from "@heroicons/react/24/outline";
+  House,
+  Sparkles,
+  MessagesSquare,
+  CircleUserRound,
+} from "lucide-react";
 import { useEffect, useState, type ComponentType, type SVGProps } from "react";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 
-type IconCmp = ComponentType<SVGProps<SVGSVGElement>>;
+type IconCmp = ComponentType<SVGProps<SVGSVGElement> & { strokeWidth?: number }>;
 
 type Item = {
   to: "/" | "/quiz" | "/message" | "/profile";
   label: string;
-  Solid: IconCmp;
-  Outline: IconCmp;
+  Icon: IconCmp;
 };
 
 const BRAND_GRADIENT =
   "linear-gradient(135deg,#292C75 0%,#006747 60%,#F4C430 100%)";
 
 const items: Item[] = [
-  { to: "/", label: "Home", Solid: HomeIcon, Outline: HomeOutline },
-  { to: "/quiz", label: "Quiz", Solid: SparklesIcon, Outline: SparklesOutline },
-  {
-    to: "/message",
-    label: "Chat",
-    Solid: ChatBubbleOvalLeftEllipsisIcon,
-    Outline: ChatOutline,
-  },
-  { to: "/profile", label: "You", Solid: UserCircleIcon, Outline: UserOutline },
+  { to: "/", label: "Home", Icon: House },
+  { to: "/quiz", label: "Quiz", Icon: Sparkles },
+  { to: "/message", label: "Chat", Icon: MessagesSquare },
+  { to: "/profile", label: "You", Icon: CircleUserRound },
 ];
+
 
 const COUNT = items.length;
 
