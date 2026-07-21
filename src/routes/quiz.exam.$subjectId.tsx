@@ -463,6 +463,7 @@ function ExamRunner({
             </motion.article>
           ))}
         </div>
+      </div>
 
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-4 py-3 backdrop-blur-xl">
         <div className="mx-auto flex max-w-3xl items-center gap-3">
