@@ -226,7 +226,7 @@ function OverviewScreen({
 
           <button
             onClick={onStartExam}
-            className="group flex items-center justify-between rounded-2xl bg-foreground p-5 text-left text-background transition hover:opacity-90"
+            className="group flex items-center justify-between rounded-2xl bg-primary p-5 text-left text-primary-foreground shadow-brand transition hover:opacity-90"
           >
             <div>
               <div className="flex items-center gap-2 text-sm font-medium">
@@ -236,6 +236,7 @@ function OverviewScreen({
             </div>
             <ChevronRight className="h-4 w-4 opacity-80 transition group-hover:translate-x-0.5" />
           </button>
+
         </div>
       </div>
     </main>
@@ -282,11 +283,12 @@ function PaperPreview({
             </button>
             <button
               onClick={onStart}
-              className="inline-flex items-center gap-1.5 rounded-full bg-foreground px-4 py-2 text-xs font-medium text-background"
+              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-medium text-primary-foreground shadow-brand"
             >
               <Play className="h-3.5 w-3.5" /> Start exam
             </button>
           </div>
+
         </div>
 
         {/* Paper sheet */}
@@ -343,10 +345,11 @@ function PaperPreview({
         <div className="mt-6 flex justify-center print:hidden">
           <button
             onClick={onStart}
-            className="inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition hover:opacity-90"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow-brand transition hover:opacity-90"
           >
             <Play className="h-4 w-4" /> I'm ready — start exam
           </button>
+
         </div>
       </div>
     </main>
@@ -410,9 +413,10 @@ function ExamRunner({
           <motion.div
             animate={{ width: `${(answered / questions.length) * 100}%` }}
             transition={{ ease: "easeOut", duration: 0.3 }}
-            className="h-full bg-foreground"
+            className="h-full bg-primary"
           />
         </div>
+
       </div>
 
       <div className="mx-auto max-w-3xl px-5 pt-6">
@@ -447,16 +451,17 @@ function ExamRunner({
                       key={i}
                       onClick={() => pick(qi, i)}
                       className={`flex w-full items-center gap-3 rounded-xl border p-3 text-left transition ${
-                        selected ? "border-foreground bg-muted/40" : "border-border hover:border-foreground/40"
+                        selected ? "border-primary bg-primary/10" : "border-border hover:border-primary/40"
                       }`}
                     >
                       <span className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-xs font-medium ${
-                        selected ? "bg-foreground text-background" : "bg-muted text-muted-foreground"
+                        selected ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
                       }`}>
                         {String.fromCharCode(65 + i)}
                       </span>
                       <span className="flex-1 text-sm">{opt}</span>
                     </button>
+
                   );
                 })}
               </div>
@@ -574,10 +579,11 @@ function ResultScreen({
           </button>
           <button
             onClick={onHome}
-            className="rounded-full bg-foreground py-3 text-sm font-medium text-background transition hover:opacity-90"
+            className="rounded-full bg-primary py-3 text-sm font-medium text-primary-foreground shadow-brand transition hover:opacity-90"
           >
             Back to quiz home
           </button>
+
         </div>
       </div>
     </main>
