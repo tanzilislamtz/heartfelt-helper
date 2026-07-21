@@ -84,7 +84,7 @@ export function BottomNav() {
         <ul className="relative grid h-full" style={{ gridTemplateColumns: `repeat(${COUNT}, 1fr)` }}>
           {items.map((item, i) => {
             const isActive = i === activeIndex;
-            const Icon = isActive ? item.Solid : item.Outline;
+            const Icon = item.Icon;
             const showBadge = item.to === "/message" && unread > 0;
             const badgeLabel = unread > 99 ? "99+" : String(unread);
 
