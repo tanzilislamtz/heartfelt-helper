@@ -7,15 +7,36 @@ export type Subject = {
   questions: number;
 };
 
+// SSC · Science group (profile-driven; hardcoded for the demo UI)
 export const subjects: Subject[] = [
   { id: "math", name: "Mathematics", nameBn: "গণিত", emoji: "📐", color: "from-indigo-500 to-purple-500", questions: 12400 },
+  { id: "hmath", name: "Higher Math", nameBn: "উচ্চতর গণিত", emoji: "∑", color: "from-violet-500 to-fuchsia-500", questions: 8100 },
   { id: "physics", name: "Physics", nameBn: "পদার্থবিজ্ঞান", emoji: "⚛️", color: "from-blue-500 to-cyan-500", questions: 9800 },
   { id: "chem", name: "Chemistry", nameBn: "রসায়ন", emoji: "🧪", color: "from-emerald-500 to-teal-500", questions: 8600 },
   { id: "bio", name: "Biology", nameBn: "জীববিজ্ঞান", emoji: "🧬", color: "from-rose-500 to-pink-500", questions: 7200 },
   { id: "english", name: "English", nameBn: "ইংরেজি", emoji: "🔤", color: "from-amber-500 to-orange-500", questions: 6500 },
   { id: "bangla", name: "Bangla", nameBn: "বাংলা", emoji: "📖", color: "from-fuchsia-500 to-pink-500", questions: 5400 },
   { id: "ict", name: "ICT", nameBn: "তথ্য প্রযুক্তি", emoji: "💻", color: "from-sky-500 to-indigo-500", questions: 3200 },
-  { id: "gk", name: "General Knowledge", nameBn: "সাধারণ জ্ঞান", emoji: "🌍", color: "from-lime-500 to-emerald-500", questions: 4800 },
+];
+
+export type Board = {
+  id: string;
+  name: string;
+  short: string;
+  region: string;
+};
+
+export const boards: Board[] = [
+  { id: "dhaka", name: "Dhaka Board", short: "DHA", region: "Central" },
+  { id: "rajshahi", name: "Rajshahi Board", short: "RAJ", region: "North" },
+  { id: "chattogram", name: "Chattogram Board", short: "CTG", region: "South-East" },
+  { id: "sylhet", name: "Sylhet Board", short: "SYL", region: "North-East" },
+  { id: "khulna", name: "Khulna Board", short: "KHU", region: "South-West" },
+  { id: "barisal", name: "Barisal Board", short: "BAR", region: "South" },
+  { id: "jashore", name: "Jashore Board", short: "JAS", region: "West" },
+  { id: "cumilla", name: "Cumilla Board", short: "CUM", region: "East" },
+  { id: "dinajpur", name: "Dinajpur Board", short: "DIN", region: "North-West" },
+  { id: "mymensingh", name: "Mymensingh Board", short: "MYM", region: "North-Central" },
 ];
 
 export type Question = {
@@ -31,138 +52,78 @@ export type Question = {
   difficulty: "easy" | "medium" | "hard";
 };
 
-export const questions: Question[] = [
-  {
-    id: "q1",
-    subject: "math",
-    topic: "বীজগণিত",
-    text: "যদি x + 1/x = 3 হয়, তবে x² + 1/x² এর মান কত?",
-    options: ["7", "9", "11", "5"],
-    answer: 0,
-    explanation: "(x + 1/x)² = x² + 2 + 1/x² → 9 = x² + 1/x² + 2 → x² + 1/x² = 7",
-    year: "2023",
-    board: "ঢাকা",
-    difficulty: "easy",
-  },
-  {
-    id: "q2",
-    subject: "physics",
-    topic: "বলবিদ্যা",
-    text: "একটি বস্তুর ভর 5 kg। এর উপর 10 N বল প্রয়োগ করলে ত্বরণ কত হবে?",
-    options: ["0.5 m/s²", "2 m/s²", "5 m/s²", "50 m/s²"],
-    answer: 1,
-    explanation: "F = ma → a = F/m = 10/5 = 2 m/s²",
-    year: "2022",
-    board: "রাজশাহী",
-    difficulty: "easy",
-  },
-  {
-    id: "q3",
-    subject: "chem",
-    topic: "পর্যায় সারণি",
-    text: "নিচের কোনটি নোবেল গ্যাস?",
-    options: ["Cl", "Ar", "O", "N"],
-    answer: 1,
-    explanation: "Ar (আর্গন) একটি নোবেল গ্যাস। এটি অষ্টম গ্রুপের অন্তর্ভুক্ত।",
-    year: "2024",
-    board: "চট্টগ্রাম",
-    difficulty: "easy",
-  },
-  {
-    id: "q4",
-    subject: "bio",
-    topic: "কোষ বিভাজন",
-    text: "মাইটোসিস কোষ বিভাজনে কয়টি অপত্য কোষ তৈরি হয়?",
-    options: ["2", "4", "8", "1"],
-    answer: 0,
-    explanation: "মাইটোসিসে একটি মাতৃ কোষ থেকে দুটি অপত্য কোষ তৈরি হয়।",
-    year: "2023",
-    board: "সিলেট",
-    difficulty: "easy",
-  },
-  {
-    id: "q5",
-    subject: "english",
-    topic: "Grammar",
-    text: "Choose the correct passive form: 'He writes a letter.'",
-    options: [
-      "A letter was written by him.",
-      "A letter is written by him.",
-      "A letter has been written by him.",
-      "A letter is being written by him.",
-    ],
-    answer: 1,
-    explanation: "Simple present active → 'is/are + past participle' passive form.",
-    year: "2024",
-    board: "ঢাকা",
-    difficulty: "medium",
-  },
-  {
-    id: "q6",
-    subject: "bangla",
-    topic: "ব্যাকরণ",
-    text: "'চন্দ্র' শব্দের সমার্থক শব্দ কোনটি?",
-    options: ["রবি", "শশী", "ভানু", "দিবাকর"],
-    answer: 1,
-    explanation: "শশী অর্থ চাঁদ। রবি, ভানু, দিবাকর সবই সূর্যের সমার্থক।",
-    year: "2022",
-    board: "বরিশাল",
-    difficulty: "easy",
-  },
-  {
-    id: "q7",
-    subject: "ict",
-    topic: "নেটওয়ার্কিং",
-    text: "HTTP এর পূর্ণরূপ কী?",
-    options: [
-      "HyperText Transfer Protocol",
-      "HyperText Transmission Protocol",
-      "HighText Transfer Protocol",
-      "HyperTool Transfer Protocol",
-    ],
-    answer: 0,
-    explanation: "HTTP = HyperText Transfer Protocol — ওয়েব যোগাযোগের একটি প্রোটোকল।",
-    year: "2023",
-    board: "ঢাকা",
-    difficulty: "easy",
-  },
-  {
-    id: "q8",
-    subject: "gk",
-    topic: "বাংলাদেশ",
-    text: "বাংলাদেশের জাতীয় ফুল কোনটি?",
-    options: ["গোলাপ", "শাপলা", "পদ্ম", "গাঁদা"],
-    answer: 1,
-    explanation: "শাপলা বাংলাদেশের জাতীয় ফুল।",
-    year: "2024",
-    board: "সকল",
-    difficulty: "easy",
-  },
-  {
-    id: "q9",
-    subject: "math",
-    topic: "ত্রিকোণমিতি",
-    text: "sin 30° + cos 60° এর মান কত?",
-    options: ["0", "1", "1/2", "√3/2"],
-    answer: 1,
-    explanation: "sin 30° = 1/2, cos 60° = 1/2 → 1/2 + 1/2 = 1",
-    year: "2023",
-    board: "যশোর",
-    difficulty: "medium",
-  },
-  {
-    id: "q10",
-    subject: "physics",
-    topic: "আলোকবিজ্ঞান",
-    text: "শূন্যস্থানে আলোর বেগ কত?",
-    options: ["3×10⁸ m/s", "3×10⁶ m/s", "3×10¹⁰ m/s", "3×10⁴ m/s"],
-    answer: 0,
-    explanation: "শূন্যস্থানে আলোর বেগ প্রায় 3×10⁸ মিটার/সেকেন্ড।",
-    year: "2024",
-    board: "কুমিল্লা",
-    difficulty: "medium",
-  },
+// Seed pool. Real questions will come from admin; this shape is what the UI expects.
+const seed: Question[] = [
+  { id: "math-1", subject: "math", topic: "Algebra", text: "If x + 1/x = 3, then x² + 1/x² = ?", options: ["7", "9", "11", "5"], answer: 0, explanation: "(x + 1/x)² = x² + 2 + 1/x² → 9 = x² + 1/x² + 2 → x² + 1/x² = 7", difficulty: "easy" },
+  { id: "math-2", subject: "math", topic: "Trigonometry", text: "sin 30° + cos 60° = ?", options: ["0", "1", "1/2", "√3/2"], answer: 1, explanation: "sin 30° = 1/2, cos 60° = 1/2 → sum = 1.", difficulty: "medium" },
+  { id: "math-3", subject: "math", topic: "Geometry", text: "The sum of interior angles of a hexagon is:", options: ["540°", "720°", "900°", "1080°"], answer: 1, explanation: "(n-2)·180° with n=6 gives 720°.", difficulty: "easy" },
+  { id: "math-4", subject: "math", topic: "Number Theory", text: "The LCM of 12 and 18 is:", options: ["36", "72", "24", "48"], answer: 0, explanation: "12 = 2²·3, 18 = 2·3² → LCM = 2²·3² = 36.", difficulty: "easy" },
+  { id: "math-5", subject: "math", topic: "Statistics", text: "The median of 3, 5, 7, 9, 11 is:", options: ["5", "7", "9", "6"], answer: 1, explanation: "Middle value of the sorted list is 7.", difficulty: "easy" },
+
+  { id: "hmath-1", subject: "hmath", topic: "Vectors", text: "The magnitude of vector (3, 4) is:", options: ["5", "7", "12", "1"], answer: 0, explanation: "√(3² + 4²) = √25 = 5.", difficulty: "easy" },
+  { id: "hmath-2", subject: "hmath", topic: "Calculus", text: "d/dx (x³) = ?", options: ["x²", "3x²", "3x", "x⁴/4"], answer: 1, explanation: "Power rule: d/dx xⁿ = n·x^(n-1).", difficulty: "easy" },
+  { id: "hmath-3", subject: "hmath", topic: "Matrices", text: "Determinant of [[1,2],[3,4]] is:", options: ["-2", "2", "10", "-10"], answer: 0, explanation: "1·4 − 2·3 = 4 − 6 = −2.", difficulty: "medium" },
+  { id: "hmath-4", subject: "hmath", topic: "Complex", text: "i² equals:", options: ["1", "-1", "i", "0"], answer: 1, explanation: "By definition, i² = −1.", difficulty: "easy" },
+  { id: "hmath-5", subject: "hmath", topic: "Sequences", text: "Sum of first 10 natural numbers is:", options: ["45", "50", "55", "100"], answer: 2, explanation: "n(n+1)/2 = 10·11/2 = 55.", difficulty: "easy" },
+
+  { id: "physics-1", subject: "physics", topic: "Mechanics", text: "A body of mass 5 kg under 10 N force. Acceleration is:", options: ["0.5 m/s²", "2 m/s²", "5 m/s²", "50 m/s²"], answer: 1, explanation: "F = ma → a = 10/5 = 2 m/s².", difficulty: "easy" },
+  { id: "physics-2", subject: "physics", topic: "Optics", text: "Speed of light in vacuum is approximately:", options: ["3×10⁸ m/s", "3×10⁶ m/s", "3×10¹⁰ m/s", "3×10⁴ m/s"], answer: 0, explanation: "c ≈ 3×10⁸ m/s.", difficulty: "easy" },
+  { id: "physics-3", subject: "physics", topic: "Heat", text: "SI unit of temperature is:", options: ["Celsius", "Kelvin", "Fahrenheit", "Rankine"], answer: 1, explanation: "Kelvin (K) is the SI base unit.", difficulty: "easy" },
+  { id: "physics-4", subject: "physics", topic: "Electricity", text: "Ohm's law: V = ?", options: ["IR", "I/R", "R/I", "I²R"], answer: 0, explanation: "Voltage equals current times resistance.", difficulty: "easy" },
+  { id: "physics-5", subject: "physics", topic: "Waves", text: "Sound cannot travel through:", options: ["Water", "Air", "Vacuum", "Steel"], answer: 2, explanation: "Sound needs a medium; vacuum has none.", difficulty: "easy" },
+
+  { id: "chem-1", subject: "chem", topic: "Periodic Table", text: "Which of these is a noble gas?", options: ["Cl", "Ar", "O", "N"], answer: 1, explanation: "Argon (Ar) belongs to group 18 — noble gases.", difficulty: "easy" },
+  { id: "chem-2", subject: "chem", topic: "Bonds", text: "Water molecule has how many hydrogen atoms?", options: ["1", "2", "3", "4"], answer: 1, explanation: "H₂O has two hydrogen atoms.", difficulty: "easy" },
+  { id: "chem-3", subject: "chem", topic: "Acids", text: "pH of pure water at 25°C is:", options: ["0", "7", "14", "1"], answer: 1, explanation: "Neutral water has pH ≈ 7.", difficulty: "easy" },
+  { id: "chem-4", subject: "chem", topic: "Reactions", text: "Which is an oxidising agent?", options: ["H₂", "O₂", "Na", "CH₄"], answer: 1, explanation: "Oxygen typically accepts electrons.", difficulty: "medium" },
+  { id: "chem-5", subject: "chem", topic: "Organic", text: "Simplest alkane is:", options: ["Methane", "Ethane", "Propane", "Butane"], answer: 0, explanation: "CH₄ is the simplest alkane.", difficulty: "easy" },
+
+  { id: "bio-1", subject: "bio", topic: "Cell", text: "Mitosis produces how many daughter cells?", options: ["2", "4", "8", "1"], answer: 0, explanation: "Mitosis yields 2 identical daughter cells.", difficulty: "easy" },
+  { id: "bio-2", subject: "bio", topic: "Genetics", text: "DNA is made up of nucleotides containing:", options: ["Sugar, phosphate, base", "Only bases", "Only sugars", "Only phosphates"], answer: 0, explanation: "Each nucleotide = sugar + phosphate + nitrogen base.", difficulty: "medium" },
+  { id: "bio-3", subject: "bio", topic: "Human Body", text: "The largest organ of human body is:", options: ["Liver", "Skin", "Lung", "Heart"], answer: 1, explanation: "Skin is the largest organ by area and mass.", difficulty: "easy" },
+  { id: "bio-4", subject: "bio", topic: "Plants", text: "Photosynthesis produces:", options: ["CO₂", "O₂", "N₂", "H₂"], answer: 1, explanation: "Plants release oxygen as a by-product.", difficulty: "easy" },
+  { id: "bio-5", subject: "bio", topic: "Ecology", text: "Producers in an ecosystem are:", options: ["Herbivores", "Green plants", "Carnivores", "Decomposers"], answer: 1, explanation: "Green plants make their own food via photosynthesis.", difficulty: "easy" },
+
+  { id: "english-1", subject: "english", topic: "Grammar", text: "Choose the correct passive form: 'He writes a letter.'", options: ["A letter was written by him.", "A letter is written by him.", "A letter has been written by him.", "A letter is being written by him."], answer: 1, explanation: "Simple present active → 'is/are + past participle' passive.", difficulty: "medium" },
+  { id: "english-2", subject: "english", topic: "Vocabulary", text: "Synonym of 'benevolent' is:", options: ["Cruel", "Kind", "Angry", "Rude"], answer: 1, explanation: "Benevolent means kind/generous.", difficulty: "medium" },
+  { id: "english-3", subject: "english", topic: "Tense", text: "'She ___ to school every day.'", options: ["go", "goes", "gone", "going"], answer: 1, explanation: "Third person singular present takes -s/-es.", difficulty: "easy" },
+  { id: "english-4", subject: "english", topic: "Preposition", text: "'He is fond ___ music.'", options: ["of", "in", "at", "on"], answer: 0, explanation: "Idiomatic collocation: fond of.", difficulty: "easy" },
+  { id: "english-5", subject: "english", topic: "Article", text: "'He is ___ honest man.'", options: ["a", "an", "the", "no article"], answer: 1, explanation: "'Honest' begins with a vowel sound, use 'an'.", difficulty: "easy" },
+
+  { id: "bangla-1", subject: "bangla", topic: "Synonym", text: "'চন্দ্র' শব্দের সমার্থক শব্দ কোনটি?", options: ["রবি", "শশী", "ভানু", "দিবাকর"], answer: 1, explanation: "শশী মানে চাঁদ। বাকিগুলো সূর্যের সমার্থক।", difficulty: "easy" },
+  { id: "bangla-2", subject: "bangla", topic: "Grammar", text: "'বই' শব্দটি কোন ধরনের?", options: ["সর্বনাম", "বিশেষ্য", "ক্রিয়া", "বিশেষণ"], answer: 1, explanation: "বই একটি বিশেষ্য (Noun)।", difficulty: "easy" },
+  { id: "bangla-3", subject: "bangla", topic: "Vocabulary", text: "'সমুদ্র' এর প্রতিশব্দ কোনটি?", options: ["পবন", "সাগর", "নীর", "জলদ"], answer: 1, explanation: "সাগর অর্থ সমুদ্র।", difficulty: "easy" },
+  { id: "bangla-4", subject: "bangla", topic: "Idiom", text: "'অগ্নিপরীক্ষা' বাগধারার অর্থ:", options: ["সহজ কাজ", "কঠিন পরীক্ষা", "রান্না", "উৎসব"], answer: 1, explanation: "'অগ্নিপরীক্ষা' মানে কঠিন পরীক্ষা।", difficulty: "medium" },
+  { id: "bangla-5", subject: "bangla", topic: "Author", text: "'পথের পাঁচালী' এর রচয়িতা কে?", options: ["রবীন্দ্রনাথ", "বিভূতিভূষণ", "শরৎচন্দ্র", "নজরুল"], answer: 1, explanation: "বিভূতিভূষণ বন্দ্যোপাধ্যায়ের রচনা।", difficulty: "medium" },
+
+  { id: "ict-1", subject: "ict", topic: "Networking", text: "Full form of HTTP?", options: ["HyperText Transfer Protocol", "HyperText Transmission Protocol", "HighText Transfer Protocol", "HyperTool Transfer Protocol"], answer: 0, explanation: "HTTP = HyperText Transfer Protocol.", difficulty: "easy" },
+  { id: "ict-2", subject: "ict", topic: "Hardware", text: "The 'brain' of the computer is the:", options: ["RAM", "CPU", "SSD", "GPU"], answer: 1, explanation: "The CPU executes instructions — the brain.", difficulty: "easy" },
+  { id: "ict-3", subject: "ict", topic: "Software", text: "Which is an operating system?", options: ["MS Word", "Chrome", "Linux", "Excel"], answer: 2, explanation: "Linux is an operating system; the rest are apps.", difficulty: "easy" },
+  { id: "ict-4", subject: "ict", topic: "Web", text: "HTML stands for:", options: ["HyperText Markup Language", "Home Tool Markup Language", "Hyperlinks Text Marking Language", "None"], answer: 0, explanation: "HTML = HyperText Markup Language.", difficulty: "easy" },
+  { id: "ict-5", subject: "ict", topic: "Security", text: "Which is a strong password practice?", options: ["Using birthdate", "Using 'password'", "Long, mixed characters", "Using only letters"], answer: 2, explanation: "Length and variety make passwords strong.", difficulty: "easy" },
 ];
+
+export const questions: Question[] = seed;
+
+// Build a realistic 25-question paper for a subject × board.
+export function getExamQuestions(subjectId: string, boardId: string, year = "2024"): Question[] {
+  const pool = seed.filter((q) => q.subject === subjectId);
+  const source = pool.length ? pool : seed;
+  const boardName = boards.find((b) => b.id === boardId)?.name ?? boardId;
+  const out: Question[] = [];
+  for (let i = 0; i < 25; i++) {
+    const base = source[i % source.length];
+    out.push({
+      ...base,
+      id: `${subjectId}-${boardId}-${i + 1}`,
+      board: boardName,
+      year,
+      // vary difficulty a bit through the paper
+      difficulty: i < 10 ? "easy" : i < 20 ? "medium" : "hard",
+    });
+  }
+  return out;
+}
 
 export type LeaderboardEntry = {
   rank: number;
@@ -174,23 +135,23 @@ export type LeaderboardEntry = {
 };
 
 export const leaderboard: LeaderboardEntry[] = [
-  { rank: 1, name: "সাদিয়া রহমান", institute: "নটরডেম কলেজ", xp: 12480, streak: 62, avatar: "🥇" },
-  { rank: 2, name: "রায়হান হোসেন", institute: "ঢাকা কলেজ", xp: 11930, streak: 48, avatar: "🥈" },
-  { rank: 3, name: "তানভীর আহমেদ", institute: "রাজউক উত্তরা", xp: 11240, streak: 55, avatar: "🥉" },
-  { rank: 4, name: "নাফিসা ইসলাম", institute: "ভিকারুননিসা", xp: 10820, streak: 41, avatar: "🎓" },
-  { rank: 5, name: "ইমরান খান", institute: "হলিক্রস কলেজ", xp: 10450, streak: 39, avatar: "🎓" },
-  { rank: 6, name: "মৌসুমী সুলতানা", institute: "উইলস লিটল ফ্লাওয়ার", xp: 9980, streak: 34, avatar: "🎓" },
-  { rank: 7, name: "আরিফ চৌধুরী", institute: "সেন্ট জোসেফ", xp: 9540, streak: 30, avatar: "🎓" },
-  { rank: 8, name: "তামান্না বেগম", institute: "আইডিয়াল স্কুল", xp: 9210, streak: 28, avatar: "🎓" },
-  { rank: 9, name: "সাইফ উদ্দিন", institute: "মিরপুর ক্যান্ট.", xp: 8890, streak: 26, avatar: "🎓" },
-  { rank: 10, name: "রুবাইয়া হক", institute: "মতিঝিল আইডিয়াল", xp: 8620, streak: 24, avatar: "🎓" },
+  { rank: 1, name: "Sadia Rahman", institute: "Notre Dame College", xp: 12480, streak: 62, avatar: "🥇" },
+  { rank: 2, name: "Rayhan Hossain", institute: "Dhaka College", xp: 11930, streak: 48, avatar: "🥈" },
+  { rank: 3, name: "Tanvir Ahmed", institute: "RAJUK Uttara", xp: 11240, streak: 55, avatar: "🥉" },
+  { rank: 4, name: "Nafisa Islam", institute: "Viqarunnisa", xp: 10820, streak: 41, avatar: "🎓" },
+  { rank: 5, name: "Imran Khan", institute: "Holy Cross", xp: 10450, streak: 39, avatar: "🎓" },
+  { rank: 6, name: "Mousumi Sultana", institute: "Wills Little Flower", xp: 9980, streak: 34, avatar: "🎓" },
+  { rank: 7, name: "Arif Chowdhury", institute: "St. Joseph", xp: 9540, streak: 30, avatar: "🎓" },
+  { rank: 8, name: "Tamanna Begum", institute: "Ideal School", xp: 9210, streak: 28, avatar: "🎓" },
+  { rank: 9, name: "Saif Uddin", institute: "Mirpur Cantt.", xp: 8890, streak: 26, avatar: "🎓" },
+  { rank: 10, name: "Rubaiya Haque", institute: "Motijheel Ideal", xp: 8620, streak: 24, avatar: "🎓" },
 ];
 
 export const badges = [
-  { id: "streak7", name: "৭ দিন স্ট্রিক", emoji: "🔥", desc: "টানা ৭ দিন কুইজ" },
-  { id: "streak30", name: "৩০ দিন স্ট্রিক", emoji: "⚡", desc: "টানা ৩০ দিন কুইজ" },
-  { id: "correct50", name: "৫০ সঠিক", emoji: "🎯", desc: "৫০টি সঠিক উত্তর" },
-  { id: "mock10", name: "১০ মক টেস্ট", emoji: "🏆", desc: "১০টি মক টেস্ট" },
-  { id: "topper", name: "টপার", emoji: "👑", desc: "টপ ১০ এ প্রবেশ" },
-  { id: "scholar", name: "স্কলার", emoji: "📚", desc: "৫০০ প্রশ্ন সমাধান" },
+  { id: "streak7", name: "7-day streak", emoji: "🔥", desc: "Practise 7 days in a row" },
+  { id: "streak30", name: "30-day streak", emoji: "⚡", desc: "Practise 30 days in a row" },
+  { id: "correct50", name: "50 correct", emoji: "🎯", desc: "50 correct answers" },
+  { id: "mock10", name: "10 mock tests", emoji: "🏆", desc: "Finish 10 mock tests" },
+  { id: "topper", name: "Topper", emoji: "👑", desc: "Break into top 10" },
+  { id: "scholar", name: "Scholar", emoji: "📚", desc: "Solve 500 questions" },
 ];
