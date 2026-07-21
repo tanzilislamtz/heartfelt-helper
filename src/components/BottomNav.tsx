@@ -220,21 +220,6 @@ export function BottomNav() {
                     )}
                   </span>
 
-
-                  {/* Active dot indicator under label */}
-                  <span
-                    aria-hidden
-                    className="absolute rounded-full"
-                    style={{
-                      bottom: "6px",
-                      width: "4px",
-                      height: "4px",
-                      background: active.accent,
-                      opacity: isActive ? 1 : 0,
-                      transform: isActive ? "scale(1)" : "scale(0.4)",
-                      transition: `all 400ms ${SPRING}`,
-                    }}
-                  />
                 </Link>
               </li>
             );
