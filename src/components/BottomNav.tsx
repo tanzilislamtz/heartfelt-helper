@@ -147,7 +147,7 @@ export function BottomNav() {
           aria-hidden
           className="absolute rounded-full"
           style={{
-            top: "-18px",
+            top: "-6px",
             left: `${centerPct}%`,
             width: "54px",
             height: "54px",
