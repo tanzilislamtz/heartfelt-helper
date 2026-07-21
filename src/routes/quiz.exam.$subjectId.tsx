@@ -226,7 +226,7 @@ function OverviewScreen({
 
           <button
             onClick={onStartExam}
-            className="group flex items-center justify-between rounded-2xl bg-foreground p-5 text-left text-background transition hover:opacity-90"
+            className="group flex items-center justify-between rounded-2xl bg-primary p-5 text-left text-primary-foreground shadow-brand transition hover:opacity-90"
           >
             <div>
               <div className="flex items-center gap-2 text-sm font-medium">
@@ -236,6 +236,7 @@ function OverviewScreen({
             </div>
             <ChevronRight className="h-4 w-4 opacity-80 transition group-hover:translate-x-0.5" />
           </button>
+
         </div>
       </div>
     </main>
