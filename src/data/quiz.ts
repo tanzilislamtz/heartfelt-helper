@@ -125,6 +125,89 @@ export function getExamQuestions(subjectId: string, boardId: string, year = "202
   return out;
 }
 
+// Categories a subject can be practiced under (matches admin taxonomy).
+export type CategoryId = "mcq" | "cq" | "ka" | "kha" | "short";
+export type Category = {
+  id: CategoryId;
+  name: string;
+  nameBn: string;
+  tagline: string;
+  emoji: string;
+  color: string; // tailwind gradient
+  perPaper: number;
+};
+
+export const categories: Category[] = [
+  { id: "mcq",   name: "MCQ",              nameBn: "MCQ",           tagline: "25 multiple-choice questions", emoji: "📝", color: "from-blue-500 to-indigo-500",     perPaper: 25 },
+  { id: "cq",    name: "Creative Question",nameBn: "CQ",            tagline: "Structured 4-part questions",  emoji: "🖋️", color: "from-amber-400 to-orange-500",    perPaper: 6  },
+  { id: "ka",    name: "Ka Bhandar",       nameBn: "ক ভাণ্ডার",     tagline: "Knowledge-based questions",    emoji: "📚", color: "from-sky-500 to-blue-600",        perPaper: 15 },
+  { id: "kha",   name: "Kha Bhandar",      nameBn: "খ ভাণ্ডার",     tagline: "Comprehension questions",      emoji: "📗", color: "from-emerald-500 to-green-600",   perPaper: 15 },
+  { id: "short", name: "Short Question",   nameBn: "সংক্ষিপ্ত প্রশ্ন", tagline: "Quick 1-line answers",     emoji: "⏱️", color: "from-fuchsia-500 to-purple-600",  perPaper: 20 },
+];
+
+// Written-style prompts derived from the MCQ seed (topic + text) so the UI
+// has real-feeling content until admin data lands.
+export type WrittenQuestion = {
+  id: string;
+  n: number;
+  topic: string;
+  prompt: string;
+  answer: string;
+  marks: number;
+};
+
+export function getWrittenQuestions(
+  subjectId: string,
+  boardId: string,
+  category: Exclude<CategoryId, "mcq">,
+): WrittenQuestion[] {
+  const cat = categories.find((c) => c.id === category)!;
+  const pool = seed.filter((q) => q.subject === subjectId);
+  const source = pool.length ? pool : seed;
+  const marks = category === "cq" ? 10 : category === "short" ? 2 : 3;
+  const shape = (base: Question, i: number): WrittenQuestion => {
+    const topic = base.topic;
+    if (category === "cq") {
+      return {
+        id: `${subjectId}-${boardId}-cq-${i + 1}`,
+        n: i + 1,
+        topic,
+        prompt:
+          `Scenario: A concept from ${topic} is being studied.\n` +
+          `(a) Define the key term used in "${base.text}". [1]\n` +
+          `(b) Explain the underlying principle. [2]\n` +
+          `(c) Apply it to the given problem and solve. [3]\n` +
+          `(d) Justify whether the result "${base.options[base.answer]}" is unique. [4]`,
+        answer: base.explanation,
+        marks,
+      };
+    }
+    if (category === "short") {
+      return {
+        id: `${subjectId}-${boardId}-sh-${i + 1}`,
+        n: i + 1,
+        topic,
+        prompt: base.text,
+        answer: base.options[base.answer],
+        marks,
+      };
+    }
+    // ka / kha bhandar
+    const lead = category === "ka" ? "Define / state" : "Explain briefly";
+    return {
+      id: `${subjectId}-${boardId}-${category}-${i + 1}`,
+      n: i + 1,
+      topic,
+      prompt: `${lead}: ${base.text}`,
+      answer: `${base.options[base.answer]} — ${base.explanation}`,
+      marks,
+    };
+  };
+  const out: WrittenQuestion[] = [];
+  for (let i = 0; i < cat.perPaper; i++) out.push(shape(source[i % source.length], i));
+  return out;
+}
+
 export type LeaderboardEntry = {
   rank: number;
   name: string;
