@@ -122,8 +122,11 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const search = useRouterState({ select: (s) => s.location.search as Record<string, unknown> });
 
-  const hideBottomNav = /^\/(welcome|login|register|create-post)(\/|$)/.test(pathname);
+  const inExamMode = /^\/quiz\/exam\//.test(pathname) && search?.mode === "exam";
+  const hideBottomNav =
+    /^\/(welcome|login|register|create-post)(\/|$)/.test(pathname) || inExamMode;
 
   return (
     <QueryClientProvider client={queryClient}>

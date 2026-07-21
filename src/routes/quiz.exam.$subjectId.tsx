@@ -463,13 +463,22 @@ function ExamRunner({
             </motion.article>
           ))}
         </div>
+      </div>
 
-        <div className="sticky bottom-24 z-20 mt-6">
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-4 py-3 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-3xl items-center gap-3">
           <button
             onClick={onSubmit}
-            className="flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3.5 text-sm font-semibold text-primary-foreground shadow-lg transition hover:opacity-90"
+            className="group flex w-full items-center justify-between gap-3 rounded-full bg-primary px-5 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg transition hover:opacity-95"
           >
-            Submit exam · {answered}/{questions.length} answered
+            <span className="flex items-center gap-2">
+              <Timer className={`h-4 w-4 ${time < 60 ? "text-rose-200" : ""}`} />
+              <span className="tabular-nums">{mm}:{ss}</span>
+            </span>
+            <span>Submit exam</span>
+            <span className="rounded-full bg-white/20 px-2.5 py-0.5 text-xs tabular-nums">
+              {answered}/{questions.length}
+            </span>
           </button>
         </div>
       </div>
