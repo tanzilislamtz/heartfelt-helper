@@ -451,16 +451,17 @@ function ExamRunner({
                       key={i}
                       onClick={() => pick(qi, i)}
                       className={`flex w-full items-center gap-3 rounded-xl border p-3 text-left transition ${
-                        selected ? "border-foreground bg-muted/40" : "border-border hover:border-foreground/40"
+                        selected ? "border-primary bg-primary/10" : "border-border hover:border-primary/40"
                       }`}
                     >
                       <span className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-xs font-medium ${
-                        selected ? "bg-foreground text-background" : "bg-muted text-muted-foreground"
+                        selected ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
                       }`}>
                         {String.fromCharCode(65 + i)}
                       </span>
                       <span className="flex-1 text-sm">{opt}</span>
                     </button>
+
                   );
                 })}
               </div>
