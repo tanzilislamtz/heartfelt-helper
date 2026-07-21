@@ -88,32 +88,6 @@ function QuizHub() {
           </div>
         </section>
 
-        {/* Quick practice shortcut */}
-        <section className="mt-8 rounded-2xl border border-border bg-card p-5">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-widest text-muted-foreground">Warm-up</p>
-              <p className="mt-1 text-lg font-medium">10-question quick practice</p>
-              <p className="mt-0.5 text-sm text-muted-foreground">Mixed subjects · about 6 minutes.</p>
-            </div>
-            <div className="flex items-center gap-1.5 rounded-full bg-orange-500/10 px-2.5 py-1 text-xs font-medium text-orange-600 dark:text-orange-400">
-              <Flame className="h-3.5 w-3.5" /> 14-day streak
-            </div>
-          </div>
-          <Link
-            to="/quiz/quick-practice"
-            className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background transition hover:opacity-90"
-          >
-            <Zap className="h-4 w-4" /> Start quick practice
-          </Link>
-        </section>
-
-        {/* Quick stats */}
-        <section className="mt-6 grid grid-cols-3 gap-3">
-          <Stat label="Level" value="12" />
-          <Stat label="XP" value="1,240" />
-          <Stat label="Accuracy" value="78%" />
-        </section>
 
         {/* Features */}
         <section className="mt-10">
