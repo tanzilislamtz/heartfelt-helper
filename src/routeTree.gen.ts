@@ -17,6 +17,13 @@ import { Route as MessageRouteImport } from './routes/message'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as CreatePostRouteImport } from './routes/create-post'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as QuizIndexRouteImport } from './routes/quiz.index'
+import { Route as QuizQuickPracticeRouteImport } from './routes/quiz.quick-practice'
+import { Route as QuizQuestionBankRouteImport } from './routes/quiz.question-bank'
+import { Route as QuizProgressRouteImport } from './routes/quiz.progress'
+import { Route as QuizMockTestRouteImport } from './routes/quiz.mock-test'
+import { Route as QuizLeaderboardRouteImport } from './routes/quiz.leaderboard'
+import { Route as QuizAiSolverRouteImport } from './routes/quiz.ai-solver'
 import { Route as PostPostIdRouteImport } from './routes/post.$postId'
 
 const WelcomeRoute = WelcomeRouteImport.update({
@@ -59,6 +66,41 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const QuizIndexRoute = QuizIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => QuizRoute,
+} as any)
+const QuizQuickPracticeRoute = QuizQuickPracticeRouteImport.update({
+  id: '/quick-practice',
+  path: '/quick-practice',
+  getParentRoute: () => QuizRoute,
+} as any)
+const QuizQuestionBankRoute = QuizQuestionBankRouteImport.update({
+  id: '/question-bank',
+  path: '/question-bank',
+  getParentRoute: () => QuizRoute,
+} as any)
+const QuizProgressRoute = QuizProgressRouteImport.update({
+  id: '/progress',
+  path: '/progress',
+  getParentRoute: () => QuizRoute,
+} as any)
+const QuizMockTestRoute = QuizMockTestRouteImport.update({
+  id: '/mock-test',
+  path: '/mock-test',
+  getParentRoute: () => QuizRoute,
+} as any)
+const QuizLeaderboardRoute = QuizLeaderboardRouteImport.update({
+  id: '/leaderboard',
+  path: '/leaderboard',
+  getParentRoute: () => QuizRoute,
+} as any)
+const QuizAiSolverRoute = QuizAiSolverRouteImport.update({
+  id: '/ai-solver',
+  path: '/ai-solver',
+  getParentRoute: () => QuizRoute,
+} as any)
 const PostPostIdRoute = PostPostIdRouteImport.update({
   id: '/post/$postId',
   path: '/post/$postId',
@@ -71,10 +113,17 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/message': typeof MessageRoute
   '/profile': typeof ProfileRoute
-  '/quiz': typeof QuizRoute
+  '/quiz': typeof QuizRouteWithChildren
   '/register': typeof RegisterRoute
   '/welcome': typeof WelcomeRoute
   '/post/$postId': typeof PostPostIdRoute
+  '/quiz/ai-solver': typeof QuizAiSolverRoute
+  '/quiz/leaderboard': typeof QuizLeaderboardRoute
+  '/quiz/mock-test': typeof QuizMockTestRoute
+  '/quiz/progress': typeof QuizProgressRoute
+  '/quiz/question-bank': typeof QuizQuestionBankRoute
+  '/quiz/quick-practice': typeof QuizQuickPracticeRoute
+  '/quiz/': typeof QuizIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -82,10 +131,16 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/message': typeof MessageRoute
   '/profile': typeof ProfileRoute
-  '/quiz': typeof QuizRoute
   '/register': typeof RegisterRoute
   '/welcome': typeof WelcomeRoute
   '/post/$postId': typeof PostPostIdRoute
+  '/quiz/ai-solver': typeof QuizAiSolverRoute
+  '/quiz/leaderboard': typeof QuizLeaderboardRoute
+  '/quiz/mock-test': typeof QuizMockTestRoute
+  '/quiz/progress': typeof QuizProgressRoute
+  '/quiz/question-bank': typeof QuizQuestionBankRoute
+  '/quiz/quick-practice': typeof QuizQuickPracticeRoute
+  '/quiz': typeof QuizIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -94,10 +149,17 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/message': typeof MessageRoute
   '/profile': typeof ProfileRoute
-  '/quiz': typeof QuizRoute
+  '/quiz': typeof QuizRouteWithChildren
   '/register': typeof RegisterRoute
   '/welcome': typeof WelcomeRoute
   '/post/$postId': typeof PostPostIdRoute
+  '/quiz/ai-solver': typeof QuizAiSolverRoute
+  '/quiz/leaderboard': typeof QuizLeaderboardRoute
+  '/quiz/mock-test': typeof QuizMockTestRoute
+  '/quiz/progress': typeof QuizProgressRoute
+  '/quiz/question-bank': typeof QuizQuestionBankRoute
+  '/quiz/quick-practice': typeof QuizQuickPracticeRoute
+  '/quiz/': typeof QuizIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -111,6 +173,13 @@ export interface FileRouteTypes {
     | '/register'
     | '/welcome'
     | '/post/$postId'
+    | '/quiz/ai-solver'
+    | '/quiz/leaderboard'
+    | '/quiz/mock-test'
+    | '/quiz/progress'
+    | '/quiz/question-bank'
+    | '/quiz/quick-practice'
+    | '/quiz/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -118,10 +187,16 @@ export interface FileRouteTypes {
     | '/login'
     | '/message'
     | '/profile'
-    | '/quiz'
     | '/register'
     | '/welcome'
     | '/post/$postId'
+    | '/quiz/ai-solver'
+    | '/quiz/leaderboard'
+    | '/quiz/mock-test'
+    | '/quiz/progress'
+    | '/quiz/question-bank'
+    | '/quiz/quick-practice'
+    | '/quiz'
   id:
     | '__root__'
     | '/'
@@ -133,6 +208,13 @@ export interface FileRouteTypes {
     | '/register'
     | '/welcome'
     | '/post/$postId'
+    | '/quiz/ai-solver'
+    | '/quiz/leaderboard'
+    | '/quiz/mock-test'
+    | '/quiz/progress'
+    | '/quiz/question-bank'
+    | '/quiz/quick-practice'
+    | '/quiz/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -141,7 +223,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   MessageRoute: typeof MessageRoute
   ProfileRoute: typeof ProfileRoute
-  QuizRoute: typeof QuizRoute
+  QuizRoute: typeof QuizRouteWithChildren
   RegisterRoute: typeof RegisterRoute
   WelcomeRoute: typeof WelcomeRoute
   PostPostIdRoute: typeof PostPostIdRoute
@@ -205,6 +287,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/quiz/': {
+      id: '/quiz/'
+      path: '/'
+      fullPath: '/quiz/'
+      preLoaderRoute: typeof QuizIndexRouteImport
+      parentRoute: typeof QuizRoute
+    }
+    '/quiz/quick-practice': {
+      id: '/quiz/quick-practice'
+      path: '/quick-practice'
+      fullPath: '/quiz/quick-practice'
+      preLoaderRoute: typeof QuizQuickPracticeRouteImport
+      parentRoute: typeof QuizRoute
+    }
+    '/quiz/question-bank': {
+      id: '/quiz/question-bank'
+      path: '/question-bank'
+      fullPath: '/quiz/question-bank'
+      preLoaderRoute: typeof QuizQuestionBankRouteImport
+      parentRoute: typeof QuizRoute
+    }
+    '/quiz/progress': {
+      id: '/quiz/progress'
+      path: '/progress'
+      fullPath: '/quiz/progress'
+      preLoaderRoute: typeof QuizProgressRouteImport
+      parentRoute: typeof QuizRoute
+    }
+    '/quiz/mock-test': {
+      id: '/quiz/mock-test'
+      path: '/mock-test'
+      fullPath: '/quiz/mock-test'
+      preLoaderRoute: typeof QuizMockTestRouteImport
+      parentRoute: typeof QuizRoute
+    }
+    '/quiz/leaderboard': {
+      id: '/quiz/leaderboard'
+      path: '/leaderboard'
+      fullPath: '/quiz/leaderboard'
+      preLoaderRoute: typeof QuizLeaderboardRouteImport
+      parentRoute: typeof QuizRoute
+    }
+    '/quiz/ai-solver': {
+      id: '/quiz/ai-solver'
+      path: '/ai-solver'
+      fullPath: '/quiz/ai-solver'
+      preLoaderRoute: typeof QuizAiSolverRouteImport
+      parentRoute: typeof QuizRoute
+    }
     '/post/$postId': {
       id: '/post/$postId'
       path: '/post/$postId'
@@ -215,13 +346,35 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface QuizRouteChildren {
+  QuizAiSolverRoute: typeof QuizAiSolverRoute
+  QuizLeaderboardRoute: typeof QuizLeaderboardRoute
+  QuizMockTestRoute: typeof QuizMockTestRoute
+  QuizProgressRoute: typeof QuizProgressRoute
+  QuizQuestionBankRoute: typeof QuizQuestionBankRoute
+  QuizQuickPracticeRoute: typeof QuizQuickPracticeRoute
+  QuizIndexRoute: typeof QuizIndexRoute
+}
+
+const QuizRouteChildren: QuizRouteChildren = {
+  QuizAiSolverRoute: QuizAiSolverRoute,
+  QuizLeaderboardRoute: QuizLeaderboardRoute,
+  QuizMockTestRoute: QuizMockTestRoute,
+  QuizProgressRoute: QuizProgressRoute,
+  QuizQuestionBankRoute: QuizQuestionBankRoute,
+  QuizQuickPracticeRoute: QuizQuickPracticeRoute,
+  QuizIndexRoute: QuizIndexRoute,
+}
+
+const QuizRouteWithChildren = QuizRoute._addFileChildren(QuizRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CreatePostRoute: CreatePostRoute,
   LoginRoute: LoginRoute,
   MessageRoute: MessageRoute,
   ProfileRoute: ProfileRoute,
-  QuizRoute: QuizRoute,
+  QuizRoute: QuizRouteWithChildren,
   RegisterRoute: RegisterRoute,
   WelcomeRoute: WelcomeRoute,
   PostPostIdRoute: PostPostIdRoute,
