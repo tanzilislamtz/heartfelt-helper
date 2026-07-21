@@ -579,10 +579,11 @@ function ResultScreen({
           </button>
           <button
             onClick={onHome}
-            className="rounded-full bg-foreground py-3 text-sm font-medium text-background transition hover:opacity-90"
+            className="rounded-full bg-primary py-3 text-sm font-medium text-primary-foreground shadow-brand transition hover:opacity-90"
           >
             Back to quiz home
           </button>
+
         </div>
       </div>
     </main>
