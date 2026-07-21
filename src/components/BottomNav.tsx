@@ -130,7 +130,7 @@ export function BottomNav() {
           aria-hidden
           className="absolute"
           style={{
-            top: "-18px",
+            top: "-6px",
             left: `${centerPct}%`,
             width: "54px",
             height: "54px",
@@ -147,7 +147,7 @@ export function BottomNav() {
           aria-hidden
           className="absolute rounded-full"
           style={{
-            top: "-18px",
+            top: "-6px",
             left: `${centerPct}%`,
             width: "54px",
             height: "54px",
@@ -185,7 +185,7 @@ export function BottomNav() {
                       height: "40px",
                       transition: trans,
                       transform: isActive
-                        ? "translateY(-22px) scale(1)"
+                        ? "translateY(-10px) scale(1)"
                         : "translateY(2px) scale(0.95)",
                       zIndex: 2,
                     }}
