@@ -14,24 +14,50 @@ type Item = {
   to: "/" | "/quiz" | "/message" | "/profile";
   label: string;
   Icon: IconCmp;
+  accent: string; // per-tab accent gradient
+  glow: string;
 };
 
 const BRAND_GRADIENT =
   "linear-gradient(135deg,#292C75 0%,#006747 60%,#F4C430 100%)";
 
 const items: Item[] = [
-  { to: "/", label: "Home", Icon: House },
-  { to: "/quiz", label: "Quiz", Icon: Sparkles },
-  { to: "/message", label: "Chat", Icon: MessagesSquare },
-  { to: "/profile", label: "You", Icon: CircleUserRound },
+  {
+    to: "/",
+    label: "Home",
+    Icon: House,
+    accent: "linear-gradient(135deg,#292C75 0%,#4f46e5 100%)",
+    glow: "rgba(79,70,229,0.55)",
+  },
+  {
+    to: "/quiz",
+    label: "Quiz",
+    Icon: Sparkles,
+    accent: "linear-gradient(135deg,#F4C430 0%,#f59e0b 100%)",
+    glow: "rgba(244,196,48,0.6)",
+  },
+  {
+    to: "/message",
+    label: "Chat",
+    Icon: MessagesSquare,
+    accent: "linear-gradient(135deg,#006747 0%,#10b981 100%)",
+    glow: "rgba(16,185,129,0.55)",
+  },
+  {
+    to: "/profile",
+    label: "You",
+    Icon: CircleUserRound,
+    accent: "linear-gradient(135deg,#ec4899 0%,#8b5cf6 100%)",
+    glow: "rgba(139,92,246,0.55)",
+  },
 ];
-
 
 const COUNT = items.length;
 
 export function BottomNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const activeIndex = Math.max(0, items.findIndex((i) => i.to === pathname));
+  const active = items[activeIndex] ?? items[0];
   const unread = useUnreadMessages();
 
   const [mounted, setMounted] = useState(false);
@@ -40,8 +66,13 @@ export function BottomNav() {
     return () => cancelAnimationFrame(id);
   }, []);
 
-  const EASE = "cubic-bezier(0.34, 1.56, 0.64, 1)";
-  const trans = mounted ? `all 500ms ${EASE}` : "none";
+  const SPRING = "cubic-bezier(0.34, 1.56, 0.64, 1)";
+  const EASE_OUT = "cubic-bezier(0.22, 1, 0.36, 1)";
+  const trans = mounted ? `all 520ms ${SPRING}` : "none";
+
+  // Position math for the sliding blob (percentage of bar width)
+  const slotPct = 100 / COUNT;
+  const centerPct = slotPct * (activeIndex + 0.5);
 
   return (
     <nav
@@ -50,38 +81,86 @@ export function BottomNav() {
       style={{
         paddingBottom: "env(safe-area-inset-bottom)",
         opacity: mounted ? 1 : 0,
-        transform: mounted ? "translateY(0)" : "translateY(12px)",
-        transition:
-          "opacity 380ms ease, transform 480ms cubic-bezier(0.22,1,0.36,1)",
+        transform: mounted ? "translateY(0)" : "translateY(14px)",
+        transition: `opacity 380ms ease, transform 520ms ${EASE_OUT}`,
       }}
     >
-      {/* White bar, full width */}
+      {/* Ambient aurora that follows the active tab, sits ABOVE the bar */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute left-0 right-0"
+        style={{
+          bottom: "calc(env(safe-area-inset-bottom) + 40px)",
+          height: "80px",
+          overflow: "visible",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            left: `${centerPct}%`,
+            bottom: 0,
+            width: "160px",
+            height: "80px",
+            transform: "translateX(-50%)",
+            background: `radial-gradient(60% 100% at 50% 100%, ${active.glow} 0%, transparent 70%)`,
+            filter: "blur(6px)",
+            opacity: 0.9,
+            transition: trans,
+          }}
+        />
+      </div>
+
+      {/* Bar wrapper */}
       <div
         className="relative w-full"
         style={{
-          background: "#ffffff",
+          background:
+            "linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(255,255,255,1) 100%)",
+          backdropFilter: "blur(14px)",
+          WebkitBackdropFilter: "blur(14px)",
           borderTop: "1px solid rgba(15,23,42,0.06)",
           boxShadow:
-            "0 -8px 24px -12px rgba(15,23,42,0.15), 0 -1px 0 rgba(15,23,42,0.04)",
-          height: "68px",
+            "0 -12px 32px -16px rgba(15,23,42,0.18), 0 -1px 0 rgba(15,23,42,0.04)",
+          height: "72px",
         }}
       >
-        {/* Sliding gradient underline indicator */}
+        {/* Morphing gradient blob behind active icon */}
         <span
           aria-hidden
-          className="absolute top-0 rounded-b-full"
+          className="absolute"
           style={{
-            left: 0,
-            width: `${100 / COUNT}%`,
-            height: "3px",
-            background: BRAND_GRADIENT,
-            transform: `translateX(${activeIndex * 100}%)`,
+            top: "10px",
+            left: `${centerPct}%`,
+            width: "52px",
+            height: "52px",
+            marginLeft: "-26px",
+            borderRadius: "22px 26px 22px 26px / 26px 22px 26px 22px",
+            background: active.accent,
+            boxShadow: `0 10px 24px -6px ${active.glow}, inset 0 1px 0 rgba(255,255,255,0.35)`,
             transition: trans,
-            boxShadow: "0 4px 12px -2px rgba(41,44,117,0.5)",
+            transform: `rotate(${activeIndex * 8 - 4}deg)`,
           }}
         />
 
-        <ul className="relative grid h-full" style={{ gridTemplateColumns: `repeat(${COUNT}, 1fr)` }}>
+        {/* Top hairline gradient underline */}
+        <span
+          aria-hidden
+          className="absolute top-0"
+          style={{
+            left: `${activeIndex * slotPct}%`,
+            width: `${slotPct}%`,
+            height: "2px",
+            background: BRAND_GRADIENT,
+            transition: trans,
+            opacity: 0.9,
+          }}
+        />
+
+        <ul
+          className="relative grid h-full"
+          style={{ gridTemplateColumns: `repeat(${COUNT}, 1fr)` }}
+        >
           {items.map((item, i) => {
             const isActive = i === activeIndex;
             const Icon = item.Icon;
@@ -94,40 +173,78 @@ export function BottomNav() {
                   to={item.to}
                   aria-label={item.label}
                   aria-current={isActive ? "page" : undefined}
-                  className="relative flex h-full w-full flex-col items-center justify-center gap-0.5"
+                  className="relative flex h-full w-full flex-col items-center justify-center"
                 >
-                  {/* Icon wrapper with active pill */}
+                  {/* Icon — active one sits on top of the morphing blob */}
                   <span
                     className="relative grid place-items-center"
                     style={{
-                      width: "44px",
-                      height: "30px",
-                      borderRadius: "999px",
-                      background: isActive
-                        ? "linear-gradient(135deg, rgba(41,44,117,0.10), rgba(0,103,71,0.10) 60%, rgba(244,196,48,0.18))"
-                        : "transparent",
+                      width: "52px",
+                      height: "52px",
                       transition: trans,
-                      transform: isActive ? "scale(1)" : "scale(0.95)",
+                      transform: isActive
+                        ? "translateY(-2px) scale(1)"
+                        : "translateY(6px) scale(0.92)",
+                      zIndex: 1,
                     }}
                   >
                     <Icon
-                      className="h-6 w-6"
+                      className="h-[22px] w-[22px]"
+                      strokeWidth={isActive ? 2.4 : 2}
                       style={{
-                        color: isActive ? "#292C75" : "#64748b",
-                        transition: "color 250ms ease, transform 400ms ease",
-                        transform: isActive ? "translateY(-1px)" : "none",
+                        color: isActive ? "#ffffff" : "#94a3b8",
+                        transition: `color 260ms ease, transform 500ms ${SPRING}`,
+                        transform: isActive ? "scale(1.05)" : "scale(1)",
                         filter: isActive
-                          ? "drop-shadow(0 2px 4px rgba(41,44,117,0.25))"
+                          ? "drop-shadow(0 2px 3px rgba(0,0,0,0.25))"
                           : "none",
                       }}
                     />
+
+                    {/* Sparkle accents on active — tiny orbiting dots */}
+                    {isActive && (
+                      <>
+                        <span
+                          aria-hidden
+                          className="absolute rounded-full"
+                          style={{
+                            top: "2px",
+                            right: "4px",
+                            width: "4px",
+                            height: "4px",
+                            background: "#fff",
+                            opacity: 0.9,
+                            animation: "navSparkle 1.6s ease-in-out infinite",
+                          }}
+                        />
+                        <span
+                          aria-hidden
+                          className="absolute rounded-full"
+                          style={{
+                            bottom: "6px",
+                            left: "6px",
+                            width: "3px",
+                            height: "3px",
+                            background: "#fff",
+                            opacity: 0.7,
+                            animation:
+                              "navSparkle 1.8s ease-in-out infinite 0.4s",
+                          }}
+                        />
+                      </>
+                    )}
+
                     {showBadge && (
                       <span
-                        className="absolute -right-1 -top-0.5 grid min-w-[16px] place-items-center rounded-full px-1 text-[10px] font-bold leading-none text-white"
+                        className="absolute grid min-w-[18px] place-items-center rounded-full px-1 text-[10px] font-bold leading-none text-white"
                         style={{
-                          background: "linear-gradient(135deg,#f43f5e,#ec4899)",
+                          top: "-2px",
+                          right: "-2px",
+                          height: "18px",
+                          background:
+                            "linear-gradient(135deg,#f43f5e,#ec4899)",
                           boxShadow:
-                            "0 0 0 2px #fff, 0 2px 6px -1px rgba(244,63,94,0.7)",
+                            "0 0 0 2px #fff, 0 4px 10px -2px rgba(244,63,94,0.7)",
                         }}
                       >
                         {badgeLabel}
@@ -135,37 +252,33 @@ export function BottomNav() {
                     )}
                   </span>
 
+                  {/* Label */}
                   <span
-                    className="text-[10.5px] font-semibold tracking-wide"
+                    className="mt-0.5 text-[10.5px] font-semibold tracking-wide"
                     style={{
-                      color: isActive ? "#292C75" : "#94a3b8",
-                      transition: "color 250ms ease, transform 400ms ease",
-                      transform: isActive ? "translateY(0)" : "translateY(1px)",
+                      color: isActive ? "#0f172a" : "#94a3b8",
+                      transition: `color 260ms ease, transform 500ms ${SPRING}, opacity 260ms ease`,
+                      transform: isActive
+                        ? "translateY(0) scale(1)"
+                        : "translateY(-2px) scale(0.95)",
+                      opacity: isActive ? 1 : 0.85,
                     }}
                   >
                     {item.label}
                   </span>
-
-                  {/* Active dot underline */}
-                  <span
-                    aria-hidden
-                    className="absolute rounded-full"
-                    style={{
-                      bottom: "6px",
-                      width: "4px",
-                      height: "4px",
-                      background: BRAND_GRADIENT,
-                      opacity: isActive ? 1 : 0,
-                      transform: isActive ? "scale(1)" : "scale(0)",
-                      transition: trans,
-                    }}
-                  />
                 </Link>
               </li>
             );
           })}
         </ul>
       </div>
+
+      <style>{`
+        @keyframes navSparkle {
+          0%, 100% { transform: scale(1); opacity: 0.9; }
+          50%      { transform: scale(0.4); opacity: 0.3; }
+        }
+      `}</style>
     </nav>
   );
 }
