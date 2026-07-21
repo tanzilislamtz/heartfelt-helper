@@ -1,7 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   House,
-  Sparkles,
+  Brain,
   MessagesSquare,
   CircleUserRound,
 } from "lucide-react";
