@@ -359,7 +359,7 @@ function ExamRunner({
   subjectName,
   boardName,
   questions,
-  current,
+  current: _current,
   setCurrent,
   answers,
   setAnswers,
@@ -376,141 +376,101 @@ function ExamRunner({
   time: number;
   onSubmit: () => void;
 }) {
-  const q = questions[current];
   const mm = String(Math.floor(time / 60)).padStart(2, "0");
   const ss = String(time % 60).padStart(2, "0");
   const answered = answers.filter((a) => a !== null).length;
 
-  function pick(i: number) {
+  function pick(qi: number, i: number) {
+    setCurrent(qi);
     setAnswers((prev) => {
       const next = [...prev];
-      next[current] = i;
+      next[qi] = i;
       return next;
     });
   }
 
   return (
     <main className="min-h-screen bg-background pb-32 text-foreground">
-      <div className="mx-auto max-w-2xl px-5 pt-6">
-        {/* Top bar */}
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-xs uppercase tracking-widest text-muted-foreground">{boardName}</p>
-            <p className="text-sm font-medium">{subjectName}</p>
+      <div className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-5 py-3">
+          <div className="min-w-0">
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{boardName}</p>
+            <p className="truncate text-sm font-medium">{subjectName}</p>
           </div>
-          <div className={`flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-sm tabular-nums ${time < 60 ? "text-rose-600" : ""}`}>
-            <Timer className="h-4 w-4" /> {mm}:{ss}
-          </div>
-        </div>
-
-        {/* Progress */}
-        <div className="mt-4">
-          <div className="mb-1.5 flex items-center justify-between text-xs text-muted-foreground">
-            <span>Question {current + 1} of {questions.length}</span>
-            <span>{answered} answered</span>
-          </div>
-          <div className="h-1 overflow-hidden rounded-full bg-muted">
-            <motion.div
-              animate={{ width: `${((current + 1) / questions.length) * 100}%` }}
-              transition={{ ease: "easeOut", duration: 0.3 }}
-              className="h-full rounded-full bg-foreground"
-            />
+          <div className="flex items-center gap-2">
+            <span className="rounded-full border border-border px-3 py-1 text-xs tabular-nums text-muted-foreground">
+              {answered}/{questions.length}
+            </span>
+            <span className={`flex items-center gap-1.5 rounded-full border border-border px-3 py-1 text-xs tabular-nums ${time < 60 ? "text-rose-600" : ""}`}>
+              <Timer className="h-3.5 w-3.5" /> {mm}:{ss}
+            </span>
           </div>
         </div>
-
-        {/* Question card */}
-        <AnimatePresence mode="wait">
+        <div className="h-0.5 bg-muted">
           <motion.div
-            key={q.id}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }}
-            className="mt-6 rounded-2xl border border-border bg-card p-5"
-          >
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <span className="capitalize">{q.difficulty}</span>
-              <span>· {q.topic}</span>
-            </div>
-            <p className="mt-2 text-lg font-medium leading-snug">
-              <span className="mr-1 text-muted-foreground">{current + 1}.</span>
-              {q.text}
-            </p>
+            animate={{ width: `${(answered / questions.length) * 100}%` }}
+            transition={{ ease: "easeOut", duration: 0.3 }}
+            className="h-full bg-foreground"
+          />
+        </div>
+      </div>
 
-            <div className="mt-5 space-y-2">
-              {q.options.map((opt, i) => {
-                const selected = answers[current] === i;
-                return (
-                  <button
-                    key={i}
-                    onClick={() => pick(i)}
-                    className={`flex w-full items-center gap-3 rounded-2xl border p-4 text-left transition ${
-                      selected ? "border-foreground bg-muted/40" : "border-border hover:border-foreground/40"
-                    }`}
-                  >
-                    <span className={`grid h-7 w-7 place-items-center rounded-full text-xs font-medium ${
-                      selected ? "bg-foreground text-background" : "bg-muted text-muted-foreground"
-                    }`}>
-                      {String.fromCharCode(65 + i)}
-                    </span>
-                    <span className="flex-1 text-sm">{opt}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </motion.div>
-        </AnimatePresence>
+      <div className="mx-auto max-w-3xl px-5 pt-6">
+        <div className="space-y-4">
+          {questions.map((q, qi) => (
+            <motion.article
+              key={q.id}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2, delay: Math.min(qi * 0.015, 0.25) }}
+              className="rounded-2xl border border-border bg-card p-5"
+            >
+              <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+                <span className="capitalize">{q.difficulty}</span>
+                <span>· {q.topic}</span>
+                {answers[qi] !== null && (
+                  <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-medium text-emerald-700 dark:text-emerald-300">
+                    <Check className="h-3 w-3" /> answered
+                  </span>
+                )}
+              </div>
+              <p className="mt-2 text-base font-medium leading-snug">
+                <span className="mr-1 text-muted-foreground">{qi + 1}.</span>
+                {q.text}
+              </p>
 
-        {/* Nav row */}
-        <div className="mt-4 flex items-center gap-2">
-          <button
-            onClick={() => setCurrent(Math.max(0, current - 1))}
-            disabled={current === 0}
-            className="flex-1 rounded-full border border-border py-2.5 text-sm font-medium transition disabled:opacity-30"
-          >
-            Previous
-          </button>
-          {current < questions.length - 1 ? (
-            <button
-              onClick={() => setCurrent(current + 1)}
-              className="flex-1 rounded-full bg-foreground py-2.5 text-sm font-medium text-background transition hover:opacity-90"
-            >
-              Next
-            </button>
-          ) : (
-            <button
-              onClick={onSubmit}
-              className="flex-1 rounded-full bg-primary py-2.5 text-sm font-medium text-primary-foreground transition hover:opacity-90"
-            >
-              Submit exam
-            </button>
-          )}
+              <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                {q.options.map((opt, i) => {
+                  const selected = answers[qi] === i;
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => pick(qi, i)}
+                      className={`flex w-full items-center gap-3 rounded-xl border p-3 text-left transition ${
+                        selected ? "border-foreground bg-muted/40" : "border-border hover:border-foreground/40"
+                      }`}
+                    >
+                      <span className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-xs font-medium ${
+                        selected ? "bg-foreground text-background" : "bg-muted text-muted-foreground"
+                      }`}>
+                        {String.fromCharCode(65 + i)}
+                      </span>
+                      <span className="flex-1 text-sm">{opt}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </motion.article>
+          ))}
         </div>
 
-        {/* Question palette */}
-        <div className="mt-6">
-          <p className="mb-2 text-xs uppercase tracking-widest text-muted-foreground">Jump to question</p>
-          <div className="grid grid-cols-8 gap-2 sm:grid-cols-10">
-            {questions.map((_, i) => {
-              const isCurrent = i === current;
-              const isAnswered = answers[i] !== null;
-              return (
-                <button
-                  key={i}
-                  onClick={() => setCurrent(i)}
-                  className={`aspect-square rounded-lg text-xs font-medium tabular-nums transition ${
-                    isCurrent
-                      ? "bg-foreground text-background"
-                      : isAnswered
-                      ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300"
-                      : "border border-border bg-card text-muted-foreground hover:border-foreground/40"
-                  }`}
-                >
-                  {i + 1}
-                </button>
-              );
-            })}
-          </div>
+        <div className="sticky bottom-24 z-20 mt-6">
+          <button
+            onClick={onSubmit}
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3.5 text-sm font-semibold text-primary-foreground shadow-lg transition hover:opacity-90"
+          >
+            Submit exam · {answered}/{questions.length} answered
+          </button>
         </div>
       </div>
     </main>
