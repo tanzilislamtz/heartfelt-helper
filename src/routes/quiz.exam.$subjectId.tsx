@@ -465,7 +465,7 @@ function ExamRunner({
         </div>
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-4 py-3 backdrop-blur-xl">
+      <div className="sticky bottom-0 left-0 right-0 z-40 -mx-5 mt-6 border-t border-border bg-background/95 px-4 py-3 backdrop-blur-xl">
         <div className="mx-auto flex max-w-3xl items-center gap-3">
           <button
             onClick={onSubmit}
