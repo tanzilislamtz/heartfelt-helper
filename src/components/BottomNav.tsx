@@ -18,34 +18,37 @@ type Item = {
   glow: string;
 };
 
+const HOME_ACCENT = "linear-gradient(135deg,#3730a3 0%,#6366f1 100%)";
+const HOME_GLOW = "rgba(99,102,241,0.55)";
+
 const items: Item[] = [
   {
     to: "/",
     label: "Home",
     Icon: House,
-    accent: "linear-gradient(135deg,#3730a3 0%,#6366f1 100%)",
-    glow: "rgba(99,102,241,0.55)",
+    accent: HOME_ACCENT,
+    glow: HOME_GLOW,
   },
   {
     to: "/quiz",
     label: "Quiz",
     Icon: Sparkles,
-    accent: "linear-gradient(135deg,#f59e0b 0%,#f4c430 100%)",
-    glow: "rgba(244,196,48,0.55)",
+    accent: HOME_ACCENT,
+    glow: HOME_GLOW,
   },
   {
     to: "/message",
     label: "Chat",
     Icon: MessagesSquare,
-    accent: "linear-gradient(135deg,#047857 0%,#10b981 100%)",
-    glow: "rgba(16,185,129,0.5)",
+    accent: HOME_ACCENT,
+    glow: HOME_GLOW,
   },
   {
     to: "/profile",
     label: "You",
     Icon: CircleUserRound,
-    accent: "linear-gradient(135deg,#db2777 0%,#a855f7 100%)",
-    glow: "rgba(168,85,247,0.5)",
+    accent: HOME_ACCENT,
+    glow: HOME_GLOW,
   },
 ];
 
