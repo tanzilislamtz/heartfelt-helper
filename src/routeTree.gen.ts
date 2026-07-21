@@ -25,6 +25,8 @@ import { Route as QuizMockTestRouteImport } from './routes/quiz.mock-test'
 import { Route as QuizLeaderboardRouteImport } from './routes/quiz.leaderboard'
 import { Route as QuizAiSolverRouteImport } from './routes/quiz.ai-solver'
 import { Route as PostPostIdRouteImport } from './routes/post.$postId'
+import { Route as QuizSubjectSubjectIdRouteImport } from './routes/quiz.subject.$subjectId'
+import { Route as QuizExamSubjectIdRouteImport } from './routes/quiz.exam.$subjectId'
 
 const WelcomeRoute = WelcomeRouteImport.update({
   id: '/welcome',
@@ -106,6 +108,16 @@ const PostPostIdRoute = PostPostIdRouteImport.update({
   path: '/post/$postId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const QuizSubjectSubjectIdRoute = QuizSubjectSubjectIdRouteImport.update({
+  id: '/subject/$subjectId',
+  path: '/subject/$subjectId',
+  getParentRoute: () => QuizRoute,
+} as any)
+const QuizExamSubjectIdRoute = QuizExamSubjectIdRouteImport.update({
+  id: '/exam/$subjectId',
+  path: '/exam/$subjectId',
+  getParentRoute: () => QuizRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -124,6 +136,8 @@ export interface FileRoutesByFullPath {
   '/quiz/question-bank': typeof QuizQuestionBankRoute
   '/quiz/quick-practice': typeof QuizQuickPracticeRoute
   '/quiz/': typeof QuizIndexRoute
+  '/quiz/exam/$subjectId': typeof QuizExamSubjectIdRoute
+  '/quiz/subject/$subjectId': typeof QuizSubjectSubjectIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -141,6 +155,8 @@ export interface FileRoutesByTo {
   '/quiz/question-bank': typeof QuizQuestionBankRoute
   '/quiz/quick-practice': typeof QuizQuickPracticeRoute
   '/quiz': typeof QuizIndexRoute
+  '/quiz/exam/$subjectId': typeof QuizExamSubjectIdRoute
+  '/quiz/subject/$subjectId': typeof QuizSubjectSubjectIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -160,6 +176,8 @@ export interface FileRoutesById {
   '/quiz/question-bank': typeof QuizQuestionBankRoute
   '/quiz/quick-practice': typeof QuizQuickPracticeRoute
   '/quiz/': typeof QuizIndexRoute
+  '/quiz/exam/$subjectId': typeof QuizExamSubjectIdRoute
+  '/quiz/subject/$subjectId': typeof QuizSubjectSubjectIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -180,6 +198,8 @@ export interface FileRouteTypes {
     | '/quiz/question-bank'
     | '/quiz/quick-practice'
     | '/quiz/'
+    | '/quiz/exam/$subjectId'
+    | '/quiz/subject/$subjectId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -197,6 +217,8 @@ export interface FileRouteTypes {
     | '/quiz/question-bank'
     | '/quiz/quick-practice'
     | '/quiz'
+    | '/quiz/exam/$subjectId'
+    | '/quiz/subject/$subjectId'
   id:
     | '__root__'
     | '/'
@@ -215,6 +237,8 @@ export interface FileRouteTypes {
     | '/quiz/question-bank'
     | '/quiz/quick-practice'
     | '/quiz/'
+    | '/quiz/exam/$subjectId'
+    | '/quiz/subject/$subjectId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -343,6 +367,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostPostIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/quiz/subject/$subjectId': {
+      id: '/quiz/subject/$subjectId'
+      path: '/subject/$subjectId'
+      fullPath: '/quiz/subject/$subjectId'
+      preLoaderRoute: typeof QuizSubjectSubjectIdRouteImport
+      parentRoute: typeof QuizRoute
+    }
+    '/quiz/exam/$subjectId': {
+      id: '/quiz/exam/$subjectId'
+      path: '/exam/$subjectId'
+      fullPath: '/quiz/exam/$subjectId'
+      preLoaderRoute: typeof QuizExamSubjectIdRouteImport
+      parentRoute: typeof QuizRoute
+    }
   }
 }
 
@@ -354,6 +392,8 @@ interface QuizRouteChildren {
   QuizQuestionBankRoute: typeof QuizQuestionBankRoute
   QuizQuickPracticeRoute: typeof QuizQuickPracticeRoute
   QuizIndexRoute: typeof QuizIndexRoute
+  QuizExamSubjectIdRoute: typeof QuizExamSubjectIdRoute
+  QuizSubjectSubjectIdRoute: typeof QuizSubjectSubjectIdRoute
 }
 
 const QuizRouteChildren: QuizRouteChildren = {
@@ -364,6 +404,8 @@ const QuizRouteChildren: QuizRouteChildren = {
   QuizQuestionBankRoute: QuizQuestionBankRoute,
   QuizQuickPracticeRoute: QuizQuickPracticeRoute,
   QuizIndexRoute: QuizIndexRoute,
+  QuizExamSubjectIdRoute: QuizExamSubjectIdRoute,
+  QuizSubjectSubjectIdRoute: QuizSubjectSubjectIdRoute,
 }
 
 const QuizRouteWithChildren = QuizRoute._addFileChildren(QuizRouteChildren)
