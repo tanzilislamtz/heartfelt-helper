@@ -25,7 +25,7 @@ function CreatePostPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Topbar variant="app" />
+      <Topbar variant="app" onMenu={() => setMenuOpen(true)} />
       <main className="mx-auto max-w-6xl px-4 pb-24 pt-4 sm:px-6 sm:pt-6 lg:pb-10">
         <CreatePostForm />
       </main>

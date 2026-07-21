@@ -1,5 +1,7 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { useState } from "react";
 import { Topbar } from "@/components/Topbar";
+import { MobileNav } from "@/components/MobileNav";
 
 export const Route = createFileRoute("/quiz")({
   head: () => ({
@@ -16,9 +18,11 @@ export const Route = createFileRoute("/quiz")({
 });
 
 function QuizLayout() {
+  const [menuOpen, setMenuOpen] = useState(false);
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Topbar variant="app" />
+      <Topbar variant="app" onMenu={() => setMenuOpen(true)} />
+      <MobileNav open={menuOpen} onClose={() => setMenuOpen(false)} />
       <Outlet />
     </div>
   );
