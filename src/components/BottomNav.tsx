@@ -220,19 +220,6 @@ export function BottomNav() {
                     )}
                   </span>
 
-                  <span
-                    className="text-[10.5px] font-semibold tracking-wide"
-                    style={{
-                      color: isActive ? "#0f172a" : "#94a3b8",
-                      transition: `color 260ms ease, transform 500ms ${SPRING}, opacity 260ms ease`,
-                      transform: isActive
-                        ? "translateY(-4px)"
-                        : "translateY(0)",
-                      opacity: isActive ? 1 : 0.8,
-                    }}
-                  >
-                    {item.label}
-                  </span>
 
                   {/* Active dot indicator under label */}
                   <span
