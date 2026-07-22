@@ -92,30 +92,33 @@ export function BottomNav() {
       }}
     >
       {/* Ambient aurora glow above bar */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute left-0 right-0"
-        style={{
-          bottom: "calc(env(safe-area-inset-bottom) + 60px)",
-          height: "70px",
-          overflow: "visible",
-        }}
-      >
+      {hasActive && (
         <div
+          aria-hidden
+          className="pointer-events-none absolute left-0 right-0"
           style={{
-            position: "absolute",
-            left: `calc(14px + (100% - 28px) * ${centerPct / 100})`,
-            bottom: 0,
-            width: "140px",
+            bottom: "calc(env(safe-area-inset-bottom) + 60px)",
             height: "70px",
-            transform: "translateX(-50%)",
-            background: `radial-gradient(60% 100% at 50% 100%, ${active.glow} 0%, transparent 72%)`,
-            filter: "blur(8px)",
-            opacity: 0.85,
-            transition: trans,
+            overflow: "visible",
           }}
-        />
-      </div>
+        >
+          <div
+            style={{
+              position: "absolute",
+              left: `calc(14px + (100% - 28px) * ${centerPct / 100})`,
+              bottom: 0,
+              width: "140px",
+              height: "70px",
+              transform: "translateX(-50%)",
+              background: `radial-gradient(60% 100% at 50% 100%, ${active.glow} 0%, transparent 72%)`,
+              filter: "blur(8px)",
+              opacity: 0.85,
+              transition: trans,
+            }}
+          />
+        </div>
+      )}
+
 
       {/* Floating pill bar */}
       <div
