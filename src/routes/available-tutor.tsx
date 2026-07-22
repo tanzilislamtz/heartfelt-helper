@@ -279,11 +279,12 @@ function AvailableTutorPage() {
                       {t.verified && (
                         <span
                           title="Verified tutor"
-                          className="absolute -top-0.5 -right-0.5 inline-flex h-4 w-4 items-center justify-center rounded-full bg-surface ring-2 ring-surface"
+                          className="absolute -top-1 -left-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-surface shadow-sm ring-2 ring-surface"
                         >
-                          <BadgeCheck className="h-4 w-4 text-primary" />
+                          <BadgeCheck className="h-4 w-4 text-primary" fill="currentColor" stroke="white" />
                         </span>
                       )}
+
                     </div>
 
                     {/* Body */}
