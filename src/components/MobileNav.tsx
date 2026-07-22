@@ -14,6 +14,7 @@ const items = [
 ];
 
 export function MobileNav({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => {
