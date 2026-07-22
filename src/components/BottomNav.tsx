@@ -175,7 +175,9 @@ export function BottomNav() {
           />
         )}
 
+        <ul
           className="relative grid h-full"
+
           style={{ gridTemplateColumns: `repeat(${COUNT}, 1fr)` }}
         >
           {items.map((item, i) => {
