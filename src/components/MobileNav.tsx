@@ -61,7 +61,7 @@ export function MobileNav({ open, onClose }: { open: boolean; onClose: () => voi
 
             <nav className="mt-6 space-y-1">
               {items.map(({ icon: Icon, label, to }, i) => {
-                const active = to === "/quiz" ? pathname.startsWith("/quiz") : pathname === to && label === "Home";
+                const active = to === "/quiz" ? pathname.startsWith("/quiz") : to === "/available-tutor" ? pathname.startsWith("/available-tutor") : pathname === to && label === "Home";
                 return (
                   <motion.div
                     key={label}
