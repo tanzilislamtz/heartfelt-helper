@@ -10,7 +10,7 @@ const items = [
   { icon: MessageSquare, label: "Q&A", to: "/" as const },
   { icon: UserSearch, label: "Looking for Tutor", to: "/" as const },
   { icon: BookOpenCheck, label: "Looking for Student", to: "/" as const },
-  { icon: UserCheck, label: "Available Tutor", to: "/" as const },
+  { icon: UserCheck, label: "Available Tutor", to: "/available-tutor" as const },
 ];
 
 export function MobileNav({ open, onClose }: { open: boolean; onClose: () => void }) {
