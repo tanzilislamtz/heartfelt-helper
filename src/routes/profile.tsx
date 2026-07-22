@@ -3,6 +3,7 @@ import { useState } from "react";
 import { User } from "lucide-react";
 import { Topbar } from "@/components/Topbar";
 import { MobileNav } from "@/components/MobileNav";
+import { LeftNav } from "@/components/LeftNav";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({
@@ -20,8 +21,9 @@ function ProfilePage() {
     <div className="min-h-screen bg-background text-foreground">
       <Topbar variant="app" onMenu={() => setMenuOpen(true)} />
       <MobileNav open={menuOpen} onClose={() => setMenuOpen(false)} />
-      <main className="pb-28">
-        <div className="mx-auto max-w-2xl px-5 pt-10">
+      <main className="mx-auto grid max-w-[1400px] grid-cols-1 gap-6 px-4 py-6 pb-28 lg:grid-cols-[240px_minmax(0,1fr)] lg:px-8">
+        <LeftNav />
+        <div className="min-w-0">
           <div className="mb-4 grid h-12 w-12 place-items-center rounded-2xl bg-primary/10 text-primary">
             <User className="h-6 w-6" />
           </div>
@@ -34,4 +36,5 @@ function ProfilePage() {
     </div>
   );
 }
+
 
