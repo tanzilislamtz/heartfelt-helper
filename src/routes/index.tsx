@@ -40,6 +40,7 @@ import {
 
 import { MobileNav } from "@/components/MobileNav";
 import { Topbar } from "@/components/Topbar";
+import { LeftNav } from "@/components/LeftNav";
 import { FeedToolbar } from "@/components/FeedToolbar";
 import {
   DropdownMenu,
@@ -107,39 +108,6 @@ function IconBtn({ children, label }: { children: React.ReactNode; label: string
   );
 }
 
-function LeftNav() {
-  const items = [
-    { icon: Home, label: "Home", active: true },
-    { icon: FileText, label: "Quiz" },
-    { icon: Flame, label: "Popular" },
-    { icon: MessageSquare, label: "Q&A" },
-    { icon: UserSearch, label: "Looking for Tutor" },
-    { icon: BookOpenCheck, label: "Looking for Student" },
-    { icon: UserCheck, label: "Available Tutor" },
-  ];
-  return (
-    <aside className="hidden lg:block">
-      <nav className="sticky top-24 space-y-1">
-        {items.map(({ icon: Icon, label, active }) => (
-          <a
-            key={label}
-            href="#"
-            className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
-              active
-                ? "bg-primary text-primary-foreground shadow-sm"
-                : "text-foreground/75 hover:bg-muted hover:text-foreground"
-            }`}
-          >
-            <Icon className="h-5 w-5" strokeWidth={active ? 2.4 : 2} />
-            {label}
-            {active && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-accent" />}
-          </a>
-        ))}
-
-      </nav>
-    </aside>
-  );
-}
 
 function Feed() {
   return (

@@ -2,6 +2,7 @@ import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { useState } from "react";
 import { Topbar } from "@/components/Topbar";
 import { MobileNav } from "@/components/MobileNav";
+import { LeftNav } from "@/components/LeftNav";
 
 export const Route = createFileRoute("/quiz")({
   head: () => ({
@@ -23,7 +24,13 @@ function QuizLayout() {
     <div className="min-h-screen bg-background text-foreground">
       <Topbar variant="app" onMenu={() => setMenuOpen(true)} />
       <MobileNav open={menuOpen} onClose={() => setMenuOpen(false)} />
-      <Outlet />
+      <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-6 px-4 py-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:px-8">
+        <LeftNav />
+        <div className="min-w-0">
+          <Outlet />
+        </div>
+      </div>
     </div>
   );
 }
+
