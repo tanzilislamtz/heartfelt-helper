@@ -59,24 +59,31 @@ export function MobileNav({ open, onClose }: { open: boolean; onClose: () => voi
             </div>
 
             <nav className="mt-6 space-y-1">
-              {items.map(({ icon: Icon, label, active }, i) => (
-                <motion.a
-                  key={label}
-                  href="#"
-                  onClick={onClose}
-                  initial={{ opacity: 0, x: -12 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.05 + i * 0.04 }}
-                  className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium ${
-                    active
-                      ? "bg-primary text-primary-foreground shadow-sm"
-                      : "text-foreground/80 hover:bg-muted"
-                  }`}
-                >
-                  <Icon className="h-5 w-5" />
-                  {label}
-                </motion.a>
-              ))}
+              {items.map(({ icon: Icon, label, to }, i) => {
+                const pathname = useRouterState({ select: (s) => s.location.pathname });
+                const active = to === "/" ? pathname === "/" && label === "Home" : pathname.startsWith(to);
+                return (
+                  <motion.div
+                    key={label}
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.05 + i * 0.04 }}
+                  >
+                    <Link
+                      to={to}
+                      onClick={onClose}
+                      className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium ${
+                        active
+                          ? "bg-primary text-primary-foreground shadow-sm"
+                          : "text-foreground/80 hover:bg-muted"
+                      }`}
+                    >
+                      <Icon className="h-5 w-5" />
+                      {label}
+                    </Link>
+                  </motion.div>
+                );
+              })}
             </nav>
 
             <div className="mt-6 rounded-2xl border border-border bg-muted/40 p-4">
