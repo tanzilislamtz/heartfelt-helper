@@ -187,7 +187,7 @@ function AvailableTutorPage() {
       <Topbar variant="app" onMenu={() => setMenuOpen(true)} />
       <MobileNav open={menuOpen} onClose={() => setMenuOpen(false)} />
 
-      <main className="mx-auto grid max-w-[1400px] grid-cols-1 gap-6 px-4 py-6 pb-28 lg:grid-cols-[240px_minmax(0,1fr)] lg:px-8">
+      <main className="mx-auto grid max-w-[1400px] grid-cols-1 gap-6 px-3 py-4 pb-28 sm:px-4 sm:py-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:px-8">
         <LeftNav />
 
         <div className="min-w-0 space-y-5">
@@ -213,11 +213,11 @@ function AvailableTutorPage() {
               />
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="-mx-3 flex gap-2 overflow-x-auto px-3 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               <FilterSelect value={subject} onChange={setSubject} options={["All subjects", "Physics", "Mathematics", "Higher Math", "Chemistry", "Biology", "English", "Bangla", "ICT"]} />
               <FilterSelect value={board} onChange={setBoard} options={["All classes", "JSC", "SSC", "HSC"]} />
               <FilterSelect value={mode} onChange={setMode} options={["Any mode", "Online", "In-person"]} />
-              <div className="ml-auto">
+              <div className="sm:ml-auto">
                 <FilterSelect
                   value={sortLabel(sort)}
                   onChange={(v) => setSort(sortValue(v))}
@@ -237,14 +237,14 @@ function AvailableTutorPage() {
                   key={t.id}
                   className="rounded-2xl border border-border bg-surface p-4 transition hover:border-foreground/15 hover:shadow-sm sm:p-5"
                 >
-                  <div className="flex gap-4">
+                  <div className="flex gap-3 sm:gap-4">
                     {/* Avatar */}
                     <div className="relative shrink-0">
                       <img
                         src={t.photo}
                         alt={t.name}
                         loading="lazy"
-                        className="h-14 w-14 rounded-full object-cover ring-1 ring-border sm:h-16 sm:w-16"
+                        className="h-12 w-12 rounded-full object-cover ring-1 ring-border sm:h-16 sm:w-16"
                         onError={(e) => {
                           (e.currentTarget as HTMLImageElement).style.display = "none";
                         }}
@@ -285,10 +285,9 @@ function AvailableTutorPage() {
                           <span className="font-semibold text-foreground">{t.rating.toFixed(1)}</span>
                           <span>({t.reviews})</span>
                         </span>
-                        <span className="text-border">·</span>
                         <span className="inline-flex items-center gap-1"><GraduationCap className="h-3.5 w-3.5" /> {t.board}</span>
                         <span className="inline-flex items-center gap-1"><Briefcase className="h-3.5 w-3.5" /> {t.experience}</span>
-                        <span className="inline-flex items-center gap-1"><MapPin className="h-3.5 w-3.5" /> {t.location}</span>
+                        <span className="inline-flex min-w-0 items-center gap-1"><MapPin className="h-3.5 w-3.5 shrink-0" /> <span className="truncate">{t.location}</span></span>
                         <span className="inline-flex items-center gap-1">
                           {t.mode === "Online" ? <Video className="h-3.5 w-3.5" /> : t.mode === "In-person" ? <Home className="h-3.5 w-3.5" /> : <Users className="h-3.5 w-3.5" />}
                           {t.mode}
@@ -308,8 +307,8 @@ function AvailableTutorPage() {
                       </div>
 
                       {/* Footer row */}
-                      <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-                        <div className="flex items-center gap-3">
+                      <div className="mt-4 flex flex-wrap items-center justify-between gap-x-3 gap-y-3">
+                        <div className="flex flex-wrap items-center gap-2">
                           <span className="text-[15px] font-semibold text-foreground">
                             ৳{t.fee.toLocaleString()}
                             <span className="text-xs font-normal text-muted-foreground"> / hour</span>
@@ -318,16 +317,16 @@ function AvailableTutorPage() {
                             {avail.label}
                           </span>
                         </div>
-                        <div className="flex gap-2">
+                        <div className="flex w-full gap-2 sm:w-auto">
                           <Link
                             to="/message"
-                            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-[13px] font-medium text-foreground transition hover:border-foreground/25"
+                            className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-border bg-background px-3 py-2 text-[13px] font-medium text-foreground transition hover:border-foreground/25 sm:flex-none sm:py-1.5"
                           >
                             <MessageCircle className="h-3.5 w-3.5" /> Message
                           </Link>
                           <button
                             type="button"
-                            className="inline-flex items-center rounded-lg bg-primary px-3 py-1.5 text-[13px] font-semibold text-primary-foreground transition hover:opacity-90"
+                            className="inline-flex flex-1 items-center justify-center rounded-lg bg-primary px-3 py-2 text-[13px] font-semibold text-primary-foreground transition hover:opacity-90 sm:flex-none sm:py-1.5"
                           >
                             View profile
                           </button>
