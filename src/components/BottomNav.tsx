@@ -137,41 +137,44 @@ export function BottomNav() {
         }}
       >
         {/* Floating orb — lifted above the bar */}
-        <span
-          aria-hidden
-          className="absolute"
-          style={{
-            top: "-6px",
-            left: `${centerPct}%`,
-            width: "54px",
-            height: "54px",
-            marginLeft: "-27px",
-            borderRadius: "50%",
-            background: active.accent,
-            boxShadow: `0 12px 24px -6px ${active.glow}, 0 0 0 4px #fff, inset 0 1px 0 rgba(255,255,255,0.4)`,
-            transition: trans,
-          }}
-        />
+        {hasActive && (
+          <span
+            aria-hidden
+            className="absolute"
+            style={{
+              top: "-6px",
+              left: `${centerPct}%`,
+              width: "54px",
+              height: "54px",
+              marginLeft: "-27px",
+              borderRadius: "50%",
+              background: active.accent,
+              boxShadow: `0 12px 24px -6px ${active.glow}, 0 0 0 4px #fff, inset 0 1px 0 rgba(255,255,255,0.4)`,
+              transition: trans,
+            }}
+          />
+        )}
 
         {/* Pulsing halo */}
-        <span
-          aria-hidden
-          className="absolute rounded-full"
-          style={{
-            top: "-6px",
-            left: `${centerPct}%`,
-            width: "54px",
-            height: "54px",
-            marginLeft: "-27px",
-            border: `2px solid ${active.glow}`,
-            opacity: 0.6,
-            transition: trans,
-            animation: "navHalo 2s ease-out infinite",
-            pointerEvents: "none",
-          }}
-        />
+        {hasActive && (
+          <span
+            aria-hidden
+            className="absolute rounded-full"
+            style={{
+              top: "-6px",
+              left: `${centerPct}%`,
+              width: "54px",
+              height: "54px",
+              marginLeft: "-27px",
+              border: `2px solid ${active.glow}`,
+              opacity: 0.6,
+              transition: trans,
+              animation: "navHalo 2s ease-out infinite",
+              pointerEvents: "none",
+            }}
+          />
+        )}
 
-        <ul
           className="relative grid h-full"
           style={{ gridTemplateColumns: `repeat(${COUNT}, 1fr)` }}
         >
