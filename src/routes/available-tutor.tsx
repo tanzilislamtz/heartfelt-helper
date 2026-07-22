@@ -375,7 +375,8 @@ function AvailableTutorPage() {
   );
 }
 
-function FilterSelect({ value, onChange, options }: { value: string; onChange: (v: string) => void; options: string[] }) {
+function FilterSelect({ label, value, onChange, options }: { label?: string; value: string; onChange: (v: string) => void; options: string[] }) {
+  void label;
   return (
     <div className="relative">
       <select
