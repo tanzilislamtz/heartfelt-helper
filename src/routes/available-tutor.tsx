@@ -233,11 +233,16 @@ function AvailableTutorPage() {
             </div>
 
             <div className="-mx-3 flex gap-2 overflow-x-auto px-3 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              <FilterSelect value={subject} onChange={setSubject} options={["All subjects", "Physics", "Mathematics", "Higher Math", "Chemistry", "Biology", "English", "Bangla", "ICT"]} />
-              <FilterSelect value={board} onChange={setBoard} options={["All classes", "JSC", "SSC", "HSC"]} />
-              <FilterSelect value={mode} onChange={setMode} options={["Any mode", "Online", "In-person"]} />
+              <FilterSelect label="Subject" value={subject} onChange={setSubject} options={["All subjects", "Physics", "Mathematics", "Higher Math", "Chemistry", "Biology", "English", "Bangla", "ICT"]} />
+              <FilterSelect label="Class / Level" value={board} onChange={setBoard} options={["All classes", "JSC", "SSC", "HSC"]} />
+              <FilterSelect label="Location" value={location} onChange={setLocation} options={["All locations", "Dhanmondi", "Mirpur", "Uttara", "Gulshan", "Banani", "Mohammadpur"]} />
+              <FilterSelect label="Teaching Mode" value={mode} onChange={setMode} options={["Any mode", "Online", "In-person"]} />
+              <FilterSelect label="Fee Range" value={fee} onChange={setFee} options={["Any fee", "Under ৳1000", "৳1000 – ৳1500", "৳1500 – ৳2000", "Above ৳2000"]} />
+              <FilterSelect label="Rating" value={rating} onChange={setRating} options={["Any rating", "4.5+", "4.0+", "3.5+"]} />
+              <FilterSelect label="Gender" value={gender} onChange={setGender} options={["Any gender", "Male", "Female"]} />
               <div className="sm:ml-auto">
                 <FilterSelect
+                  label="Sort by"
                   value={sortLabel(sort)}
                   onChange={(v) => setSort(sortValue(v))}
                   options={["Top rated", "Most reviewed", "Fee: low to high", "Fee: high to low"]}
