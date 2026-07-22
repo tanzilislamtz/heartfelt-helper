@@ -33,7 +33,7 @@ function QuizHub() {
 
   return (
     <main className="min-h-screen bg-background pb-28 text-foreground">
-      <div className="mx-auto max-w-2xl px-5 pt-8">
+      <div className="mx-auto max-w-2xl px-5 pt-8 lg:max-w-none lg:px-0">
         {/* Header — brand gradient to match home */}
         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-purple-600 to-fuchsia-600 p-6 text-white shadow-lg">
           <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/15 blur-3xl" />
