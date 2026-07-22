@@ -16,6 +16,7 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as MessageRouteImport } from './routes/message'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as CreatePostRouteImport } from './routes/create-post'
+import { Route as AvailableTutorRouteImport } from './routes/available-tutor'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as QuizIndexRouteImport } from './routes/quiz.index'
 import { Route as QuizQuickPracticeRouteImport } from './routes/quiz.quick-practice'
@@ -63,6 +64,11 @@ const LoginRoute = LoginRouteImport.update({
 const CreatePostRoute = CreatePostRouteImport.update({
   id: '/create-post',
   path: '/create-post',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AvailableTutorRoute = AvailableTutorRouteImport.update({
+  id: '/available-tutor',
+  path: '/available-tutor',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -134,6 +140,7 @@ const QuizSubjectSubjectIdCategoryRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/available-tutor': typeof AvailableTutorRoute
   '/create-post': typeof CreatePostRoute
   '/login': typeof LoginRoute
   '/message': typeof MessageRoute
@@ -156,6 +163,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/available-tutor': typeof AvailableTutorRoute
   '/create-post': typeof CreatePostRoute
   '/login': typeof LoginRoute
   '/message': typeof MessageRoute
@@ -178,6 +186,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/available-tutor': typeof AvailableTutorRoute
   '/create-post': typeof CreatePostRoute
   '/login': typeof LoginRoute
   '/message': typeof MessageRoute
@@ -202,6 +211,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/available-tutor'
     | '/create-post'
     | '/login'
     | '/message'
@@ -224,6 +234,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/available-tutor'
     | '/create-post'
     | '/login'
     | '/message'
@@ -245,6 +256,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/available-tutor'
     | '/create-post'
     | '/login'
     | '/message'
@@ -268,6 +280,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AvailableTutorRoute: typeof AvailableTutorRoute
   CreatePostRoute: typeof CreatePostRoute
   LoginRoute: typeof LoginRoute
   MessageRoute: typeof MessageRoute
@@ -327,6 +340,13 @@ declare module '@tanstack/react-router' {
       path: '/create-post'
       fullPath: '/create-post'
       preLoaderRoute: typeof CreatePostRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/available-tutor': {
+      id: '/available-tutor'
+      path: '/available-tutor'
+      fullPath: '/available-tutor'
+      preLoaderRoute: typeof AvailableTutorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -455,6 +475,7 @@ const QuizRouteWithChildren = QuizRoute._addFileChildren(QuizRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AvailableTutorRoute: AvailableTutorRoute,
   CreatePostRoute: CreatePostRoute,
   LoginRoute: LoginRoute,
   MessageRoute: MessageRoute,

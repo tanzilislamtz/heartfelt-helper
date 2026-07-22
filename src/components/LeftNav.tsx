@@ -16,7 +16,7 @@ const items = [
   { icon: MessageSquare, label: "Q&A", to: "/" as const, match: "none" as const },
   { icon: UserSearch, label: "Looking for Tutor", to: "/" as const, match: "none" as const },
   { icon: BookOpenCheck, label: "Looking for Student", to: "/" as const, match: "none" as const },
-  { icon: UserCheck, label: "Available Tutor", to: "/" as const, match: "none" as const },
+  { icon: UserCheck, label: "Available Tutor", to: "/available-tutor" as const, match: "available" as const },
 ];
 
 export function LeftNav() {
@@ -26,7 +26,7 @@ export function LeftNav() {
       <nav className="sticky top-24 space-y-1">
         {items.map(({ icon: Icon, label, to, match }) => {
           const active =
-            match === "home" ? pathname === "/" : match === "quiz" ? pathname.startsWith("/quiz") : false;
+            match === "home" ? pathname === "/" : match === "quiz" ? pathname.startsWith("/quiz") : match === "available" ? pathname.startsWith("/available-tutor") : false;
           return (
             <Link
               key={label}
