@@ -61,7 +61,7 @@ function QuizHub() {
         {/* Subjects — the main entry point */}
         <section className="mt-8">
           <SectionHeader title="Your subjects" hint={`${subjects.length} available`} />
-          <div className="mt-4 grid grid-cols-1 gap-3">
+          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {subjects.map((s, i) => (
               <motion.div
                 key={s.id}
