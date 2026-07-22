@@ -1,15 +1,16 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { X, Home, FileText, Flame, MessageSquare, UserSearch, BookOpenCheck, UserCheck, Sparkles, GraduationCap } from "lucide-react";
+import { X, Home, Flame, MessageSquare, UserSearch, BookOpenCheck, UserCheck, Sparkles, GraduationCap, Brain } from "lucide-react";
 import { useEffect } from "react";
+import { Link, useRouterState } from "@tanstack/react-router";
 
 const items = [
-  { icon: Home, label: "Home", active: true },
-  { icon: FileText, label: "Quiz" },
-  { icon: Flame, label: "Popular" },
-  { icon: MessageSquare, label: "Q&A" },
-  { icon: UserSearch, label: "Looking for Tutor" },
-  { icon: BookOpenCheck, label: "Looking for Student" },
-  { icon: UserCheck, label: "Available Tutor" },
+  { icon: Home, label: "Home", to: "/" as const },
+  { icon: Brain, label: "Quiz", to: "/quiz" as const },
+  { icon: Flame, label: "Popular", to: "/" as const },
+  { icon: MessageSquare, label: "Q&A", to: "/" as const },
+  { icon: UserSearch, label: "Looking for Tutor", to: "/" as const },
+  { icon: BookOpenCheck, label: "Looking for Student", to: "/" as const },
+  { icon: UserCheck, label: "Available Tutor", to: "/" as const },
 ];
 
 export function MobileNav({ open, onClose }: { open: boolean; onClose: () => void }) {
