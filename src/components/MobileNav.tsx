@@ -74,52 +74,46 @@ export function MobileNav({ open, onClose }: { open: boolean; onClose: () => voi
               </button>
             </div>
 
-            <nav className="mt-6 space-y-1">
-              {items.map(({ icon: Icon, label, to }, i) => {
-                const active = to === "/quiz" ? pathname.startsWith("/quiz") : to === "/available-tutor" ? pathname.startsWith("/available-tutor") : pathname === to && label === "Home";
-                return (
-                  <motion.div
-                    key={label}
-                    initial={{ opacity: 0, x: -12 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.05 + i * 0.04 }}
-                  >
-                    <Link
-                      to={to}
-                      onClick={onClose}
-                      className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium ${
-                        active
-                          ? "bg-primary text-primary-foreground shadow-sm"
-                          : "text-foreground/80 hover:bg-muted"
-                      }`}
-                    >
-                      <Icon className="h-5 w-5" />
-                      {label}
-                    </Link>
-                  </motion.div>
-                );
-              })}
+            <nav className="mt-6 space-y-4">
+              {sections.map((section, sIdx) => (
+                <div
+                  key={sIdx}
+                  className={`space-y-1 ${sIdx > 0 ? "border-t border-border pt-4" : ""}`}
+                >
+                  {section.items.map(({ icon: Icon, label, to }, i) => {
+                    const active =
+                      to === "/quiz"
+                        ? pathname.startsWith("/quiz")
+                        : to === "/available-tutor"
+                          ? pathname.startsWith("/available-tutor")
+                          : pathname === to && label === "Home";
+                    return (
+                      <motion.div
+                        key={label}
+                        initial={{ opacity: 0, x: -12 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.05 + (sIdx * 0.06) + i * 0.04 }}
+                      >
+                        <Link
+                          to={to}
+                          onClick={onClose}
+                          className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium ${
+                            active
+                              ? "bg-primary text-primary-foreground shadow-sm"
+                              : "text-foreground/80 hover:bg-muted"
+                          }`}
+                        >
+                          <Icon className="h-5 w-5" />
+                          {label}
+                        </Link>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              ))}
             </nav>
-
-            <div className="mt-6 rounded-2xl border border-border bg-muted/40 p-4">
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                <Sparkles className="h-3.5 w-3.5 text-accent" />
-                Your progress
-              </div>
-              <div className="mt-3 flex items-baseline gap-1">
-                <span className="font-display text-3xl font-semibold">72</span>
-                <span className="text-xs text-muted-foreground">/ 100 XP</span>
-              </div>
-              <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-background">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: "72%" }}
-                  transition={{ duration: 0.9, ease: "easeOut" }}
-                  className="h-full rounded-full bg-tutor"
-                />
-              </div>
-            </div>
           </motion.aside>
+
         </>
       )}
     </AnimatePresence>
