@@ -26,7 +26,7 @@ export function LeftNav() {
       <nav className="sticky top-24 space-y-1">
         {items.map(({ icon: Icon, label, to, match }) => {
           const active =
-            match === "home" ? pathname === "/" : match === "quiz" ? pathname.startsWith("/quiz") : false;
+            match === "home" ? pathname === "/" : match === "quiz" ? pathname.startsWith("/quiz") : match === "available" ? pathname.startsWith("/available-tutor") : false;
           return (
             <Link
               key={label}
