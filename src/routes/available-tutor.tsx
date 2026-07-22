@@ -159,7 +159,11 @@ function AvailableTutorPage() {
   const [sort, setSort] = useState<"top" | "fee-low" | "fee-high" | "new">("top");
   const [subject, setSubject] = useState("All subjects");
   const [board, setBoard] = useState("All classes");
+  const [location, setLocation] = useState("All locations");
   const [mode, setMode] = useState("Any mode");
+  const [fee, setFee] = useState("Any fee");
+  const [rating, setRating] = useState("Any rating");
+  const [gender, setGender] = useState("Any gender");
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -171,8 +175,20 @@ function AvailableTutorPage() {
           t.location.toLowerCase().includes(q);
       const matchSubject = subject === "All subjects" || t.subjects.includes(subject);
       const matchBoard = board === "All classes" || t.board.includes(board);
+      const matchLocation = location === "All locations" || t.location.includes(location);
       const matchMode = mode === "Any mode" || t.mode === mode || t.mode === "Both";
-      return matchQ && matchSubject && matchBoard && matchMode;
+      const matchFee =
+        fee === "Any fee" ||
+        (fee === "Under ৳1000" && t.fee < 1000) ||
+        (fee === "৳1000 – ৳1500" && t.fee >= 1000 && t.fee <= 1500) ||
+        (fee === "৳1500 – ৳2000" && t.fee > 1500 && t.fee <= 2000) ||
+        (fee === "Above ৳2000" && t.fee > 2000);
+      const matchRating =
+        rating === "Any rating" ||
+        (rating === "4.5+" && t.rating >= 4.5) ||
+        (rating === "4.0+" && t.rating >= 4.0) ||
+        (rating === "3.5+" && t.rating >= 3.5);
+      return matchQ && matchSubject && matchBoard && matchLocation && matchMode && matchFee && matchRating;
     });
     const sorted = [...list];
     if (sort === "top") sorted.sort((a, b) => b.rating - a.rating);
@@ -180,7 +196,10 @@ function AvailableTutorPage() {
     if (sort === "fee-high") sorted.sort((a, b) => b.fee - a.fee);
     if (sort === "new") sorted.sort((a, b) => b.reviews - a.reviews);
     return sorted;
-  }, [query, sort, subject, board, mode]);
+  }, [query, sort, subject, board, location, mode, fee, rating]);
+
+  // gender is UI-only (mock data has no gender field)
+  void gender;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
