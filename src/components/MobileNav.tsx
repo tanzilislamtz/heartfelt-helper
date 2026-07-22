@@ -1,17 +1,32 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { X, Home, Flame, MessageSquare, UserSearch, BookOpenCheck, UserCheck, Sparkles, GraduationCap, Brain } from "lucide-react";
+import { X, Home, Flame, MessageSquare, UserSearch, BookOpenCheck, UserCheck, GraduationCap, Brain } from "lucide-react";
 import { useEffect } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 
-const items = [
-  { icon: Home, label: "Home", to: "/" as const },
-  { icon: Brain, label: "Quiz", to: "/quiz" as const },
-  { icon: Flame, label: "Popular", to: "/" as const },
-  { icon: MessageSquare, label: "Q&A", to: "/" as const },
-  { icon: UserSearch, label: "Looking for Tutor", to: "/" as const },
-  { icon: BookOpenCheck, label: "Looking for Student", to: "/" as const },
-  { icon: UserCheck, label: "Available Tutor", to: "/available-tutor" as const },
+type NavItem = { icon: typeof Home; label: string; to: "/" | "/quiz" | "/available-tutor" };
+
+const sections: { items: NavItem[] }[] = [
+  {
+    items: [
+      { icon: Home, label: "Home", to: "/" },
+      { icon: Brain, label: "Quiz", to: "/quiz" },
+    ],
+  },
+  {
+    items: [
+      { icon: Flame, label: "Popular", to: "/" },
+      { icon: MessageSquare, label: "Q&A", to: "/" },
+      { icon: UserSearch, label: "Looking for Tutor", to: "/" },
+      { icon: BookOpenCheck, label: "Looking for Student", to: "/" },
+    ],
+  },
+  {
+    items: [
+      { icon: UserCheck, label: "Available Tutor", to: "/available-tutor" },
+    ],
+  },
 ];
+
 
 export function MobileNav({ open, onClose }: { open: boolean; onClose: () => void }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
