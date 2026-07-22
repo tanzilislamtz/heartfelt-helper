@@ -159,7 +159,11 @@ function AvailableTutorPage() {
   const [sort, setSort] = useState<"top" | "fee-low" | "fee-high" | "new">("top");
   const [subject, setSubject] = useState("All subjects");
   const [board, setBoard] = useState("All classes");
+  const [location, setLocation] = useState("All locations");
   const [mode, setMode] = useState("Any mode");
+  const [fee, setFee] = useState("Any fee");
+  const [rating, setRating] = useState("Any rating");
+  const [gender, setGender] = useState("Any gender");
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -171,8 +175,20 @@ function AvailableTutorPage() {
           t.location.toLowerCase().includes(q);
       const matchSubject = subject === "All subjects" || t.subjects.includes(subject);
       const matchBoard = board === "All classes" || t.board.includes(board);
+      const matchLocation = location === "All locations" || t.location.includes(location);
       const matchMode = mode === "Any mode" || t.mode === mode || t.mode === "Both";
-      return matchQ && matchSubject && matchBoard && matchMode;
+      const matchFee =
+        fee === "Any fee" ||
+        (fee === "Under ৳1000" && t.fee < 1000) ||
+        (fee === "৳1000 – ৳1500" && t.fee >= 1000 && t.fee <= 1500) ||
+        (fee === "৳1500 – ৳2000" && t.fee > 1500 && t.fee <= 2000) ||
+        (fee === "Above ৳2000" && t.fee > 2000);
+      const matchRating =
+        rating === "Any rating" ||
+        (rating === "4.5+" && t.rating >= 4.5) ||
+        (rating === "4.0+" && t.rating >= 4.0) ||
+        (rating === "3.5+" && t.rating >= 3.5);
+      return matchQ && matchSubject && matchBoard && matchLocation && matchMode && matchFee && matchRating;
     });
     const sorted = [...list];
     if (sort === "top") sorted.sort((a, b) => b.rating - a.rating);
@@ -180,7 +196,10 @@ function AvailableTutorPage() {
     if (sort === "fee-high") sorted.sort((a, b) => b.fee - a.fee);
     if (sort === "new") sorted.sort((a, b) => b.reviews - a.reviews);
     return sorted;
-  }, [query, sort, subject, board, mode]);
+  }, [query, sort, subject, board, location, mode, fee, rating]);
+
+  // gender is UI-only (mock data has no gender field)
+  void gender;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -214,11 +233,16 @@ function AvailableTutorPage() {
             </div>
 
             <div className="-mx-3 flex gap-2 overflow-x-auto px-3 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              <FilterSelect value={subject} onChange={setSubject} options={["All subjects", "Physics", "Mathematics", "Higher Math", "Chemistry", "Biology", "English", "Bangla", "ICT"]} />
-              <FilterSelect value={board} onChange={setBoard} options={["All classes", "JSC", "SSC", "HSC"]} />
-              <FilterSelect value={mode} onChange={setMode} options={["Any mode", "Online", "In-person"]} />
+              <FilterSelect label="Subject" value={subject} onChange={setSubject} options={["All subjects", "Physics", "Mathematics", "Higher Math", "Chemistry", "Biology", "English", "Bangla", "ICT"]} />
+              <FilterSelect label="Class / Level" value={board} onChange={setBoard} options={["All classes", "JSC", "SSC", "HSC"]} />
+              <FilterSelect label="Location" value={location} onChange={setLocation} options={["All locations", "Dhanmondi", "Mirpur", "Uttara", "Gulshan", "Banani", "Mohammadpur"]} />
+              <FilterSelect label="Teaching Mode" value={mode} onChange={setMode} options={["Any mode", "Online", "In-person"]} />
+              <FilterSelect label="Fee Range" value={fee} onChange={setFee} options={["Any fee", "Under ৳1000", "৳1000 – ৳1500", "৳1500 – ৳2000", "Above ৳2000"]} />
+              <FilterSelect label="Rating" value={rating} onChange={setRating} options={["Any rating", "4.5+", "4.0+", "3.5+"]} />
+              <FilterSelect label="Gender" value={gender} onChange={setGender} options={["Any gender", "Male", "Female"]} />
               <div className="sm:ml-auto">
                 <FilterSelect
+                  label="Sort by"
                   value={sortLabel(sort)}
                   onChange={(v) => setSort(sortValue(v))}
                   options={["Top rated", "Most reviewed", "Fee: low to high", "Fee: high to low"]}
@@ -351,7 +375,8 @@ function AvailableTutorPage() {
   );
 }
 
-function FilterSelect({ value, onChange, options }: { value: string; onChange: (v: string) => void; options: string[] }) {
+function FilterSelect({ label, value, onChange, options }: { label?: string; value: string; onChange: (v: string) => void; options: string[] }) {
+  void label;
   return (
     <div className="relative">
       <select
