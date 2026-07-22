@@ -60,7 +60,9 @@ export function BottomNav() {
     (i) => i.to !== "/" && (pathname === i.to || pathname.startsWith(i.to + "/")),
   );
   const activeIndex = matchIndex >= 0 ? matchIndex : pathname === "/" ? 0 : -1;
+  const hasActive = activeIndex >= 0;
   const active = items[activeIndex] ?? items[0];
+
   const unread = useUnreadMessages();
 
   const [mounted, setMounted] = useState(false);
@@ -90,30 +92,33 @@ export function BottomNav() {
       }}
     >
       {/* Ambient aurora glow above bar */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute left-0 right-0"
-        style={{
-          bottom: "calc(env(safe-area-inset-bottom) + 60px)",
-          height: "70px",
-          overflow: "visible",
-        }}
-      >
+      {hasActive && (
         <div
+          aria-hidden
+          className="pointer-events-none absolute left-0 right-0"
           style={{
-            position: "absolute",
-            left: `calc(14px + (100% - 28px) * ${centerPct / 100})`,
-            bottom: 0,
-            width: "140px",
+            bottom: "calc(env(safe-area-inset-bottom) + 60px)",
             height: "70px",
-            transform: "translateX(-50%)",
-            background: `radial-gradient(60% 100% at 50% 100%, ${active.glow} 0%, transparent 72%)`,
-            filter: "blur(8px)",
-            opacity: 0.85,
-            transition: trans,
+            overflow: "visible",
           }}
-        />
-      </div>
+        >
+          <div
+            style={{
+              position: "absolute",
+              left: `calc(14px + (100% - 28px) * ${centerPct / 100})`,
+              bottom: 0,
+              width: "140px",
+              height: "70px",
+              transform: "translateX(-50%)",
+              background: `radial-gradient(60% 100% at 50% 100%, ${active.glow} 0%, transparent 72%)`,
+              filter: "blur(8px)",
+              opacity: 0.85,
+              transition: trans,
+            }}
+          />
+        </div>
+      )}
+
 
       {/* Floating pill bar */}
       <div
@@ -132,42 +137,47 @@ export function BottomNav() {
         }}
       >
         {/* Floating orb — lifted above the bar */}
-        <span
-          aria-hidden
-          className="absolute"
-          style={{
-            top: "-6px",
-            left: `${centerPct}%`,
-            width: "54px",
-            height: "54px",
-            marginLeft: "-27px",
-            borderRadius: "50%",
-            background: active.accent,
-            boxShadow: `0 12px 24px -6px ${active.glow}, 0 0 0 4px #fff, inset 0 1px 0 rgba(255,255,255,0.4)`,
-            transition: trans,
-          }}
-        />
+        {hasActive && (
+          <span
+            aria-hidden
+            className="absolute"
+            style={{
+              top: "-6px",
+              left: `${centerPct}%`,
+              width: "54px",
+              height: "54px",
+              marginLeft: "-27px",
+              borderRadius: "50%",
+              background: active.accent,
+              boxShadow: `0 12px 24px -6px ${active.glow}, 0 0 0 4px #fff, inset 0 1px 0 rgba(255,255,255,0.4)`,
+              transition: trans,
+            }}
+          />
+        )}
 
         {/* Pulsing halo */}
-        <span
-          aria-hidden
-          className="absolute rounded-full"
-          style={{
-            top: "-6px",
-            left: `${centerPct}%`,
-            width: "54px",
-            height: "54px",
-            marginLeft: "-27px",
-            border: `2px solid ${active.glow}`,
-            opacity: 0.6,
-            transition: trans,
-            animation: "navHalo 2s ease-out infinite",
-            pointerEvents: "none",
-          }}
-        />
+        {hasActive && (
+          <span
+            aria-hidden
+            className="absolute rounded-full"
+            style={{
+              top: "-6px",
+              left: `${centerPct}%`,
+              width: "54px",
+              height: "54px",
+              marginLeft: "-27px",
+              border: `2px solid ${active.glow}`,
+              opacity: 0.6,
+              transition: trans,
+              animation: "navHalo 2s ease-out infinite",
+              pointerEvents: "none",
+            }}
+          />
+        )}
 
         <ul
           className="relative grid h-full"
+
           style={{ gridTemplateColumns: `repeat(${COUNT}, 1fr)` }}
         >
           {items.map((item, i) => {
