@@ -60,7 +60,9 @@ export function BottomNav() {
     (i) => i.to !== "/" && (pathname === i.to || pathname.startsWith(i.to + "/")),
   );
   const activeIndex = matchIndex >= 0 ? matchIndex : pathname === "/" ? 0 : -1;
+  const hasActive = activeIndex >= 0;
   const active = items[activeIndex] ?? items[0];
+
   const unread = useUnreadMessages();
 
   const [mounted, setMounted] = useState(false);
