@@ -276,6 +276,14 @@ function AvailableTutorPage() {
                       {t.online && (
                         <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-surface bg-emerald-500" title="Online now" />
                       )}
+                      {t.verified && (
+                        <span
+                          title="Verified tutor"
+                          className="absolute -top-0.5 -right-0.5 inline-flex h-4 w-4 items-center justify-center rounded-full bg-surface ring-2 ring-surface"
+                        >
+                          <BadgeCheck className="h-4 w-4 text-primary" />
+                        </span>
+                      )}
                     </div>
 
                     {/* Body */}
@@ -284,12 +292,8 @@ function AvailableTutorPage() {
                         <div className="min-w-0">
                           <div className="flex items-center gap-1.5">
                             <h3 className="truncate text-[15px] font-semibold text-foreground">{t.name}</h3>
-                            {t.verified && (
-                              <span title="Verified tutor" className="inline-flex">
-                                <BadgeCheck className="h-4 w-4 text-primary" />
-                              </span>
-                            )}
                           </div>
+
                           <p className="mt-0.5 truncate text-[13px] text-muted-foreground">{t.headline}</p>
                         </div>
                         <button
