@@ -187,8 +187,8 @@ function AvailableTutorPage() {
       <Topbar variant="app" onMenu={() => setMenuOpen(true)} />
       <MobileNav open={menuOpen} onClose={() => setMenuOpen(false)} />
 
-      <main className="mx-auto grid max-w-[1400px] grid-cols-1 gap-6 px-4 py-6 pb-28 lg:grid-cols-[240px_minmax(0,1fr)] lg:px-8">
-        <LeftNav />
+      <main className="mx-auto grid max-w-[1400px] grid-cols-1 gap-6 px-3 py-4 pb-28 sm:px-4 sm:py-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:px-8">
+        <div className="hidden lg:block"><LeftNav /></div>
 
         <div className="min-w-0 space-y-5">
           {/* Simple heading */}
