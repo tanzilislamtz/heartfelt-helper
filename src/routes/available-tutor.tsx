@@ -273,9 +273,6 @@ function AvailableTutorPage() {
                           (e.currentTarget as HTMLImageElement).style.display = "none";
                         }}
                       />
-                      {t.online && (
-                        <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-surface bg-emerald-500" title="Online now" />
-                      )}
                       {t.verified && (
                         <span
                           title="Verified tutor"
