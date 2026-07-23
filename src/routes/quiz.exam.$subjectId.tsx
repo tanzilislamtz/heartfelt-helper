@@ -19,9 +19,10 @@ import { boards, getExamQuestions, subjects, type Question } from "@/data/quiz";
 import { explainAnswer } from "@/lib/ai-explain.functions";
 
 const searchSchema = z.object({
-  board: z.string(),
+  board: z.string().optional(),
   mode: z.enum(["overview", "paper", "exam", "result"]).default("overview"),
 });
+
 
 export const Route = createFileRoute("/quiz/exam/$subjectId")({
   validateSearch: (s) => searchSchema.parse(s),
@@ -34,8 +35,12 @@ function ExamFlow() {
   const navigate = useNavigate();
 
   const subject = subjects.find((s) => s.id === subjectId);
-  const boardMeta = boards.find((b) => b.id === board);
-  const paper = useMemo(() => getExamQuestions(subjectId, board), [subjectId, board]);
+  const boardMeta = board ? boards.find((b) => b.id === board) : undefined;
+  const paper = useMemo(
+    () => (board ? getExamQuestions(subjectId, board) : []),
+    [subjectId, board],
+  );
+
 
   const [answers, setAnswers] = useState<(number | null)[]>(() => Array(paper.length).fill(null));
   const [current, setCurrent] = useState(0);
