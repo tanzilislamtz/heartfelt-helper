@@ -394,12 +394,13 @@ const kindConfig: Record<
   question: {
     label: "Question",
     Icon: HelpCircle,
-    accent: "text-amber-800",
-    chip: "bg-amber-500/20 text-amber-900",
-    ring: "ring-amber-500/60",
+    accent: "text-primary",
+    chip: "bg-primary/10 text-primary",
+    ring: "ring-primary/40",
     frame:
-      "border-2 border-dashed border-amber-500/60 bg-[linear-gradient(135deg,#fff7db_0%,#fef3c7_45%,#ffe4b5_100%)]",
+      "border-2 border-dashed border-primary/40 bg-gradient-to-br from-indigo-50 via-white to-slate-50",
   },
+
   "seeking-tutor": {
     label: "Seeking Tutor",
     Icon: UserSearch,
