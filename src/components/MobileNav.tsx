@@ -1,15 +1,16 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { X, Home, Flame, MessageSquare, UserSearch, BookOpenCheck, UserCheck, GraduationCap, Brain } from "lucide-react";
+import { X, Home, Flame, MessageSquare, UserSearch, BookOpenCheck, UserCheck, GraduationCap, Brain, MessagesSquare } from "lucide-react";
 import { useEffect } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 
-type NavItem = { icon: typeof Home; label: string; to: "/" | "/quiz" | "/available-tutor" };
+type NavItem = { icon: typeof Home; label: string; to: "/" | "/quiz" | "/available-tutor" | "/message" };
 
 const sections: { items: NavItem[] }[] = [
   {
     items: [
       { icon: Home, label: "Home", to: "/" },
       { icon: Brain, label: "Quiz", to: "/quiz" },
+      { icon: MessagesSquare, label: "Messages", to: "/message" },
     ],
   },
   {
@@ -86,7 +87,9 @@ export function MobileNav({ open, onClose }: { open: boolean; onClose: () => voi
                         ? pathname.startsWith("/quiz")
                         : to === "/available-tutor"
                           ? pathname.startsWith("/available-tutor")
-                          : pathname === to && label === "Home";
+                          : to === "/message"
+                            ? pathname.startsWith("/message")
+                            : pathname === to && label === "Home";
                     return (
                       <motion.div
                         key={label}

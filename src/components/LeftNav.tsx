@@ -7,11 +7,13 @@ import {
   UserSearch,
   BookOpenCheck,
   UserCheck,
+  MessagesSquare,
 } from "lucide-react";
 
 const items = [
   { icon: Home, label: "Home", to: "/" as const, match: "home" as const },
   { icon: Brain, label: "Quiz", to: "/quiz" as const, match: "quiz" as const },
+  { icon: MessagesSquare, label: "Messages", to: "/message" as const, match: "message" as const },
   { icon: Flame, label: "Popular", to: "/" as const, match: "none" as const },
   { icon: MessageSquare, label: "Q&A", to: "/" as const, match: "none" as const },
   { icon: UserSearch, label: "Looking for Tutor", to: "/" as const, match: "none" as const },
@@ -26,7 +28,15 @@ export function LeftNav() {
       <nav className="sticky top-24 space-y-1">
         {items.map(({ icon: Icon, label, to, match }) => {
           const active =
-            match === "home" ? pathname === "/" : match === "quiz" ? pathname.startsWith("/quiz") : match === "available" ? pathname.startsWith("/available-tutor") : false;
+            match === "home"
+              ? pathname === "/"
+              : match === "quiz"
+                ? pathname.startsWith("/quiz")
+                : match === "message"
+                  ? pathname.startsWith("/message")
+                  : match === "available"
+                    ? pathname.startsWith("/available-tutor")
+                    : false;
           return (
             <Link
               key={label}
