@@ -26,6 +26,7 @@ import { Route as QuizMockTestRouteImport } from './routes/quiz.mock-test'
 import { Route as QuizLeaderboardRouteImport } from './routes/quiz.leaderboard'
 import { Route as QuizAiSolverRouteImport } from './routes/quiz.ai-solver'
 import { Route as PostPostIdRouteImport } from './routes/post.$postId'
+import { Route as MessageThreadIdRouteImport } from './routes/message.$threadId'
 import { Route as QuizWrittenSubjectIdRouteImport } from './routes/quiz.written.$subjectId'
 import { Route as QuizSubjectSubjectIdRouteImport } from './routes/quiz.subject.$subjectId'
 import { Route as QuizExamSubjectIdRouteImport } from './routes/quiz.exam.$subjectId'
@@ -116,6 +117,11 @@ const PostPostIdRoute = PostPostIdRouteImport.update({
   path: '/post/$postId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MessageThreadIdRoute = MessageThreadIdRouteImport.update({
+  id: '/$threadId',
+  path: '/$threadId',
+  getParentRoute: () => MessageRoute,
+} as any)
 const QuizWrittenSubjectIdRoute = QuizWrittenSubjectIdRouteImport.update({
   id: '/written/$subjectId',
   path: '/written/$subjectId',
@@ -143,11 +149,12 @@ export interface FileRoutesByFullPath {
   '/available-tutor': typeof AvailableTutorRoute
   '/create-post': typeof CreatePostRoute
   '/login': typeof LoginRoute
-  '/message': typeof MessageRoute
+  '/message': typeof MessageRouteWithChildren
   '/profile': typeof ProfileRoute
   '/quiz': typeof QuizRouteWithChildren
   '/register': typeof RegisterRoute
   '/welcome': typeof WelcomeRoute
+  '/message/$threadId': typeof MessageThreadIdRoute
   '/post/$postId': typeof PostPostIdRoute
   '/quiz/ai-solver': typeof QuizAiSolverRoute
   '/quiz/leaderboard': typeof QuizLeaderboardRoute
@@ -166,10 +173,11 @@ export interface FileRoutesByTo {
   '/available-tutor': typeof AvailableTutorRoute
   '/create-post': typeof CreatePostRoute
   '/login': typeof LoginRoute
-  '/message': typeof MessageRoute
+  '/message': typeof MessageRouteWithChildren
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/welcome': typeof WelcomeRoute
+  '/message/$threadId': typeof MessageThreadIdRoute
   '/post/$postId': typeof PostPostIdRoute
   '/quiz/ai-solver': typeof QuizAiSolverRoute
   '/quiz/leaderboard': typeof QuizLeaderboardRoute
@@ -189,11 +197,12 @@ export interface FileRoutesById {
   '/available-tutor': typeof AvailableTutorRoute
   '/create-post': typeof CreatePostRoute
   '/login': typeof LoginRoute
-  '/message': typeof MessageRoute
+  '/message': typeof MessageRouteWithChildren
   '/profile': typeof ProfileRoute
   '/quiz': typeof QuizRouteWithChildren
   '/register': typeof RegisterRoute
   '/welcome': typeof WelcomeRoute
+  '/message/$threadId': typeof MessageThreadIdRoute
   '/post/$postId': typeof PostPostIdRoute
   '/quiz/ai-solver': typeof QuizAiSolverRoute
   '/quiz/leaderboard': typeof QuizLeaderboardRoute
@@ -219,6 +228,7 @@ export interface FileRouteTypes {
     | '/quiz'
     | '/register'
     | '/welcome'
+    | '/message/$threadId'
     | '/post/$postId'
     | '/quiz/ai-solver'
     | '/quiz/leaderboard'
@@ -241,6 +251,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/register'
     | '/welcome'
+    | '/message/$threadId'
     | '/post/$postId'
     | '/quiz/ai-solver'
     | '/quiz/leaderboard'
@@ -264,6 +275,7 @@ export interface FileRouteTypes {
     | '/quiz'
     | '/register'
     | '/welcome'
+    | '/message/$threadId'
     | '/post/$postId'
     | '/quiz/ai-solver'
     | '/quiz/leaderboard'
@@ -283,7 +295,7 @@ export interface RootRouteChildren {
   AvailableTutorRoute: typeof AvailableTutorRoute
   CreatePostRoute: typeof CreatePostRoute
   LoginRoute: typeof LoginRoute
-  MessageRoute: typeof MessageRoute
+  MessageRoute: typeof MessageRouteWithChildren
   ProfileRoute: typeof ProfileRoute
   QuizRoute: typeof QuizRouteWithChildren
   RegisterRoute: typeof RegisterRoute
@@ -412,6 +424,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostPostIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/message/$threadId': {
+      id: '/message/$threadId'
+      path: '/$threadId'
+      fullPath: '/message/$threadId'
+      preLoaderRoute: typeof MessageThreadIdRouteImport
+      parentRoute: typeof MessageRoute
+    }
     '/quiz/written/$subjectId': {
       id: '/quiz/written/$subjectId'
       path: '/written/$subjectId'
@@ -442,6 +461,17 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface MessageRouteChildren {
+  MessageThreadIdRoute: typeof MessageThreadIdRoute
+}
+
+const MessageRouteChildren: MessageRouteChildren = {
+  MessageThreadIdRoute: MessageThreadIdRoute,
+}
+
+const MessageRouteWithChildren =
+  MessageRoute._addFileChildren(MessageRouteChildren)
 
 interface QuizRouteChildren {
   QuizAiSolverRoute: typeof QuizAiSolverRoute
@@ -478,7 +508,7 @@ const rootRouteChildren: RootRouteChildren = {
   AvailableTutorRoute: AvailableTutorRoute,
   CreatePostRoute: CreatePostRoute,
   LoginRoute: LoginRoute,
-  MessageRoute: MessageRoute,
+  MessageRoute: MessageRouteWithChildren,
   ProfileRoute: ProfileRoute,
   QuizRoute: QuizRouteWithChildren,
   RegisterRoute: RegisterRoute,
