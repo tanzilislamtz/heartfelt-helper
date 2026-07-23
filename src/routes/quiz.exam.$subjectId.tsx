@@ -19,9 +19,10 @@ import { boards, getExamQuestions, subjects, type Question } from "@/data/quiz";
 import { explainAnswer } from "@/lib/ai-explain.functions";
 
 const searchSchema = z.object({
-  board: z.string(),
+  board: z.string().optional(),
   mode: z.enum(["overview", "paper", "exam", "result"]).default("overview"),
 });
+
 
 export const Route = createFileRoute("/quiz/exam/$subjectId")({
   validateSearch: (s) => searchSchema.parse(s),
