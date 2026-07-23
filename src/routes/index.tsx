@@ -513,15 +513,16 @@ function Post({
       {kind === "question" && (
         <>
           {/* Sticky-tape strips */}
-          <span className="pointer-events-none absolute -top-2 left-8 h-5 w-16 rotate-[-6deg] rounded-sm bg-amber-200/70 shadow-sm" />
-          <span className="pointer-events-none absolute -top-2 right-12 h-5 w-14 rotate-[4deg] rounded-sm bg-amber-200/70 shadow-sm" />
+          <span className="pointer-events-none absolute -top-2 left-8 h-5 w-16 rotate-[-6deg] rounded-sm bg-primary/15 shadow-sm" />
+          <span className="pointer-events-none absolute -top-2 right-12 h-5 w-14 rotate-[4deg] rounded-sm bg-primary/15 shadow-sm" />
           {/* Huge ? watermark */}
           <span
             aria-hidden
-            className="pointer-events-none absolute -right-4 -bottom-10 select-none text-[220px] font-black leading-none text-amber-500/10"
+            className="pointer-events-none absolute -right-4 -bottom-10 select-none text-[220px] font-black leading-none text-primary/10"
           >
             ?
           </span>
+
         </>
       )}
       {kind === "seeking-tutor" && (
