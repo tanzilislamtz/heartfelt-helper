@@ -394,13 +394,12 @@ const kindConfig: Record<
   question: {
     label: "Question",
     Icon: HelpCircle,
-    accent: "text-primary",
-    chip: "bg-primary/10 text-primary",
-    ring: "ring-primary/40",
+    accent: "text-amber-800",
+    chip: "bg-amber-500/20 text-amber-900",
+    ring: "ring-amber-500/60",
     frame:
-      "border-2 border-dashed border-primary/40 bg-gradient-to-br from-indigo-50 via-white to-slate-50",
+      "border-2 border-dashed border-amber-500/60 bg-[linear-gradient(135deg,#fff7db_0%,#fef3c7_45%,#ffe4b5_100%)]",
   },
-
   "seeking-tutor": {
     label: "Seeking Tutor",
     Icon: UserSearch,
@@ -513,16 +512,15 @@ function Post({
       {kind === "question" && (
         <>
           {/* Sticky-tape strips */}
-          <span className="pointer-events-none absolute -top-2 left-8 h-5 w-16 rotate-[-6deg] rounded-sm bg-primary/15 shadow-sm" />
-          <span className="pointer-events-none absolute -top-2 right-12 h-5 w-14 rotate-[4deg] rounded-sm bg-primary/15 shadow-sm" />
+          <span className="pointer-events-none absolute -top-2 left-8 h-5 w-16 rotate-[-6deg] rounded-sm bg-amber-200/70 shadow-sm" />
+          <span className="pointer-events-none absolute -top-2 right-12 h-5 w-14 rotate-[4deg] rounded-sm bg-amber-200/70 shadow-sm" />
           {/* Huge ? watermark */}
           <span
             aria-hidden
-            className="pointer-events-none absolute -right-4 -bottom-10 select-none text-[220px] font-black leading-none text-primary/10"
+            className="pointer-events-none absolute -right-4 -bottom-10 select-none text-[220px] font-black leading-none text-amber-500/10"
           >
             ?
           </span>
-
         </>
       )}
       {kind === "seeking-tutor" && (
@@ -635,12 +633,12 @@ function Post({
         {kind === "question" ? (
           <div className="flex gap-3">
             {/* Vote rail */}
-            <div className="flex h-fit shrink-0 flex-col items-center justify-between gap-1 rounded-full border border-primary/30 bg-white/80 px-2 py-2 text-primary">
-              <button aria-label="Upvote" className="grid place-items-center rounded-full p-1 transition-colors hover:bg-primary/10">
+            <div className="flex h-fit shrink-0 flex-col items-center justify-between gap-1 rounded-full border border-amber-500/40 bg-white/70 px-2 py-2 text-amber-900">
+              <button aria-label="Upvote" className="grid place-items-center rounded-full p-1 transition-colors hover:bg-amber-500/20">
                 <ChevronUp className="h-4 w-4" strokeWidth={2.5} />
               </button>
               <span className="text-base font-black leading-none tabular-nums">{Math.max(1, Math.round(stats.likes / 3))}</span>
-              <button aria-label="Downvote" className="grid place-items-center rounded-full p-1 text-primary/50 transition-colors hover:bg-primary/10 hover:text-primary">
+              <button aria-label="Downvote" className="grid place-items-center rounded-full p-1 text-amber-900/50 transition-colors hover:bg-amber-500/20 hover:text-amber-900">
                 <ChevronDown className="h-4 w-4" strokeWidth={2.5} />
               </button>
             </div>
@@ -648,19 +646,18 @@ function Post({
               className="min-w-0 flex-1 cursor-pointer"
               onClick={openDetail}
             >
-              <h2 className="text-lg font-bold leading-snug text-foreground line-clamp-2">{title}</h2>
-              <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-foreground/75 line-clamp-3">{body}</p>
+              <h2 className="text-lg font-bold leading-snug text-amber-950 line-clamp-2">{title}</h2>
+              <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-amber-950/80 line-clamp-3">{body}</p>
               {canExpand && (
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); openDetail(); }}
-                  className="mt-1 text-xs font-semibold text-primary hover:underline"
+                  className="mt-1 text-xs font-semibold text-amber-800 hover:underline"
                 >
                   See more
                 </button>
               )}
             </div>
-
           </div>
         ) : (
           <div className="cursor-pointer" onClick={openDetail}>
