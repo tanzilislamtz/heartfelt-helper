@@ -52,7 +52,7 @@ type CommentFilter = "top" | "newest" | "oldest";
 
 const kindMeta: Record<string, { label: string; chip: string; ribbon: string }> = {
   learning: { label: "Article", chip: "bg-primary/10 text-primary", ribbon: "from-primary/25 via-primary/10 to-transparent" },
-  question: { label: "Question", chip: "bg-amber-500/20 text-amber-900", ribbon: "from-amber-300/40 via-amber-100/60 to-transparent" },
+  question: { label: "Question", chip: "bg-primary/10 text-primary", ribbon: "from-primary/20 via-primary/5 to-transparent" },
   "seeking-tutor": { label: "Seeking Tutor", chip: "bg-cyan-500/15 text-cyan-800", ribbon: "from-cyan-300/40 via-cyan-100/50 to-transparent" },
   "offering-tutor": { label: "Available Tutor", chip: "bg-emerald-500/20 text-emerald-900", ribbon: "from-emerald-300/40 via-emerald-100/50 to-transparent" },
   "seeking-student": { label: "Admission Open", chip: "bg-fuchsia-500/20 text-fuchsia-900", ribbon: "from-fuchsia-300/40 via-fuchsia-100/50 to-transparent" },
