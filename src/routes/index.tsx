@@ -635,12 +635,12 @@ function Post({
         {kind === "question" ? (
           <div className="flex gap-3">
             {/* Vote rail */}
-            <div className="flex h-fit shrink-0 flex-col items-center justify-between gap-1 rounded-full border border-amber-500/40 bg-white/70 px-2 py-2 text-amber-900">
-              <button aria-label="Upvote" className="grid place-items-center rounded-full p-1 transition-colors hover:bg-amber-500/20">
+            <div className="flex h-fit shrink-0 flex-col items-center justify-between gap-1 rounded-full border border-primary/30 bg-white/80 px-2 py-2 text-primary">
+              <button aria-label="Upvote" className="grid place-items-center rounded-full p-1 transition-colors hover:bg-primary/10">
                 <ChevronUp className="h-4 w-4" strokeWidth={2.5} />
               </button>
               <span className="text-base font-black leading-none tabular-nums">{Math.max(1, Math.round(stats.likes / 3))}</span>
-              <button aria-label="Downvote" className="grid place-items-center rounded-full p-1 text-amber-900/50 transition-colors hover:bg-amber-500/20 hover:text-amber-900">
+              <button aria-label="Downvote" className="grid place-items-center rounded-full p-1 text-primary/50 transition-colors hover:bg-primary/10 hover:text-primary">
                 <ChevronDown className="h-4 w-4" strokeWidth={2.5} />
               </button>
             </div>
@@ -648,18 +648,19 @@ function Post({
               className="min-w-0 flex-1 cursor-pointer"
               onClick={openDetail}
             >
-              <h2 className="text-lg font-bold leading-snug text-amber-950 line-clamp-2">{title}</h2>
-              <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-amber-950/80 line-clamp-3">{body}</p>
+              <h2 className="text-lg font-bold leading-snug text-foreground line-clamp-2">{title}</h2>
+              <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-foreground/75 line-clamp-3">{body}</p>
               {canExpand && (
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); openDetail(); }}
-                  className="mt-1 text-xs font-semibold text-amber-800 hover:underline"
+                  className="mt-1 text-xs font-semibold text-primary hover:underline"
                 >
                   See more
                 </button>
               )}
             </div>
+
           </div>
         ) : (
           <div className="cursor-pointer" onClick={openDetail}>
