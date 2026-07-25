@@ -3,7 +3,6 @@ import {
   ArrowLeft,
   Send,
   Phone,
-  Video,
   MoreVertical,
   Check,
   CheckCheck,
