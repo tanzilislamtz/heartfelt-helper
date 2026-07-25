@@ -264,7 +264,7 @@ function ThreadList() {
                       {t.name}
                     </p>
                     {pinned.includes(t.id) && <Pin className="h-3 w-3 shrink-0 text-primary" />}
-                    {muted.includes(t.id) && <BellOff className="h-3 w-3 shrink-0 text-muted-foreground" />}
+                    {isMuted(t.id) && <BellOff className="h-3 w-3 shrink-0 text-muted-foreground" />}
                     {last && (
                       <span
                         className={`shrink-0 text-[11px] ${isUnread ? "font-bold text-primary" : "text-muted-foreground"}`}
