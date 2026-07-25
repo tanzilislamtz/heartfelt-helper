@@ -18,6 +18,7 @@ export default function VoiceRecorder({ onSend }: { onSend: (clip: VoiceClip) =>
   const streamRef = useRef<MediaStream | null>(null);
   const tickRef = useRef<number | null>(null);
   const keepRef = useRef(false);
+  const secondsRef = useRef(0);
 
   const cleanup = () => {
     if (tickRef.current) window.clearInterval(tickRef.current);
@@ -42,7 +43,7 @@ export default function VoiceRecorder({ onSend }: { onSend: (clip: VoiceClip) =>
         if (e.data.size) chunksRef.current.push(e.data);
       };
       rec.onstop = () => {
-        const duration = seconds;
+        const duration = secondsRef.current;
         const keep = keepRef.current;
         const blob = new Blob(chunksRef.current, { type: rec.mimeType || "audio/webm" });
         cleanup();
@@ -55,15 +56,18 @@ export default function VoiceRecorder({ onSend }: { onSend: (clip: VoiceClip) =>
       };
       rec.start();
       recRef.current = rec;
+      secondsRef.current = 0;
       setSeconds(0);
       setRecording(true);
       tickRef.current = window.setInterval(() => {
         setSeconds((s) => {
-          if (s + 1 >= MAX_SECONDS) {
+          const next = s + 1;
+          secondsRef.current = next;
+          if (next >= MAX_SECONDS) {
             keepRef.current = true;
             recRef.current?.stop();
           }
-          return s + 1;
+          return next;
         });
       }, 1000);
     } catch {
@@ -77,14 +81,6 @@ export default function VoiceRecorder({ onSend }: { onSend: (clip: VoiceClip) =>
     if (recRef.current && recRef.current.state !== "inactive") recRef.current.stop();
     else cleanup();
   };
-
-  // onstop closure needs the latest seconds value.
-  useEffect(() => {
-    const rec = recRef.current;
-    if (!rec) return;
-    const handler = rec.onstop;
-    void handler;
-  }, [seconds]);
 
   return (
     <>
