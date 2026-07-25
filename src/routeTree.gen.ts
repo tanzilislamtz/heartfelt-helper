@@ -31,6 +31,7 @@ import { Route as MessageThreadIdRouteImport } from './routes/message.$threadId'
 import { Route as QuizWrittenSubjectIdRouteImport } from './routes/quiz.written.$subjectId'
 import { Route as QuizSubjectSubjectIdRouteImport } from './routes/quiz.subject.$subjectId'
 import { Route as QuizExamSubjectIdRouteImport } from './routes/quiz.exam.$subjectId'
+import { Route as MessageRequestRequestIdRouteImport } from './routes/message.request.$requestId'
 import { Route as QuizSubjectSubjectIdCategoryRouteImport } from './routes/quiz.subject.$subjectId_.$category'
 
 const WelcomeRoute = WelcomeRouteImport.update({
@@ -143,6 +144,11 @@ const QuizExamSubjectIdRoute = QuizExamSubjectIdRouteImport.update({
   path: '/exam/$subjectId',
   getParentRoute: () => QuizRoute,
 } as any)
+const MessageRequestRequestIdRoute = MessageRequestRequestIdRouteImport.update({
+  id: '/request/$requestId',
+  path: '/request/$requestId',
+  getParentRoute: () => MessageRoute,
+} as any)
 const QuizSubjectSubjectIdCategoryRoute =
   QuizSubjectSubjectIdCategoryRouteImport.update({
     id: '/subject/$subjectId_/$category',
@@ -170,6 +176,7 @@ export interface FileRoutesByFullPath {
   '/quiz/question-bank': typeof QuizQuestionBankRoute
   '/quiz/quick-practice': typeof QuizQuickPracticeRoute
   '/quiz/': typeof QuizIndexRoute
+  '/message/request/$requestId': typeof MessageRequestRequestIdRoute
   '/quiz/exam/$subjectId': typeof QuizExamSubjectIdRoute
   '/quiz/subject/$subjectId': typeof QuizSubjectSubjectIdRoute
   '/quiz/written/$subjectId': typeof QuizWrittenSubjectIdRoute
@@ -194,6 +201,7 @@ export interface FileRoutesByTo {
   '/quiz/question-bank': typeof QuizQuestionBankRoute
   '/quiz/quick-practice': typeof QuizQuickPracticeRoute
   '/quiz': typeof QuizIndexRoute
+  '/message/request/$requestId': typeof MessageRequestRequestIdRoute
   '/quiz/exam/$subjectId': typeof QuizExamSubjectIdRoute
   '/quiz/subject/$subjectId': typeof QuizSubjectSubjectIdRoute
   '/quiz/written/$subjectId': typeof QuizWrittenSubjectIdRoute
@@ -220,6 +228,7 @@ export interface FileRoutesById {
   '/quiz/question-bank': typeof QuizQuestionBankRoute
   '/quiz/quick-practice': typeof QuizQuickPracticeRoute
   '/quiz/': typeof QuizIndexRoute
+  '/message/request/$requestId': typeof MessageRequestRequestIdRoute
   '/quiz/exam/$subjectId': typeof QuizExamSubjectIdRoute
   '/quiz/subject/$subjectId': typeof QuizSubjectSubjectIdRoute
   '/quiz/written/$subjectId': typeof QuizWrittenSubjectIdRoute
@@ -247,6 +256,7 @@ export interface FileRouteTypes {
     | '/quiz/question-bank'
     | '/quiz/quick-practice'
     | '/quiz/'
+    | '/message/request/$requestId'
     | '/quiz/exam/$subjectId'
     | '/quiz/subject/$subjectId'
     | '/quiz/written/$subjectId'
@@ -271,6 +281,7 @@ export interface FileRouteTypes {
     | '/quiz/question-bank'
     | '/quiz/quick-practice'
     | '/quiz'
+    | '/message/request/$requestId'
     | '/quiz/exam/$subjectId'
     | '/quiz/subject/$subjectId'
     | '/quiz/written/$subjectId'
@@ -296,6 +307,7 @@ export interface FileRouteTypes {
     | '/quiz/question-bank'
     | '/quiz/quick-practice'
     | '/quiz/'
+    | '/message/request/$requestId'
     | '/quiz/exam/$subjectId'
     | '/quiz/subject/$subjectId'
     | '/quiz/written/$subjectId'
@@ -471,6 +483,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof QuizExamSubjectIdRouteImport
       parentRoute: typeof QuizRoute
     }
+    '/message/request/$requestId': {
+      id: '/message/request/$requestId'
+      path: '/request/$requestId'
+      fullPath: '/message/request/$requestId'
+      preLoaderRoute: typeof MessageRequestRequestIdRouteImport
+      parentRoute: typeof MessageRoute
+    }
     '/quiz/subject/$subjectId_/$category': {
       id: '/quiz/subject/$subjectId_/$category'
       path: '/subject/$subjectId/$category'
@@ -484,11 +503,13 @@ declare module '@tanstack/react-router' {
 interface MessageRouteChildren {
   MessageThreadIdRoute: typeof MessageThreadIdRoute
   MessageRequestsRoute: typeof MessageRequestsRoute
+  MessageRequestRequestIdRoute: typeof MessageRequestRequestIdRoute
 }
 
 const MessageRouteChildren: MessageRouteChildren = {
   MessageThreadIdRoute: MessageThreadIdRoute,
   MessageRequestsRoute: MessageRequestsRoute,
+  MessageRequestRequestIdRoute: MessageRequestRequestIdRoute,
 }
 
 const MessageRouteWithChildren =
@@ -539,3 +560,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

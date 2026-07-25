@@ -1,10 +1,11 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
-import { MessageSquare, Search, Pencil } from "lucide-react";
+import { MessageSquare, Search, Pencil, MailQuestion, ChevronRight } from "lucide-react";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { clearUnread } from "@/lib/notifications";
 import { Topbar } from "@/components/Topbar";
 import { MobileNav } from "@/components/MobileNav";
 import { LeftNav } from "@/components/LeftNav";
+import { messageRequests } from "@/lib/requests";
 import { threads, getAllLatest, getSortedThreads, getUnreadCounts, subscribe, formatTime } from "@/lib/chat";
 
 export const Route = createFileRoute("/message")({
@@ -123,6 +124,25 @@ function ThreadList() {
           className="h-10 w-full rounded-full border border-border bg-muted/60 pl-9 pr-3 text-sm outline-none focus:border-primary/40 focus:bg-surface focus:ring-4 focus:ring-primary/10"
         />
       </div>
+
+      <Link
+        to="/message/requests"
+        className="mb-2 flex shrink-0 items-center gap-3 rounded-2xl border border-border bg-accent/20 px-3 py-2.5 transition hover:bg-accent/30"
+      >
+        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
+          <MailQuestion className="h-5 w-5" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-semibold">Message requests</p>
+          <p className="truncate text-xs text-muted-foreground">
+            {messageRequests.length} new · from people you don&apos;t know
+          </p>
+        </div>
+        <span className="grid h-5 min-w-5 shrink-0 place-items-center rounded-full bg-primary px-1.5 text-[10px] font-bold text-primary-foreground">
+          {messageRequests.length}
+        </span>
+        <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+      </Link>
 
       <ul className="-mr-1 flex-1 space-y-1 overflow-y-auto overscroll-contain pr-1">
         {filtered.map((t) => {
