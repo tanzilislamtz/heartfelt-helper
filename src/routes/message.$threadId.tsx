@@ -23,7 +23,6 @@ import {
   Reply,
   Forward,
   Copy,
-  SmilePlus,
   X,
 } from "lucide-react";
 import logoAsset from "@/assets/learns-academy-logo.png.asset.json";
@@ -71,6 +70,7 @@ function ThreadView() {
   const [toast, setToast] = useState<string | null>(null);
   const [replyTo, setReplyTo] = useState<ChatMessage | null>(null);
   const [msgMenu, setMsgMenu] = useState<{ msg: ChatMessage; x: number; y: number } | null>(null);
+  const [delTarget, setDelTarget] = useState<ChatMessage | null>(null);
   const longPress = useRef<number | null>(null);
   const typing = isTyping(threadId);
 
@@ -344,36 +344,18 @@ function ThreadView() {
                   transition={{ duration: 0.18 }}
                   className={`group flex items-center gap-1 px-1 ${mine ? "justify-end" : "justify-start"}`}
                 >
-                  {mine && (
-                    <div className="hidden shrink-0 items-center gap-0.5 opacity-0 transition group-hover:opacity-100 lg:flex">
-                      <HoverAct
-                        label="Reply"
-                        icon={<Reply className="h-3.5 w-3.5" />}
-                        onClick={() => setReplyTo(m)}
-                      />
-                      <HoverAct
-                        label="Copy"
-                        icon={<Copy className="h-3.5 w-3.5" />}
-                        onClick={() => navigator.clipboard?.writeText(m.text)}
-                      />
-                      <HoverAct
-                        label="Delete"
-                        danger
-                        icon={<Trash2 className="h-3.5 w-3.5" />}
-                        onClick={() => deleteMessage(threadId, m.id)}
-                      />
-                    </div>
-                  )}
                   <div
 
                     data-allow-contextmenu
                     onContextMenu={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
+                      if (m.deletedFor) return;
                       setMsgMenu({ msg: m, x: e.clientX, y: e.clientY });
                     }}
                     onTouchStart={(e) => {
                       const t = e.touches[0];
+                      if (m.deletedFor) return;
                       longPress.current = window.setTimeout(
                         () => setMsgMenu({ msg: m, x: t.clientX, y: t.clientY }),
                         420,
@@ -386,11 +368,33 @@ function ThreadView() {
                       if (longPress.current) window.clearTimeout(longPress.current);
                     }}
                     className={`relative max-w-[78%] select-none whitespace-pre-wrap rounded-2xl px-3.5 py-2 text-sm leading-relaxed font-bangla ${
-                      mine
-                        ? "rounded-br-md bg-primary text-primary-foreground"
-                        : "rounded-bl-md border border-border bg-surface text-foreground"
-                    } ${m.reaction ? "mb-3" : ""}`}
+                      m.deletedFor
+                        ? `border border-dashed border-border bg-transparent italic text-muted-foreground ${mine ? "rounded-br-md" : "rounded-bl-md"}`
+                        : mine
+                          ? "rounded-br-md bg-primary text-primary-foreground"
+                          : "rounded-bl-md border border-border bg-surface text-foreground"
+                    } ${m.reaction && !m.deletedFor ? "mb-3" : ""}`}
                   >
+                    {m.deletedFor ? (
+                      <span className="flex flex-col gap-0.5">
+                        <span className="flex items-center gap-1.5">
+                          <Ban className="h-3.5 w-3.5 shrink-0" />
+                          {m.deletedFor === "everyone"
+                            ? mine
+                              ? "You unsent a message"
+                              : "This message was deleted"
+                            : mine
+                              ? "You removed this message"
+                              : "You removed this message"}
+                        </span>
+                        {m.deletedFor === "me" && (
+                          <span className="text-[10px] not-italic opacity-80">
+                            Only removed for you — {thread.name.split(" ")[0]} can still see it
+                          </span>
+                        )}
+                      </span>
+                    ) : (
+                    <>
                     {m.replyTo && (
                       <div
                         className={`mb-1.5 truncate rounded-lg border-l-2 px-2 py-1 text-[11px] ${
@@ -414,7 +418,9 @@ function ThreadView() {
                         )}
                       </span>
                     )}
-                    {m.reaction && (
+                    </>
+                    )}
+                    {m.reaction && !m.deletedFor && (
                       <motion.span
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
@@ -424,27 +430,6 @@ function ThreadView() {
                       </motion.span>
                     )}
                   </div>
-                  {!mine && (
-                    <div className="hidden shrink-0 items-center gap-0.5 opacity-0 transition group-hover:opacity-100 lg:flex">
-                      <HoverAct
-                        label="Reply"
-                        icon={<Reply className="h-3.5 w-3.5" />}
-                        onClick={() => setReplyTo(m)}
-                      />
-                      <HoverAct
-                        label="Forward"
-                        icon={<Forward className="h-3.5 w-3.5" />}
-                        onClick={() => setToast("Message forwarded")}
-                      />
-                      <HoverAct
-                        label="React"
-                        icon={<SmilePlus className="h-3.5 w-3.5" />}
-                        onClick={(e) =>
-                          setMsgMenu({ msg: m, x: e.clientX, y: e.clientY })
-                        }
-                      />
-                    </div>
-                  )}
                 </motion.div>
               </div>
             );
@@ -545,9 +530,8 @@ function ThreadView() {
                 label="Delete"
                 danger
                 onClick={() => {
-                  deleteMessage(threadId, msgMenu.msg.id);
+                  setDelTarget(msgMenu.msg);
                   setMsgMenu(null);
-                  notify("Message deleted");
                 }}
               />
             </motion.div>
@@ -555,6 +539,83 @@ function ThreadView() {
         )}
       </AnimatePresence>
 
+
+      {/* Delete confirmation */}
+      <AnimatePresence>
+        {delTarget && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setDelTarget(null)}
+            className="fixed inset-0 z-[75] flex items-end justify-center bg-black/45 p-4 backdrop-blur-sm sm:items-center"
+          >
+            <motion.div
+              initial={{ y: 30, scale: 0.97, opacity: 0 }}
+              animate={{ y: 0, scale: 1, opacity: 1 }}
+              exit={{ y: 20, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 26 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-sm overflow-hidden rounded-3xl border border-border bg-surface p-5 shadow-2xl"
+            >
+              <h3 className="text-base font-bold text-foreground">Delete message?</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {delTarget.from === "me"
+                  ? "Choose who this message should be removed for. This can't be undone."
+                  : `This will only be removed for you. ${thread.name.split(" ")[0]} will still see it in the chat.`}
+              </p>
+
+              <div className="mt-4 space-y-2">
+                {delTarget.from === "me" && (
+                  <button
+                    onClick={() => {
+                      deleteMessage(threadId, delTarget.id, "everyone");
+                      setDelTarget(null);
+                      notify("Message unsent for everyone");
+                    }}
+                    className="flex w-full items-start gap-3 rounded-2xl border border-border p-3 text-left transition hover:bg-muted"
+                  >
+                    <Ban className="mt-0.5 h-4 w-4 shrink-0 text-red-500" />
+                    <span className="min-w-0">
+                      <span className="block text-sm font-semibold text-foreground">
+                        Unsent for everyone
+                      </span>
+                      <span className="block text-xs text-muted-foreground">
+                        Nobody in this chat will be able to see it
+                      </span>
+                    </span>
+                  </button>
+                )}
+                <button
+                  onClick={() => {
+                    deleteMessage(threadId, delTarget.id, "me");
+                    setDelTarget(null);
+                    notify("Message removed for you");
+                  }}
+                  className="flex w-full items-start gap-3 rounded-2xl border border-border p-3 text-left transition hover:bg-muted"
+                >
+                  <Trash2 className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                  <span className="min-w-0">
+                    <span className="block text-sm font-semibold text-foreground">
+                      Remove for you
+                    </span>
+                    <span className="block text-xs text-muted-foreground">
+                      It stays visible for {thread.name.split(" ")[0]}
+                    </span>
+                  </span>
+                </button>
+              </div>
+
+              <button
+                onClick={() => setDelTarget(null)}
+                className="mt-3 w-full rounded-2xl px-3 py-2.5 text-sm font-semibold text-muted-foreground transition hover:bg-muted"
+              >
+                Cancel
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Composer */}
       <form
@@ -669,32 +730,6 @@ function MenuItem({
     >
       {icon}
       <span className="font-bangla">{label}</span>
-    </button>
-  );
-}
-
-
-function HoverAct({
-  label,
-  icon,
-  onClick,
-  danger,
-}: {
-  label: string;
-  icon: React.ReactNode;
-  onClick: (e: React.MouseEvent) => void;
-  danger?: boolean;
-}) {
-  return (
-    <button
-      title={label}
-      aria-label={label}
-      onClick={onClick}
-      className={`grid h-7 w-7 place-items-center rounded-full border border-border bg-surface shadow-sm transition hover:bg-muted ${
-        danger ? "text-red-500" : "text-muted-foreground hover:text-foreground"
-      }`}
-    >
-      {icon}
     </button>
   );
 }
