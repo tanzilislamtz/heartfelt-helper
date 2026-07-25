@@ -3,17 +3,14 @@ import {
   Mic,
   MicOff,
   PhoneOff,
-  Video,
-  VideoOff,
   Volume2,
   UserPlus,
   MessageSquare,
   Maximize2,
-  SwitchCamera,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-export type CallKind = "audio" | "video";
+export type CallKind = "audio";
 
 type Props = {
   open: boolean;
@@ -38,7 +35,6 @@ export default function CallOverlay({ open, kind, name, initials, avatarColor, o
   const [phase, setPhase] = useState<Phase>("ringing");
   const [seconds, setSeconds] = useState(0);
   const [muted, setMuted] = useState(false);
-  const [camOff, setCamOff] = useState(false);
   const timers = useRef<number[]>([]);
 
   useEffect(() => {
@@ -46,7 +42,6 @@ export default function CallOverlay({ open, kind, name, initials, avatarColor, o
     setPhase("ringing");
     setSeconds(0);
     setMuted(false);
-    setCamOff(false);
     // Demo: auto "answer" after a few rings.
     const t = window.setTimeout(() => setPhase("connected"), 4200);
     timers.current.push(t);
@@ -70,9 +65,7 @@ export default function CallOverlay({ open, kind, name, initials, avatarColor, o
 
   const status =
     phase === "ringing"
-      ? kind === "video"
-        ? "Ringing… video call"
-        : "Ringing…"
+      ? "Ringing…"
       : phase === "connected"
         ? fmt(seconds)
         : "Call ended";
@@ -86,18 +79,6 @@ export default function CallOverlay({ open, kind, name, initials, avatarColor, o
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[80] flex items-center justify-center bg-primary/95 backdrop-blur-xl"
         >
-          {/* video "feed" backdrop */}
-          {kind === "video" && !camOff && (
-            <div className="pointer-events-none absolute inset-0 overflow-hidden">
-              <motion.div
-                animate={{ opacity: [0.25, 0.45, 0.25] }}
-                transition={{ duration: 6, repeat: Infinity }}
-                className="absolute inset-0"
-                style={{ background: `radial-gradient(70% 60% at 50% 35%, ${avatarColor}, transparent 70%)` }}
-              />
-            </div>
-          )}
-
           <motion.div
             initial={{ scale: 0.94, y: 18 }}
             animate={{ scale: 1, y: 0 }}
@@ -107,7 +88,7 @@ export default function CallOverlay({ open, kind, name, initials, avatarColor, o
           >
             {/* top */}
             <div className="flex w-full items-center justify-between text-[11px] uppercase tracking-[0.18em] opacity-70">
-              <span>{kind === "video" ? "Video call" : "Voice call"}</span>
+              <span>Voice call</span>
               <span>Learns Academy</span>
             </div>
 
@@ -155,30 +136,13 @@ export default function CallOverlay({ open, kind, name, initials, avatarColor, o
               )}
             </div>
 
-            {/* self preview for video */}
-            {kind === "video" && (
-              <motion.div
-                drag
-                dragMomentum={false}
-                className="absolute right-5 top-24 h-32 w-24 cursor-grab overflow-hidden rounded-2xl border border-white/20 bg-white/10 backdrop-blur active:cursor-grabbing"
-              >
-                <div className="grid h-full place-items-center text-[11px] opacity-80">
-                  {camOff ? <VideoOff className="h-5 w-5" /> : "You"}
-                </div>
-              </motion.div>
-            )}
-
             {/* controls */}
             <div className="w-full">
               <div className="mb-5 flex items-center justify-center gap-3">
                 <Ctl label="Add" icon={<UserPlus className="h-4 w-4" />} />
                 <Ctl label="Chat" icon={<MessageSquare className="h-4 w-4" />} />
                 <Ctl label="Speaker" icon={<Volume2 className="h-4 w-4" />} />
-                {kind === "video" ? (
-                  <Ctl label="Flip" icon={<SwitchCamera className="h-4 w-4" />} />
-                ) : (
-                  <Ctl label="Expand" icon={<Maximize2 className="h-4 w-4" />} />
-                )}
+                <Ctl label="Expand" icon={<Maximize2 className="h-4 w-4" />} />
               </div>
 
               <div className="flex items-center justify-center gap-5">
@@ -201,25 +165,6 @@ export default function CallOverlay({ open, kind, name, initials, avatarColor, o
                   <PhoneOff className="h-6 w-6" />
                 </motion.button>
 
-                {kind === "video" ? (
-                  <button
-                    onClick={() => setCamOff((v) => !v)}
-                    aria-label="Camera"
-                    className={`grid h-14 w-14 place-items-center rounded-full transition ${
-                      camOff ? "bg-white text-primary" : "bg-white/15 hover:bg-white/25"
-                    }`}
-                  >
-                    {camOff ? <VideoOff className="h-5 w-5" /> : <Video className="h-5 w-5" />}
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => setCamOff((v) => !v)}
-                    aria-label="Switch to video"
-                    className="grid h-14 w-14 place-items-center rounded-full bg-white/15 transition hover:bg-white/25"
-                  >
-                    <Video className="h-5 w-5" />
-                  </button>
-                )}
               </div>
             </div>
           </motion.div>
