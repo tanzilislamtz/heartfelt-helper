@@ -1,13 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  Mic,
-  MicOff,
-  PhoneOff,
-  Volume2,
-  UserPlus,
-  MessageSquare,
-  Maximize2,
-} from "lucide-react";
+import { Mic, MicOff, PhoneOff, Volume2, VolumeX, ChevronDown, Phone } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 export type CallKind = "audio";
@@ -35,6 +27,8 @@ export default function CallOverlay({ open, kind, name, initials, avatarColor, o
   const [phase, setPhase] = useState<Phase>("ringing");
   const [seconds, setSeconds] = useState(0);
   const [muted, setMuted] = useState(false);
+  const [speaker, setSpeaker] = useState(true);
+  const [minimized, setMinimized] = useState(false);
   const timers = useRef<number[]>([]);
 
   useEffect(() => {
@@ -42,6 +36,8 @@ export default function CallOverlay({ open, kind, name, initials, avatarColor, o
     setPhase("ringing");
     setSeconds(0);
     setMuted(false);
+    setSpeaker(true);
+    setMinimized(false);
     // Demo: auto "answer" after a few rings.
     const t = window.setTimeout(() => setPhase("connected"), 4200);
     timers.current.push(t);
@@ -70,6 +66,43 @@ export default function CallOverlay({ open, kind, name, initials, avatarColor, o
         ? fmt(seconds)
         : "Call ended";
 
+  if (open && minimized) {
+    return (
+      <motion.button
+        layout
+        initial={{ opacity: 0, y: -14 }}
+        animate={{ opacity: 1, y: 0 }}
+        onClick={() => setMinimized(false)}
+        className="fixed inset-x-0 top-0 z-[80] flex items-center gap-2 bg-emerald-600 px-3 pb-2 pt-[calc(env(safe-area-inset-top)+0.5rem)] text-left text-white shadow-lg lg:inset-x-auto lg:right-6 lg:top-4 lg:rounded-full lg:px-4 lg:py-2"
+      >
+        <motion.span
+          animate={{ scale: [1, 1.25, 1] }}
+          transition={{ duration: 1.4, repeat: Infinity }}
+          className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-white/20"
+        >
+          <Phone className="h-3.5 w-3.5" />
+        </motion.span>
+        <span className="min-w-0 flex-1 truncate text-xs font-semibold">
+          {name} · {phase === "ringing" ? "Ringing…" : fmt(seconds)}
+        </span>
+        <span className="shrink-0 rounded-full bg-white/20 px-2 py-1 text-[10px] font-bold uppercase tracking-wide">
+          Tap to return
+        </span>
+        <span
+          role="button"
+          aria-label="End call"
+          onClick={(e) => {
+            e.stopPropagation();
+            end();
+          }}
+          className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-red-500"
+        >
+          <PhoneOff className="h-3.5 w-3.5" />
+        </span>
+      </motion.button>
+    );
+  }
+
   return (
     <AnimatePresence>
       {open && (
@@ -87,9 +120,16 @@ export default function CallOverlay({ open, kind, name, initials, avatarColor, o
             className="relative flex h-full w-full max-w-md flex-col items-center justify-between px-6 pb-[calc(env(safe-area-inset-bottom)+28px)] pt-[calc(env(safe-area-inset-top)+40px)] text-primary-foreground sm:h-[640px] sm:rounded-[2rem] sm:border sm:border-white/15 sm:pb-8 sm:pt-10 sm:shadow-2xl"
           >
             {/* top */}
-            <div className="flex w-full items-center justify-between text-[11px] uppercase tracking-[0.18em] opacity-70">
-              <span>Voice call</span>
-              <span>Learns Academy</span>
+            <div className="flex w-full items-center justify-between">
+              <button
+                onClick={() => setMinimized(true)}
+                aria-label="Back to chat"
+                className="grid h-9 w-9 place-items-center rounded-full bg-white/15 transition hover:bg-white/25"
+              >
+                <ChevronDown className="h-5 w-5" />
+              </button>
+              <span className="text-[11px] uppercase tracking-[0.18em] opacity-70">Voice call</span>
+              <span className="text-[11px] uppercase tracking-[0.18em] opacity-70">Learns Academy</span>
             </div>
 
             {/* identity */}
@@ -138,13 +178,6 @@ export default function CallOverlay({ open, kind, name, initials, avatarColor, o
 
             {/* controls */}
             <div className="w-full">
-              <div className="mb-5 flex items-center justify-center gap-3">
-                <Ctl label="Add" icon={<UserPlus className="h-4 w-4" />} />
-                <Ctl label="Chat" icon={<MessageSquare className="h-4 w-4" />} />
-                <Ctl label="Speaker" icon={<Volume2 className="h-4 w-4" />} />
-                <Ctl label="Expand" icon={<Maximize2 className="h-4 w-4" />} />
-              </div>
-
               <div className="flex items-center justify-center gap-5">
                 <button
                   onClick={() => setMuted((v) => !v)}
@@ -165,20 +198,20 @@ export default function CallOverlay({ open, kind, name, initials, avatarColor, o
                   <PhoneOff className="h-6 w-6" />
                 </motion.button>
 
+                <button
+                  onClick={() => setSpeaker((v) => !v)}
+                  aria-label="Speaker"
+                  className={`grid h-14 w-14 place-items-center rounded-full transition ${
+                    speaker ? "bg-white text-primary" : "bg-white/15 hover:bg-white/25"
+                  }`}
+                >
+                  {speaker ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}
+                </button>
               </div>
             </div>
           </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
-  );
-}
-
-function Ctl({ label, icon }: { label: string; icon: React.ReactNode }) {
-  return (
-    <button className="flex w-16 flex-col items-center gap-1.5 text-[10px] opacity-85 transition hover:opacity-100">
-      <span className="grid h-11 w-11 place-items-center rounded-full bg-white/10">{icon}</span>
-      {label}
-    </button>
   );
 }
