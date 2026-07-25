@@ -928,7 +928,217 @@ function ThreadView() {
         )}
       </AnimatePresence>
 
+      {/* Block / Unblock / Delete chat / Report dialogs */}
+      <AnimatePresence>
+        {confirm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setConfirm(null)}
+            className="fixed inset-0 z-[80] flex items-end justify-center bg-black/45 p-4 backdrop-blur-sm sm:items-center"
+          >
+            <motion.div
+              initial={{ y: 30, scale: 0.97, opacity: 0 }}
+              animate={{ y: 0, scale: 1, opacity: 1 }}
+              exit={{ y: 20, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 26 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-sm overflow-hidden rounded-3xl border border-border bg-surface p-5 shadow-2xl"
+            >
+              {confirm === "block" && (
+                <>
+                  <div className="grid h-11 w-11 place-items-center rounded-2xl bg-red-500/10">
+                    <Ban className="h-5 w-5 text-red-500" />
+                  </div>
+                  <h3 className="mt-3 text-base font-bold">Block {thread.name}?</h3>
+                  <ul className="mt-2 space-y-1.5 text-sm text-muted-foreground">
+                    <li>• They can no longer message or call you here.</li>
+                    <li>• They won't be told that you blocked them.</li>
+                    <li>• The chat history stays, but stays read-only.</li>
+                    <li>• You can unblock any time from this menu.</li>
+                  </ul>
+                  <div className="mt-4 flex gap-2">
+                    <button
+                      onClick={() => setConfirm(null)}
+                      className="flex-1 rounded-2xl border border-border px-3 py-2.5 text-sm font-semibold hover:bg-muted"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => {
+                        setThreadState(threadId, { blocked: true });
+                        setConfirm(null);
+                        notify(`${thread.name} is blocked`);
+                      }}
+                      className="flex-1 rounded-2xl bg-red-500 px-3 py-2.5 text-sm font-semibold text-white hover:bg-red-600"
+                    >
+                      Block
+                    </button>
+                  </div>
+                </>
+              )}
+
+              {confirm === "unblock" && (
+                <>
+                  <div className="grid h-11 w-11 place-items-center rounded-2xl bg-primary/10">
+                    <ShieldCheck className="h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="mt-3 text-base font-bold">Unblock {thread.name}?</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    They will be able to message and call you again.
+                  </p>
+                  <div className="mt-4 flex gap-2">
+                    <button
+                      onClick={() => setConfirm(null)}
+                      className="flex-1 rounded-2xl border border-border px-3 py-2.5 text-sm font-semibold hover:bg-muted"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => {
+                        setThreadState(threadId, { blocked: false });
+                        setConfirm(null);
+                        notify("Unblocked");
+                      }}
+                      className="flex-1 rounded-2xl bg-primary px-3 py-2.5 text-sm font-semibold text-white hover:opacity-90"
+                    >
+                      Unblock
+                    </button>
+                  </div>
+                </>
+              )}
+
+              {confirm === "deleteChat" && (
+                <>
+                  <div className="grid h-11 w-11 place-items-center rounded-2xl bg-red-500/10">
+                    <Trash2 className="h-5 w-5 text-red-500" />
+                  </div>
+                  <h3 className="mt-3 text-base font-bold">Delete this chat?</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    The whole conversation with {thread.name} will be removed from your inbox. It
+                    stays in their inbox. This can't be undone.
+                  </p>
+                  <div className="mt-4 flex gap-2">
+                    <button
+                      onClick={() => setConfirm(null)}
+                      className="flex-1 rounded-2xl border border-border px-3 py-2.5 text-sm font-semibold hover:bg-muted"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => {
+                        clearThread(threadId);
+                        pinMessage(threadId, null);
+                        setConfirm(null);
+                        navigate({ to: "/message" });
+                      }}
+                      className="flex-1 rounded-2xl bg-red-500 px-3 py-2.5 text-sm font-semibold text-white hover:bg-red-600"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </>
+              )}
+
+              {confirm === "report" && !reportDone && (
+                <>
+                  <div className="grid h-11 w-11 place-items-center rounded-2xl bg-amber-500/15">
+                    <AlertTriangle className="h-5 w-5 text-amber-500" />
+                  </div>
+                  <h3 className="mt-3 text-base font-bold">Report {thread.name}</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Why are you reporting this conversation?
+                  </p>
+                  <div className="mt-3 space-y-1.5">
+                    {REPORT_REASONS.map((r) => (
+                      <button
+                        key={r}
+                        onClick={() => setReportReason(r)}
+                        className={`flex w-full items-center justify-between rounded-2xl border px-3 py-2.5 text-left text-sm transition ${
+                          reportReason === r
+                            ? "border-primary bg-primary/10 font-semibold"
+                            : "border-border hover:bg-muted"
+                        }`}
+                      >
+                        {r}
+                        {reportReason === r && <Check className="h-4 w-4 text-primary" />}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="mt-4 flex gap-2">
+                    <button
+                      onClick={() => setConfirm(null)}
+                      className="flex-1 rounded-2xl border border-border px-3 py-2.5 text-sm font-semibold hover:bg-muted"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      disabled={!reportReason}
+                      onClick={() => {
+                        setThreadState(threadId, { reported: reportReason ?? undefined });
+                        setReportDone(true);
+                      }}
+                      className="flex-1 rounded-2xl bg-primary px-3 py-2.5 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-40"
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </>
+              )}
+
+              {confirm === "report" && reportDone && (
+                <>
+                  <div className="grid h-11 w-11 place-items-center rounded-2xl bg-emerald-500/15">
+                    <ShieldCheck className="h-5 w-5 text-emerald-600" />
+                  </div>
+                  <h3 className="mt-3 text-base font-bold">Thanks for letting us know</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Our moderation team will review "{reportReason}". You can also block{" "}
+                    {thread.name} so they can't reach you while we review.
+                  </p>
+                  <div className="mt-4 flex gap-2">
+                    <button
+                      onClick={() => setConfirm(null)}
+                      className="flex-1 rounded-2xl border border-border px-3 py-2.5 text-sm font-semibold hover:bg-muted"
+                    >
+                      Done
+                    </button>
+                    <button
+                      onClick={() => {
+                        setThreadState(threadId, { blocked: true });
+                        setConfirm(null);
+                        notify(`${thread.name} is blocked`);
+                      }}
+                      className="flex-1 rounded-2xl bg-red-500 px-3 py-2.5 text-sm font-semibold text-white hover:bg-red-600"
+                    >
+                      Block too
+                    </button>
+                  </div>
+                </>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Composer */}
+      {blocked ? (
+        <div className="z-10 shrink-0 border-t border-border bg-surface px-4 py-4 pb-[calc(env(safe-area-inset-bottom)+16px)] text-center lg:pb-4">
+          <p className="text-sm font-semibold text-foreground">
+            You blocked {thread.name}
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            You can't send or receive messages in this chat.
+          </p>
+          <button
+            onClick={() => setConfirm("unblock")}
+            className="mt-3 rounded-full border border-border px-4 py-2 text-sm font-semibold text-primary hover:bg-muted"
+          >
+            Unblock
+          </button>
+        </div>
+      ) : (
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -1040,6 +1250,7 @@ function ThreadView() {
         </button>
         </div>
       </form>
+      )}
 
       {/* Toast */}
       <AnimatePresence>
