@@ -975,7 +975,7 @@ function ChatWindow({ threadId, minimized }: { threadId: string; minimized: bool
                       }}
                       className={`grid h-7 w-7 place-items-center rounded-full text-base transition hover:scale-125 ${
                         active
-                          ? "border-2 border-primary bg-primary/15 shadow-sm"
+                          ? "border-2 border-transparent bg-primary/15"
                           : "border-2 border-transparent"
                       }`}
                     >
