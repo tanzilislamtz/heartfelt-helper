@@ -1,25 +1,13 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import {
-  Home,
-  Brain,
-  Flame,
-  MessageSquare,
-  UserSearch,
-  BookOpenCheck,
-  UserCheck,
-  MessagesSquare,
-} from "lucide-react";
+import { Home, Brain, UserCheck, MessagesSquare } from "lucide-react";
 
 const items = [
   { icon: Home, label: "Home", to: "/" as const, match: "home" as const },
   { icon: Brain, label: "Quiz", to: "/quiz" as const, match: "quiz" as const },
   { icon: MessagesSquare, label: "Messages", to: "/message" as const, match: "message" as const },
-  { icon: Flame, label: "Popular", to: "/" as const, match: "none" as const },
-  { icon: MessageSquare, label: "Q&A", to: "/" as const, match: "none" as const },
-  { icon: UserSearch, label: "Looking for Tutor", to: "/" as const, match: "none" as const },
-  { icon: BookOpenCheck, label: "Looking for Student", to: "/" as const, match: "none" as const },
   { icon: UserCheck, label: "Available Tutor", to: "/available-tutor" as const, match: "available" as const },
 ];
+
 
 export function LeftNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });

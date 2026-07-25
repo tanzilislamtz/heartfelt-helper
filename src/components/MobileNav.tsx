@@ -14,14 +14,7 @@ const sections: { items: NavItem[] }[] = [
     ],
   },
   {
-    items: [
-      { icon: Flame, label: "Popular", to: "/" },
-      { icon: MessageSquare, label: "Q&A", to: "/" },
-      { icon: UserSearch, label: "Looking for Tutor", to: "/" },
-      { icon: BookOpenCheck, label: "Looking for Student", to: "/" },
-    ],
-  },
-  {
+
     items: [
       { icon: UserCheck, label: "Available Tutor", to: "/available-tutor" },
     ],
