@@ -287,6 +287,13 @@ function ThreadView() {
                 onClick={() => notify("Reported (demo)")}
               />
               <MenuItem
+                icon={<Ban className="h-4 w-4 text-red-500" />}
+                label="Block"
+                danger
+                onClick={() => notify("User blocked (demo)")}
+              />
+
+              <MenuItem
                 icon={<Trash2 className="h-4 w-4 text-red-500" />}
                 label="Delete chat"
                 danger
