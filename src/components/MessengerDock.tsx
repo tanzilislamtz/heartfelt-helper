@@ -12,6 +12,9 @@ import {
 } from "@/lib/messenger";
 import {
   threads,
+  getSortedThreads,
+  getUnreadCounts,
+  markRead,
   getAllLatest,
   getMessages,
   getThread,
@@ -55,6 +58,7 @@ export function MessengerDock() {
 function MessagesPopup() {
   useChatStore();
   const latest = getAllLatest();
+  const unread = getUnreadCounts();
   const [q, setQ] = useState("");
   const ref = useRef<HTMLDivElement>(null);
 
@@ -74,7 +78,7 @@ function MessagesPopup() {
     };
   }, []);
 
-  const filtered = threads.filter(
+  const filtered = getSortedThreads().filter(
     (t) =>
       t.name.toLowerCase().includes(q.toLowerCase()) ||
       (t.subject ?? "").toLowerCase().includes(q.toLowerCase()),
@@ -112,11 +116,15 @@ function MessagesPopup() {
       <ul className="max-h-[420px] overflow-y-auto px-2 pb-2">
         {filtered.map((t) => {
           const last = latest[t.id];
+          const n = unread[t.id] ?? 0;
+          const isUnread = n > 0;
           return (
             <li key={t.id}>
               <button
                 onClick={() => openChatWindow(t.id)}
-                className="flex w-full items-center gap-3 rounded-2xl px-2 py-2 text-left transition hover:bg-muted"
+                className={`flex w-full items-center gap-3 rounded-2xl px-2 py-2 text-left transition hover:bg-muted ${
+                  isUnread ? "bg-primary/[0.06]" : ""
+                }`}
               >
                 <div className="relative shrink-0">
                   <div
@@ -130,14 +138,27 @@ function MessagesPopup() {
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold">{t.name}</p>
-                  <p className="truncate text-xs text-muted-foreground font-bangla">
+                  <p className={`truncate text-sm ${isUnread ? "font-extrabold" : "font-semibold"}`}>{t.name}</p>
+                  <p
+                    className={`truncate text-xs font-bangla ${
+                      isUnread ? "font-bold text-foreground" : "text-muted-foreground"
+                    }`}
+                  >
                     {last ? (last.from === "me" ? "You: " : "") + last.text : t.subject}
                   </p>
                 </div>
-                {last && (
-                  <span className="shrink-0 text-[11px] text-muted-foreground">{formatTime(last.at)}</span>
-                )}
+                <div className="flex shrink-0 flex-col items-end gap-1">
+                  {last && (
+                    <span className={`text-[11px] ${isUnread ? "font-bold text-primary" : "text-muted-foreground"}`}>
+                      {formatTime(last.at)}
+                    </span>
+                  )}
+                  {isUnread && (
+                    <span className="grid h-5 min-w-5 place-items-center rounded-full bg-primary px-1.5 text-[10px] font-bold text-primary-foreground">
+                      {n}
+                    </span>
+                  )}
+                </div>
               </button>
             </li>
           );
@@ -173,8 +194,11 @@ function ChatWindow({ threadId, minimized }: { threadId: string; minimized: bool
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!minimized) bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages.length, minimized]);
+    if (minimized) return;
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const id = window.setTimeout(() => markRead(threadId), 300);
+    return () => window.clearTimeout(id);
+  }, [messages.length, minimized, threadId]);
 
   if (!thread) return null;
 

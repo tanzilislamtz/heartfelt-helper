@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Send, Phone, Video, MoreVertical, Check, CheckCheck, Paperclip, Smile } from "lucide-react";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { getMessages, getThread, sendMessage, subscribe, formatTime } from "@/lib/chat";
+import { getMessages, getThread, sendMessage, subscribe, formatTime, markRead } from "@/lib/chat";
 import { AnimatePresence, motion } from "framer-motion";
 
 export const Route = createFileRoute("/message/$threadId")({
@@ -31,7 +31,9 @@ function ThreadView() {
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages.length]);
+    const id = window.setTimeout(() => markRead(threadId), 300);
+    return () => window.clearTimeout(id);
+  }, [messages.length, threadId]);
 
   // Keep the chat shell locked to the visual viewport so the mobile keyboard
   // never pushes/crops the header or composer.
