@@ -280,7 +280,7 @@ function ThreadList() {
           const n = unread[t.id] ?? 0;
           const isUnread = n > 0;
           return (
-            <li key={t.id}>
+            <li key={t.id} className="relative">
               <Link
                 to="/message/$threadId"
                 params={{ threadId: t.id }}
