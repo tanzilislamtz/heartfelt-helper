@@ -784,9 +784,9 @@ function ThreadView() {
                         setMsgMenu(null);
                       }}
                       className={`grid h-8 w-8 place-items-center rounded-full text-base leading-none transition ${
-                        active
-                          ? "border-2 border-primary bg-primary/15 shadow-sm"
-                          : "border-2 border-transparent"
+                      active
+                        ? "border-2 border-transparent bg-primary/15"
+                        : "border-2 border-transparent"
                       }`}
                     >
                       {emo}
