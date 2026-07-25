@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, MailQuestion, ShieldAlert } from "lucide-react";
+import { ArrowLeft, MailQuestion } from "lucide-react";
 import { motion } from "framer-motion";
 import { messageRequests, timeAgo } from "@/lib/requests";
 
