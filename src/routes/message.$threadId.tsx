@@ -453,9 +453,9 @@ function ThreadView() {
                 left: Math.min(Math.max(msgMenu.x - 110, 12), Math.max(window.innerWidth - 232, 12)),
                 top: Math.min(Math.max(msgMenu.y - 60, 80), Math.max(window.innerHeight - 300, 80)),
               }}
-              className="absolute w-56 overflow-hidden rounded-2xl border border-border bg-surface p-1.5 shadow-2xl"
+              className="absolute w-60 overflow-hidden rounded-2xl border border-border bg-surface p-1.5 shadow-2xl"
             >
-              <div className="mb-1 flex items-center justify-between rounded-xl bg-muted/60 px-2 py-1.5">
+              <div className="mb-1 flex items-center justify-between gap-0.5 rounded-xl bg-muted/60 px-2 py-1.5">
                 {["👍", "❤️", "😂", "😮", "😢", "🙏"].map((emo) => (
                   <motion.button
                     key={emo}
@@ -465,7 +465,7 @@ function ThreadView() {
                       setReaction(threadId, msgMenu.msg.id, emo);
                       setMsgMenu(null);
                     }}
-                    className="text-lg"
+                    className="text-base leading-none"
                   >
                     {emo}
                   </motion.button>
