@@ -95,8 +95,8 @@ function ThreadList() {
   );
 
   return (
-    <div className="min-w-0 overflow-hidden rounded-3xl border border-border bg-surface p-4 shadow-sm">
-      <div className="mb-3 flex items-center justify-between">
+    <div className="flex h-[calc(100dvh-10.5rem)] min-w-0 flex-col overflow-hidden rounded-3xl border border-border bg-surface p-4 shadow-sm lg:h-auto lg:max-h-[calc(100dvh-8rem)]">
+      <div className="mb-3 flex shrink-0 items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="grid h-10 w-10 place-items-center rounded-2xl bg-primary/10 text-primary">
             <MessageSquare className="h-5 w-5" />
@@ -114,7 +114,7 @@ function ThreadList() {
         </button>
       </div>
 
-      <div className="relative mb-3">
+      <div className="relative mb-3 shrink-0">
         <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <input
           value={q}
@@ -124,7 +124,7 @@ function ThreadList() {
         />
       </div>
 
-      <ul className="space-y-1">
+      <ul className="-mr-1 flex-1 space-y-1 overflow-y-auto overscroll-contain pr-1">
         {filtered.map((t) => {
           const last = latest[t.id];
           return (
