@@ -54,7 +54,7 @@ function ThreadView() {
   return (
     <div className="flex h-[100dvh] flex-col overflow-hidden border-border bg-surface lg:h-[calc(100vh-160px)] lg:min-h-[500px] lg:rounded-3xl lg:border lg:shadow-sm">
       {/* Header */}
-      <div className="sticky top-0 z-10 flex items-center gap-3 border-b border-border bg-surface px-4 py-3">
+      <div className="z-10 flex shrink-0 items-center gap-3 border-b border-border bg-surface px-4 py-3">
 
         <button
           onClick={() => navigate({ to: "/message" })}
@@ -92,7 +92,7 @@ function ThreadView() {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 space-y-2 overflow-y-auto bg-muted/30 px-4 py-4">
+      <div className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain bg-muted/30 px-4 py-4">
         <AnimatePresence initial={false}>
           {messages.map((m, i) => {
             const mine = m.from === "me";
@@ -145,7 +145,7 @@ function ThreadView() {
           e.preventDefault();
           submit();
         }}
-        className="sticky bottom-0 z-10 flex items-end gap-2 border-t border-border bg-surface p-3 pb-[calc(env(safe-area-inset-bottom)+96px)] lg:pb-3"
+        className="z-10 flex shrink-0 items-end gap-2 border-t border-border bg-surface p-3 pb-[calc(env(safe-area-inset-bottom)+96px)] lg:pb-3"
       >
         <button type="button" aria-label="Attach" className="grid h-10 w-10 place-items-center rounded-full text-foreground/70 hover:bg-muted">
           <Paperclip className="h-4 w-4" />
