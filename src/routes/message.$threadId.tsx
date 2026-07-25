@@ -1194,7 +1194,7 @@ function ThreadView() {
           </motion.div>
         )}
       </AnimatePresence>
-      <div className="relative flex items-end gap-2">
+      <div className="relative flex items-end gap-1 sm:gap-2">
         <input
           ref={fileRef}
           type="file"
