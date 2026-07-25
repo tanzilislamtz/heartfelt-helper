@@ -69,12 +69,28 @@ export function Topbar({
                 <Bell className="h-5 w-5" />
                 <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-destructive ring-2 ring-background" />
               </IconBtn>
-              <IconBtn label="Messages">
+              <Link
+                to="/message"
+                aria-label="Messages"
+                className="relative grid h-10 w-10 place-items-center rounded-full text-foreground/70 transition hover:bg-muted hover:text-foreground lg:hidden"
+              >
                 <MessageCircle className="h-5 w-5" />
                 <span className="absolute right-1.5 top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-primary px-1 text-[9px] font-bold text-primary-foreground ring-2 ring-background">
                   3
                 </span>
-              </IconBtn>
+              </Link>
+              <button
+                data-messenger-trigger
+                onClick={() => toggleMessengerPopup()}
+                aria-label="Messages"
+                className="relative hidden h-10 w-10 place-items-center rounded-full text-foreground/70 transition hover:bg-muted hover:text-foreground lg:grid"
+              >
+                <MessageCircle className="h-5 w-5" />
+                <span className="absolute right-1.5 top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-primary px-1 text-[9px] font-bold text-primary-foreground ring-2 ring-background">
+                  3
+                </span>
+              </button>
+
               <button className="ml-1 hidden items-center gap-1.5 rounded-full bg-primary px-3.5 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-95 sm:inline-flex">
                 <Plus className="h-4 w-4" /> New Post
               </button>
