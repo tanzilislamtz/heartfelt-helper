@@ -53,7 +53,7 @@ function ThreadView() {
 
   const snap = useSyncExternalStore(
     (cb) => subscribe(cb),
-    () => JSON.stringify(getMessages(threadId)),
+    () => JSON.stringify(getMessages(threadId)) + (isTyping(threadId) ? "|t" : ""),
     () => "[]",
   );
   const messages = getMessages(threadId);
