@@ -37,9 +37,16 @@ function MessageLayout() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Topbar variant="app" onMenu={() => setMenuOpen(true)} />
+      {/* Messenger-style: header hidden on mobile, kept on desktop */}
+      <div className="hidden lg:block">
+        <Topbar variant="app" onMenu={() => setMenuOpen(true)} />
+      </div>
       <MobileNav open={menuOpen} onClose={() => setMenuOpen(false)} />
-      <main className="mx-auto grid max-w-[1400px] grid-cols-1 gap-6 px-4 py-6 pb-28 lg:grid-cols-[240px_minmax(0,1fr)] lg:px-8">
+      <main
+        className={`mx-auto grid max-w-[1400px] grid-cols-1 gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:px-8 lg:py-6 lg:pb-28 ${
+          inThread ? "px-0 py-0" : "px-4 py-4 pb-28"
+        }`}
+      >
         <LeftNav />
         <div className="min-w-0">
           <div className="grid gap-6 lg:grid-cols-[340px_minmax(0,1fr)]">
@@ -56,6 +63,7 @@ function MessageLayout() {
       </main>
     </div>
   );
+
 }
 
 function ThreadList() {
