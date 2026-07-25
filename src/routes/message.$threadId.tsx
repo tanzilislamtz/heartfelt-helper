@@ -1212,10 +1212,11 @@ function ThreadView() {
           type="button"
           aria-label="Attach"
           onClick={() => fileRef.current?.click()}
-          className="grid h-10 w-10 place-items-center rounded-full text-foreground/70 hover:bg-muted"
+          className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-foreground/70 hover:bg-muted"
         >
           <Paperclip className="h-4 w-4" />
         </button>
+
         <VoiceRecorder
           onSend={(clip) => {
             sendVoiceMessage(threadId, clip, replyTo ?? undefined);
