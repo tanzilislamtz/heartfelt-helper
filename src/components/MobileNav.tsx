@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { X, Home, Flame, MessageSquare, UserSearch, BookOpenCheck, UserCheck, GraduationCap, Brain, MessagesSquare } from "lucide-react";
+import { X, Home, UserCheck, GraduationCap, Brain, MessagesSquare } from "lucide-react";
 import { useEffect } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 
@@ -14,14 +14,7 @@ const sections: { items: NavItem[] }[] = [
     ],
   },
   {
-    items: [
-      { icon: Flame, label: "Popular", to: "/" },
-      { icon: MessageSquare, label: "Q&A", to: "/" },
-      { icon: UserSearch, label: "Looking for Tutor", to: "/" },
-      { icon: BookOpenCheck, label: "Looking for Student", to: "/" },
-    ],
-  },
-  {
+
     items: [
       { icon: UserCheck, label: "Available Tutor", to: "/available-tutor" },
     ],
