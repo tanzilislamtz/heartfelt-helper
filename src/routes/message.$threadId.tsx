@@ -48,6 +48,26 @@ function ThreadView() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
+  const [openMenu, setOpenMenu] = useState<null | "profile" | "more">(null);
+  const [call, setCall] = useState<null | CallKind>(null);
+  const [notifMuted, setNotifMuted] = useState(false);
+  const [pinned, setPinned] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
+
+  const notify = (msg: string) => {
+    setToast(msg);
+    setOpenMenu(null);
+    window.setTimeout(() => setToast(null), 1800);
+  };
+
+  useEffect(() => {
+    if (!openMenu) return;
+    const close = () => setOpenMenu(null);
+    window.addEventListener("click", close);
+    return () => window.removeEventListener("click", close);
+  }, [openMenu]);
+
+
   useEffect(() => {
     inputRef.current?.focus();
   }, [threadId]);
