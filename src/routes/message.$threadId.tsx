@@ -225,14 +225,6 @@ function ThreadView() {
                 <ChevronRight className="ml-auto h-4 w-4 text-muted-foreground" />
               </Link>
               <MenuItem
-                icon={<BellOff className="h-4 w-4 text-primary" />}
-                label={notifMuted ? "নোটিফিকেশন চালু করুন" : "নোটিফিকেশন বন্ধ করুন"}
-                onClick={() => {
-                  setNotifMuted((v) => !v);
-                  notify(notifMuted ? "Notifications on" : "Notifications muted");
-                }}
-              />
-              <MenuItem
                 icon={<Search className="h-4 w-4 text-primary" />}
                 label="চ্যাটে খুঁজুন"
                 onClick={() => notify("Search in conversation")}
@@ -247,12 +239,7 @@ function ThreadView() {
                 label="থিম পরিবর্তন করুন"
                 onClick={() => notify("Theme changed")}
               />
-              <MenuItem
-                icon={<Ban className="h-4 w-4 text-red-500" />}
-                label="ব্লক করুন"
-                danger
-                onClick={() => notify("User blocked (demo)")}
-              />
+
             </motion.div>
           )}
         </AnimatePresence>
@@ -299,6 +286,13 @@ function ThreadView() {
                 label="Report"
                 onClick={() => notify("Reported (demo)")}
               />
+              <MenuItem
+                icon={<Ban className="h-4 w-4 text-red-500" />}
+                label="Block"
+                danger
+                onClick={() => notify("User blocked (demo)")}
+              />
+
               <MenuItem
                 icon={<Trash2 className="h-4 w-4 text-red-500" />}
                 label="Delete chat"
