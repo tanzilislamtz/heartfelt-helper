@@ -215,12 +215,3 @@ export default function CallOverlay({ open, kind, name, initials, avatarColor, o
     </AnimatePresence>
   );
 }
-
-function Ctl({ label, icon }: { label: string; icon: React.ReactNode }) {
-  return (
-    <button className="flex w-16 flex-col items-center gap-1.5 text-[10px] opacity-85 transition hover:opacity-100">
-      <span className="grid h-11 w-11 place-items-center rounded-full bg-white/10">{icon}</span>
-      {label}
-    </button>
-  );
-}
