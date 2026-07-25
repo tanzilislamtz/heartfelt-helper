@@ -24,6 +24,7 @@ import {
   Forward,
   Copy,
   Smile,
+  Paperclip,
 } from "lucide-react";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
@@ -53,6 +54,13 @@ import {
 import CallOverlay from "@/components/CallOverlay";
 
 const REACTIONS = ["👍", "❤️", "😂", "😮", "😢", "🙏"];
+
+const EMOJIS = [
+  "😀","😁","😂","🤣","😊","😍","😘","😎",
+  "🤔","😐","😴","😢","😭","😡","🥳","😇",
+  "👍","👎","👏","🙏","💪","🤝","✌️","👌",
+  "❤️","🔥","⭐","✅","🎉","📚","✏️","💡",
+];
 
 function DockToast({ text }: { text: string | null }) {
   return (
@@ -466,6 +474,8 @@ function ChatWindow({ threadId, minimized }: { threadId: string; minimized: bool
   const [replyTo, setReplyTo] = useState<ChatMessage | null>(null);
   const [msgMenu, setMsgMenu] = useState<{ msg: ChatMessage; x: number; y: number } | null>(null);
   const [delTarget, setDelTarget] = useState<ChatMessage | null>(null);
+  const [emojiOpen, setEmojiOpen] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
   const notify = (m: string) => {
     setToast(m);
     window.setTimeout(() => setToast(null), 1800);
@@ -726,14 +736,46 @@ function ChatWindow({ threadId, minimized }: { threadId: string; minimized: bool
               e.preventDefault();
               submit();
             }}
-            className="flex items-center gap-2 border-t border-border bg-surface p-2"
+            className="relative flex items-center gap-1.5 border-t border-border bg-surface p-2"
           >
             <input
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              placeholder="Aa"
-              className="h-9 flex-1 rounded-full border border-border bg-muted/50 px-3 text-sm outline-none focus:border-primary/40 font-bangla"
+              ref={fileRef}
+              type="file"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) {
+                  sendMessage(threadId, `📎 ${f.name}`, replyTo ?? undefined);
+                  setReplyTo(null);
+                  notify("Attachment sent");
+                }
+                e.target.value = "";
+              }}
             />
+            <button
+              type="button"
+              aria-label="Attach file"
+              onClick={() => fileRef.current?.click()}
+              className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-foreground/70 hover:bg-muted"
+            >
+              <Paperclip className="h-4 w-4" />
+            </button>
+            <div className="flex flex-1 items-center gap-1 rounded-full border border-border bg-muted/50 px-3">
+              <input
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder="Aa"
+                className="h-9 min-w-0 flex-1 bg-transparent text-sm outline-none font-bangla"
+              />
+              <button
+                type="button"
+                aria-label="Emoji"
+                onClick={() => setEmojiOpen((v) => !v)}
+                className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-foreground/60 hover:bg-surface"
+              >
+                <Smile className="h-4 w-4" />
+              </button>
+            </div>
             <button
               type="submit"
               disabled={!text.trim()}
@@ -742,6 +784,30 @@ function ChatWindow({ threadId, minimized }: { threadId: string; minimized: bool
             >
               <Send className="h-4 w-4" />
             </button>
+
+            <AnimatePresence>
+              {emojiOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                  className="absolute bottom-14 right-2 z-30 w-[248px] rounded-2xl border border-border bg-surface p-2 shadow-2xl"
+                >
+                  <div className="grid grid-cols-8 gap-1">
+                    {EMOJIS.map((e) => (
+                      <button
+                        key={e}
+                        type="button"
+                        onClick={() => setText((t) => t + e)}
+                        className="grid h-7 w-7 place-items-center rounded-lg text-base transition hover:scale-110 hover:bg-muted"
+                      >
+                        {e}
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </form>
         </>
       )}
@@ -797,14 +863,6 @@ function ChatWindow({ threadId, minimized }: { threadId: string; minimized: bool
                   navigator.clipboard?.writeText(msgMenu.msg.text);
                   setMsgMenu(null);
                   notify("Copied to clipboard");
-                }}
-              />
-              <MenuRow
-                icon={<Smile className="h-4 w-4 text-primary" />}
-                label="Remove reaction"
-                onClick={() => {
-                  if (msgMenu.msg.reaction) setReaction(threadId, msgMenu.msg.id, msgMenu.msg.reaction);
-                  setMsgMenu(null);
                 }}
               />
               <div className="my-1 h-px bg-border" />
