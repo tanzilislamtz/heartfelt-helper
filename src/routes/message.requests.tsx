@@ -11,24 +11,25 @@ function RequestsPane() {
   return (
     <div className="flex h-[100dvh] min-w-0 flex-col overflow-hidden bg-surface lg:h-full lg:rounded-3xl lg:border lg:border-border lg:shadow-sm">
       {/* header */}
-      <div className="flex shrink-0 items-center gap-3 border-b border-border px-4 py-3 safe-top">
+      <div className="flex shrink-0 items-center gap-3 border-b border-border px-3 pb-3 pt-[calc(env(safe-area-inset-top)+1.25rem)] sm:px-4 lg:pt-4">
         <Link
           to="/message"
-          className="grid h-9 w-9 place-items-center rounded-full text-foreground/70 hover:bg-muted lg:hidden"
+          className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-foreground/70 hover:bg-muted lg:hidden"
           aria-label="Back"
         >
           <ArrowLeft className="h-5 w-5" />
         </Link>
-        <div className="grid h-10 w-10 place-items-center rounded-2xl bg-primary/10 text-primary">
+        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-primary/10 text-primary">
           <MailQuestion className="h-5 w-5" />
         </div>
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <h2 className="truncate text-base font-semibold">Message requests</h2>
           <p className="truncate text-xs text-muted-foreground">
             {messageRequests.length} people you don&apos;t follow
           </p>
         </div>
       </div>
+
 
 
 
