@@ -33,6 +33,7 @@ import {
   getMessages,
   getThread,
   sendMessage,
+  sendVoiceMessage,
   subscribe,
   formatTime,
   markRead,
@@ -58,6 +59,8 @@ const REPORT_REASONS = [
 ];
 import { AnimatePresence, motion } from "framer-motion";
 import CallOverlay, { type CallKind } from "@/components/CallOverlay";
+import VoiceMessage from "@/components/VoiceMessage";
+import VoiceRecorder from "@/components/VoiceRecorder";
 
 const COMPOSER_EMOJIS = [
   "😀","😁","😂","🤣","😊","😍","😘","😎",
@@ -516,7 +519,11 @@ function ThreadView() {
                         {m.replyTo.text}
                       </div>
                     )}
-                    {m.text}
+                    {m.voice ? (
+                      <VoiceMessage clip={m.voice} mine={mine} seed={m.id} />
+                    ) : (
+                      m.text
+                    )}
                     {mine && (
                       <span className="ml-1.5 inline-flex translate-y-0.5 items-center text-[10px] opacity-80">
                         {m.status === "read" ? (
@@ -1193,6 +1200,12 @@ function ThreadView() {
         >
           <Paperclip className="h-4 w-4" />
         </button>
+        <VoiceRecorder
+          onSend={(clip) => {
+            sendVoiceMessage(threadId, clip, replyTo ?? undefined);
+            setReplyTo(null);
+          }}
+        />
         <div className="flex flex-1 items-end gap-2 rounded-3xl border border-border bg-muted/50 px-3 py-1.5">
           <textarea
             ref={inputRef}

@@ -44,6 +44,7 @@ import {
   getMessages,
   getThread,
   sendMessage,
+  sendVoiceMessage,
   subscribe,
   formatTime,
   setReaction,
@@ -51,6 +52,8 @@ import {
   type ChatThread,
   type ChatMessage,
 } from "@/lib/chat";
+import VoiceMessage from "@/components/VoiceMessage";
+import VoiceRecorder from "@/components/VoiceRecorder";
 import CallOverlay from "@/components/CallOverlay";
 
 const REACTIONS = ["👍", "❤️", "😂", "😮", "😢", "🙏"];
@@ -832,7 +835,11 @@ function ChatWindow({ threadId, minimized }: { threadId: string; minimized: bool
                             {m.replyTo.text}
                           </span>
                         )}
-                        {m.text}
+                        {m.voice ? (
+                          <VoiceMessage clip={m.voice} mine={mine} seed={m.id} />
+                        ) : (
+                          m.text
+                        )}
                       </>
                     )}
                     {m.reaction && !tomb && (
@@ -897,6 +904,13 @@ function ChatWindow({ threadId, minimized }: { threadId: string; minimized: bool
             >
               <Paperclip className="h-4 w-4" />
             </button>
+            <VoiceRecorder
+              onSend={(clip) => {
+                sendVoiceMessage(threadId, clip, replyTo ?? undefined);
+                setReplyTo(null);
+                notify("Voice message sent");
+              }}
+            />
             <div className="flex flex-1 items-center gap-1 rounded-full border border-border bg-muted/50 px-3">
               <input
                 value={text}

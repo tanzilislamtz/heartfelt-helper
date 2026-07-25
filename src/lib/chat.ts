@@ -14,6 +14,13 @@ export type ChatThread = {
   lastSeen?: string;
 };
 
+export type VoiceClip = {
+  /** data: URL of the recorded audio (demo: kept in localStorage) */
+  url: string;
+  /** duration in seconds */
+  duration: number;
+};
+
 export type ChatMessage = {
   id: string;
   threadId: string;
@@ -24,6 +31,7 @@ export type ChatMessage = {
   reaction?: string;
   replyTo?: { from: "me" | "them"; text: string };
   deletedFor?: "me" | "everyone";
+  voice?: VoiceClip;
 };
 
 export const threads: ChatThread[] = [
@@ -112,7 +120,22 @@ function load(): Record<string, ChatMessage[]> {
 
 function save(store: Record<string, ChatMessage[]>) {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(KEY, JSON.stringify(store));
+  try {
+    window.localStorage.setItem(KEY, JSON.stringify(store));
+  } catch {
+    // Voice clips are heavy — if the quota is hit, drop older clip payloads.
+    try {
+      const trimmed: Record<string, ChatMessage[]> = {};
+      for (const [k, list] of Object.entries(store)) {
+        trimmed[k] = list.map((m, i) =>
+          m.voice && i < list.length - 3 ? { ...m, voice: { ...m.voice, url: "" } } : m,
+        );
+      }
+      window.localStorage.setItem(KEY, JSON.stringify(trimmed));
+    } catch {
+      /* ignore */
+    }
+  }
   listeners.forEach((l) => l());
 }
 
@@ -345,4 +368,58 @@ export function markUnread(threadId: string) {
   delete read[threadId];
   window.localStorage.setItem(READ_KEY, JSON.stringify(read));
   listeners.forEach((l) => l());
+}
+
+/* ---------- voice messages ---------- */
+
+/** Send a recorded voice clip as a message (demo: data URL in localStorage). */
+export function sendVoiceMessage(
+  threadId: string,
+  clip: VoiceClip,
+  replyTo?: ChatMessage,
+) {
+  const store = load();
+  const list = store[threadId] ?? [];
+  const msg: ChatMessage = {
+    id: Math.random().toString(36).slice(2),
+    threadId,
+    from: "me",
+    text: "🎤 Voice message",
+    at: Date.now(),
+    status: "sent",
+    voice: clip,
+    replyTo: replyTo ? { from: replyTo.from, text: replyTo.text } : undefined,
+  };
+  store[threadId] = [...list, msg];
+  save(store);
+
+  setTimeout(() => {
+    const s = load();
+    s[threadId] = (s[threadId] ?? []).map((m) =>
+      m.id === msg.id ? { ...m, status: "delivered" as const } : m,
+    );
+    save(s);
+  }, 700);
+
+  setTimeout(() => {
+    const s = load();
+    const l = s[threadId] ?? [];
+    const reply: ChatMessage = {
+      id: Math.random().toString(36).slice(2),
+      threadId,
+      from: "them",
+      text: "Voice ta shunlam, thanks! 🎧",
+      at: Date.now(),
+    };
+    s[threadId] = [
+      ...l.map((m) => (m.id === msg.id ? { ...m, status: "read" as const } : m)),
+      reply,
+    ];
+    save(s);
+  }, 2800);
+}
+
+export function formatClock(sec: number): string {
+  const s = Math.max(0, Math.round(sec));
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 }
