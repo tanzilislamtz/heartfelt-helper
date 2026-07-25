@@ -5,7 +5,7 @@ import { formatClock, type VoiceClip } from "@/lib/chat";
 const SPEEDS = [1, 1.5, 2] as const;
 
 /** Deterministic pseudo-waveform so every clip keeps a stable shape. */
-function bars(seed: string, count = 30): number[] {
+function bars(seed: string, count = 26): number[] {
   let h = 0;
   for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
   return Array.from({ length: count }, (_, i) => {
@@ -81,7 +81,7 @@ export default function VoiceMessage({
   const meta = mine ? "text-primary-foreground/75" : "text-muted-foreground";
 
   return (
-    <div className="w-[min(66vw,250px)] py-0.5 sm:w-[250px]">
+    <div className="w-[min(60vw,228px)] max-w-full overflow-hidden py-0.5">
       {clip.url ? (
         <audio
           ref={audioRef}
@@ -96,13 +96,13 @@ export default function VoiceMessage({
       ) : null}
 
       {/* Row 1 — play control + waveform, both the same height */}
-      <div className="flex items-center gap-3">
+      <div className="flex w-full items-center gap-2.5 overflow-hidden">
         <button
           type="button"
           onClick={toggle}
           disabled={!clip.url}
           aria-label={playing ? "Pause voice message" : "Play voice message"}
-          className={`grid h-10 w-10 shrink-0 place-items-center rounded-full transition active:scale-95 disabled:opacity-40 ${
+          className={`grid h-9 w-9 shrink-0 place-items-center rounded-full transition active:scale-95 disabled:opacity-40 ${
             mine
               ? "bg-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/30"
               : "bg-primary text-primary-foreground hover:opacity-90"
@@ -114,14 +114,14 @@ export default function VoiceMessage({
         <div
           onClick={seek}
           role="presentation"
-          className="flex h-10 min-w-0 flex-1 cursor-pointer items-center gap-[2px]"
+          className="flex h-9 min-w-0 flex-1 cursor-pointer items-center gap-[2px] overflow-hidden"
         >
           {shape.map((h, i) => {
             const filled = i / shape.length <= progress;
             return (
               <span
                 key={i}
-                style={{ height: `${Math.round(h * 30)}px` }}
+                style={{ height: `${Math.round(h * 26)}px` }}
                 className={`min-w-0 flex-1 rounded-full transition-colors ${filled ? accent : dim}`}
               />
             );
@@ -130,11 +130,12 @@ export default function VoiceMessage({
       </div>
 
       {/* Row 2 — meta: ticks · duration · speed */}
-      <div className={`mt-1.5 flex items-center gap-2 pl-0.5 text-[11px] ${meta}`}>
+      <div className={`mt-1.5 flex w-full items-center gap-1.5 pl-0.5 text-[11px] ${meta}`}>
         <Mic className="h-3 w-3 shrink-0" />
         <span className="shrink-0 tabular-nums">{formatClock(playing || time ? time : total)}</span>
         {statusSlot ? <span className="flex shrink-0 items-center">{statusSlot}</span> : null}
         <span className="min-w-0 flex-1" />
+
         <button
           type="button"
           onClick={() => setRateIdx((i) => (i + 1) % SPEEDS.length)}

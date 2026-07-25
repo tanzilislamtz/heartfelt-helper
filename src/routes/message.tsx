@@ -224,41 +224,46 @@ function ThreadList() {
       <ul className="-mr-1 flex-1 space-y-1 overflow-y-auto overscroll-contain pr-1">
         {view === "inbox" && (
           <>
-            <li>
-              <Link
-                to="/message/requests"
-                className="mb-1 flex items-center gap-2.5 rounded-xl border border-border bg-accent/20 px-2.5 py-1.5 transition hover:bg-accent/30"
-              >
-                <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
-                  <MailQuestion className="h-3.5 w-3.5" />
-                </div>
-                <p className="min-w-0 flex-1 truncate text-xs font-semibold">
-                  Message requests
-                  <span className="ml-1 font-normal text-muted-foreground">· {messageRequests.length} new</span>
-                </p>
-                <span className="grid h-4 min-w-4 shrink-0 place-items-center rounded-full bg-primary px-1 text-[9px] font-bold text-primary-foreground">
-                  {messageRequests.length}
-                </span>
-                <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-              </Link>
-            </li>
-            <li>
-              <button
-                onClick={() => setView("archived")}
-                className="mb-1 flex w-full items-center gap-2.5 rounded-xl border border-border bg-muted/40 px-2.5 py-1.5 text-left transition hover:bg-muted"
-              >
-                <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
-                  <Archive className="h-3.5 w-3.5" />
-                </div>
-                <p className="min-w-0 flex-1 truncate text-xs font-semibold">
-                  Archived
-                  <span className="ml-1 font-normal text-muted-foreground">
-                    · {archivedIds.length} {archivedIds.length === 1 ? "chat" : "chats"}
+            {messageRequests.length > 0 && (
+              <li>
+                <Link
+                  to="/message/requests"
+                  className="mb-1 flex items-center gap-2.5 rounded-xl border border-border bg-accent/20 px-2.5 py-1.5 transition hover:bg-accent/30"
+                >
+                  <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
+                    <MailQuestion className="h-3.5 w-3.5" />
+                  </div>
+                  <p className="min-w-0 flex-1 truncate text-xs font-semibold">
+                    Message requests
+                    <span className="ml-1 font-normal text-muted-foreground">· {messageRequests.length} new</span>
+                  </p>
+                  <span className="grid h-4 min-w-4 shrink-0 place-items-center rounded-full bg-primary px-1 text-[9px] font-bold text-primary-foreground">
+                    {messageRequests.length}
                   </span>
-                </p>
-                <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-              </button>
-            </li>
+                  <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                </Link>
+              </li>
+            )}
+            {archivedIds.length > 0 && (
+              <li>
+                <button
+                  onClick={() => setView("archived")}
+                  className="mb-1 flex w-full items-center gap-2.5 rounded-xl border border-border bg-muted/40 px-2.5 py-1.5 text-left transition hover:bg-muted"
+                >
+                  <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
+                    <Archive className="h-3.5 w-3.5" />
+                  </div>
+                  <p className="min-w-0 flex-1 truncate text-xs font-semibold">
+                    Archived
+                    <span className="ml-1 font-normal text-muted-foreground">
+                      · {archivedIds.length} {archivedIds.length === 1 ? "chat" : "chats"}
+                    </span>
+                  </p>
+                  <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                </button>
+              </li>
+            )}
+
           </>
         )}
 
