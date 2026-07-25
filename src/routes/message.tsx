@@ -5,7 +5,7 @@ import { clearUnread } from "@/lib/notifications";
 import { Topbar } from "@/components/Topbar";
 import { MobileNav } from "@/components/MobileNav";
 import { LeftNav } from "@/components/LeftNav";
-import { threads, getAllLatest, subscribe, formatTime } from "@/lib/chat";
+import { threads, getAllLatest, getSortedThreads, getUnreadCounts, subscribe, formatTime } from "@/lib/chat";
 
 export const Route = createFileRoute("/message")({
   head: () => ({
@@ -88,8 +88,9 @@ function MessageLayout() {
 function ThreadList() {
   useLatest();
   const latest = getAllLatest();
+  const unread = getUnreadCounts();
   const [q, setQ] = useState("");
-  const filtered = threads.filter((t) =>
+  const filtered = getSortedThreads().filter((t) =>
     t.name.toLowerCase().includes(q.toLowerCase()) || (t.subject ?? "").toLowerCase().includes(q.toLowerCase()),
   );
 
@@ -126,12 +127,14 @@ function ThreadList() {
       <ul className="-mr-1 flex-1 space-y-1 overflow-y-auto overscroll-contain pr-1">
         {filtered.map((t) => {
           const last = latest[t.id];
+          const n = unread[t.id] ?? 0;
+          const isUnread = n > 0;
           return (
             <li key={t.id}>
               <Link
                 to="/message/$threadId"
                 params={{ threadId: t.id }}
-                className="group flex items-center gap-3 rounded-2xl px-2 py-2.5 transition hover:bg-muted"
+                className={`group flex items-center gap-3 rounded-2xl px-2 py-2.5 transition hover:bg-muted ${isUnread ? "bg-primary/[0.06]" : ""}`}
                 activeProps={{ className: "bg-accent/40" }}
               >
                 <div className="relative shrink-0">
@@ -147,14 +150,31 @@ function ThreadList() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-2">
-                    <p className="truncate text-sm font-semibold">{t.name}</p>
+                    <p className={`truncate text-sm ${isUnread ? "font-extrabold text-foreground" : "font-semibold"}`}>
+                      {t.name}
+                    </p>
                     {last && (
-                      <span className="shrink-0 text-[11px] text-muted-foreground">{formatTime(last.at)}</span>
+                      <span
+                        className={`shrink-0 text-[11px] ${isUnread ? "font-bold text-primary" : "text-muted-foreground"}`}
+                      >
+                        {formatTime(last.at)}
+                      </span>
                     )}
                   </div>
-                  <p className="truncate text-xs text-muted-foreground font-bangla">
-                    {last ? (last.from === "me" ? "You: " : "") + last.text : t.subject}
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <p
+                      className={`min-w-0 flex-1 truncate text-xs font-bangla ${
+                        isUnread ? "font-bold text-foreground" : "text-muted-foreground"
+                      }`}
+                    >
+                      {last ? (last.from === "me" ? "You: " : "") + last.text : t.subject}
+                    </p>
+                    {isUnread && (
+                      <span className="grid h-5 min-w-5 shrink-0 place-items-center rounded-full bg-primary px-1.5 text-[10px] font-bold text-primary-foreground">
+                        {n}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </Link>
             </li>

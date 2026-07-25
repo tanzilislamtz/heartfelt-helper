@@ -12,6 +12,8 @@ import {
 } from "@/lib/messenger";
 import {
   threads,
+  getSortedThreads,
+  getUnreadCounts,
   getAllLatest,
   getMessages,
   getThread,
@@ -74,7 +76,7 @@ function MessagesPopup() {
     };
   }, []);
 
-  const filtered = threads.filter(
+  const filtered = getSortedThreads().filter(
     (t) =>
       t.name.toLowerCase().includes(q.toLowerCase()) ||
       (t.subject ?? "").toLowerCase().includes(q.toLowerCase()),
