@@ -562,7 +562,7 @@ function ThreadView() {
               <p className="mt-1 text-sm text-muted-foreground">
                 {delTarget.from === "me"
                   ? "Choose who this message should be removed for. This can't be undone."
-                  : `This will only be removed for you. ${thread.thread.name.split(" ")[0]} will still see it in the chat.`}
+                  : `This will only be removed for you. ${thread.name.split(" ")[0]} will still see it in the chat.`}
               </p>
 
               <div className="mt-4 space-y-2">
