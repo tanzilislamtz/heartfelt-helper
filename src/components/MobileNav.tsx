@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { X, Home, Flame, MessageSquare, UserSearch, BookOpenCheck, UserCheck, GraduationCap, Brain, MessagesSquare } from "lucide-react";
+import { X, Home, UserCheck, GraduationCap, Brain, MessagesSquare } from "lucide-react";
 import { useEffect } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 
