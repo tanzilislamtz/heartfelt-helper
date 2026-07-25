@@ -79,8 +79,21 @@ function ThreadView() {
   const fileRef = useRef<HTMLInputElement>(null);
   const [msgMenu, setMsgMenu] = useState<{ msg: ChatMessage; x: number; y: number } | null>(null);
   const [delTarget, setDelTarget] = useState<ChatMessage | null>(null);
+  const [panel, setPanel] = useState<null | "search" | "media">(null);
+  const [query, setQuery] = useState("");
+  const [highlight, setHighlight] = useState<string | null>(null);
   const longPress = useRef<number | null>(null);
   const typing = isTyping(threadId);
+
+  const jumpTo = (id: string) => {
+    setPanel(null);
+    setHighlight(id);
+    window.setTimeout(() => {
+      document.getElementById(`msg-${id}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 60);
+    window.setTimeout(() => setHighlight(null), 2200);
+  };
+
 
   const notify = (msg: string) => {
     setToast(msg);
