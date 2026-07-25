@@ -14,6 +14,13 @@ export type ChatThread = {
   lastSeen?: string;
 };
 
+export type VoiceClip = {
+  /** data: URL of the recorded audio (demo: kept in localStorage) */
+  url: string;
+  /** duration in seconds */
+  duration: number;
+};
+
 export type ChatMessage = {
   id: string;
   threadId: string;
@@ -24,6 +31,7 @@ export type ChatMessage = {
   reaction?: string;
   replyTo?: { from: "me" | "them"; text: string };
   deletedFor?: "me" | "everyone";
+  voice?: VoiceClip;
 };
 
 export const threads: ChatThread[] = [
