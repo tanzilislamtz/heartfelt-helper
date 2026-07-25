@@ -123,7 +123,7 @@ function ThreadView() {
       </div>
 
       {/* Messages */}
-      <div className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain bg-muted/30 px-4 py-4">
+      <div className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain bg-muted/30 py-4 safe-x">
         <AnimatePresence initial={false}>
           {messages.map((m, i) => {
             const mine = m.from === "me";
