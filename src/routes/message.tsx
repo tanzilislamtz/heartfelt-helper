@@ -125,26 +125,26 @@ function ThreadList() {
         />
       </div>
 
-      <Link
-        to="/message/requests"
-        className="mb-2 flex shrink-0 items-center gap-3 rounded-2xl border border-border bg-accent/20 px-3 py-2.5 transition hover:bg-accent/30"
-      >
-        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
-          <MailQuestion className="h-5 w-5" />
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold">Message requests</p>
-          <p className="truncate text-xs text-muted-foreground">
-            {messageRequests.length} new · from people you don&apos;t know
-          </p>
-        </div>
-        <span className="grid h-5 min-w-5 shrink-0 place-items-center rounded-full bg-primary px-1.5 text-[10px] font-bold text-primary-foreground">
-          {messageRequests.length}
-        </span>
-        <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
-      </Link>
-
       <ul className="-mr-1 flex-1 space-y-1 overflow-y-auto overscroll-contain pr-1">
+        <li>
+          <Link
+            to="/message/requests"
+            className="mb-1 flex items-center gap-2.5 rounded-xl border border-border bg-accent/20 px-2.5 py-1.5 transition hover:bg-accent/30"
+          >
+            <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
+              <MailQuestion className="h-3.5 w-3.5" />
+            </div>
+            <p className="min-w-0 flex-1 truncate text-xs font-semibold">
+              Message requests
+              <span className="ml-1 font-normal text-muted-foreground">· {messageRequests.length} new</span>
+            </p>
+            <span className="grid h-4 min-w-4 shrink-0 place-items-center rounded-full bg-primary px-1 text-[9px] font-bold text-primary-foreground">
+              {messageRequests.length}
+            </span>
+            <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+          </Link>
+        </li>
+
         {filtered.map((t) => {
           const last = latest[t.id];
           const n = unread[t.id] ?? 0;
