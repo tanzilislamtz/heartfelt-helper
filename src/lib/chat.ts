@@ -120,7 +120,22 @@ function load(): Record<string, ChatMessage[]> {
 
 function save(store: Record<string, ChatMessage[]>) {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(KEY, JSON.stringify(store));
+  try {
+    window.localStorage.setItem(KEY, JSON.stringify(store));
+  } catch {
+    // Voice clips are heavy — if the quota is hit, drop older clip payloads.
+    try {
+      const trimmed: Record<string, ChatMessage[]> = {};
+      for (const [k, list] of Object.entries(store)) {
+        trimmed[k] = list.map((m, i) =>
+          m.voice && i < list.length - 3 ? { ...m, voice: { ...m.voice, url: "" } } : m,
+        );
+      }
+      window.localStorage.setItem(KEY, JSON.stringify(trimmed));
+    } catch {
+      /* ignore */
+    }
+  }
   listeners.forEach((l) => l());
 }
 
