@@ -369,8 +369,9 @@ function ThreadView() {
                   className={`group flex items-center gap-1 px-1 ${mine ? "justify-end" : "justify-start"}`}
                 >
                   <div
-
+                    id={`msg-${m.id}`}
                     data-allow-contextmenu
+
                     onContextMenu={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
