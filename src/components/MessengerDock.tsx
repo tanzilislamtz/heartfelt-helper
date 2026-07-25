@@ -836,7 +836,22 @@ function ChatWindow({ threadId, minimized }: { threadId: string; minimized: bool
                           </span>
                         )}
                         {m.voice ? (
-                          <VoiceMessage clip={m.voice} mine={mine} seed={m.id} />
+                          <VoiceMessage
+                            clip={m.voice}
+                            mine={mine}
+                            seed={m.id}
+                            statusSlot={
+                              mine ? (
+                                m.status === "read" ? (
+                                  <CheckCheck className="h-3 w-3 text-accent" />
+                                ) : m.status === "delivered" ? (
+                                  <CheckCheck className="h-3 w-3" />
+                                ) : (
+                                  <Check className="h-3 w-3" />
+                                )
+                              ) : undefined
+                            }
+                          />
                         ) : (
                           m.text
                         )}
@@ -847,7 +862,7 @@ function ChatWindow({ threadId, minimized }: { threadId: string; minimized: bool
                         {m.reaction}
                       </span>
                     )}
-                    {!tomb && mine && (
+                    {!tomb && mine && !m.voice && (
                       <span className="ml-1.5 inline-flex translate-y-0.5 items-center text-[10px] opacity-80">
                         {m.status === "read" ? (
                           <CheckCheck className="h-3 w-3 text-accent" />
@@ -858,6 +873,7 @@ function ChatWindow({ threadId, minimized }: { threadId: string; minimized: bool
                         )}
                       </span>
                     )}
+
                   </div>
                 </div>
               );
