@@ -119,9 +119,16 @@
     overflow-x: hidden;
   }
   @media (max-width: 1023px) {
-    body { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
+    /* Keep content clear of notches / rounded corners on every device.
+       Header and bottom navigation manage their own insets. */
+    body {
+      padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
     body.chat-thread-open { padding-bottom: 0; overflow: hidden; }
   }
+
 
   .font-display {
     font-family: var(--font-sans);
