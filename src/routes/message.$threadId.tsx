@@ -398,6 +398,54 @@ function ThreadView() {
           <Send className="h-4 w-4" />
         </button>
       </form>
+
+      {/* Toast */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            className="pointer-events-none absolute bottom-24 left-1/2 z-40 -translate-x-1/2 rounded-full bg-foreground px-4 py-2 text-xs font-medium text-background shadow-lg"
+          >
+            {toast}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <CallOverlay
+        open={call !== null}
+        kind={call ?? "audio"}
+        name={thread.name}
+        initials={thread.initials}
+        avatarColor={thread.avatarColor}
+        onClose={() => setCall(null)}
+      />
     </div>
   );
 }
+
+function MenuItem({
+  icon,
+  label,
+  onClick,
+  danger,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  onClick: () => void;
+  danger?: boolean;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition hover:bg-muted ${
+        danger ? "text-red-600" : ""
+      }`}
+    >
+      {icon}
+      <span className="font-bangla">{label}</span>
+    </button>
+  );
+}
+
