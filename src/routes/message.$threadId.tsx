@@ -33,6 +33,26 @@ function ThreadView() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages.length]);
 
+  // Keep the chat shell locked to the visual viewport so the mobile keyboard
+  // never pushes/crops the header or composer.
+  const [vv, setVv] = useState<{ height: number; top: number } | null>(null);
+  useEffect(() => {
+    const viewport = typeof window !== "undefined" ? window.visualViewport : null;
+    if (!viewport) return;
+    const update = () => {
+      setVv({ height: viewport.height, top: viewport.offsetTop });
+      bottomRef.current?.scrollIntoView({ block: "end" });
+    };
+    update();
+    viewport.addEventListener("resize", update);
+    viewport.addEventListener("scroll", update);
+    return () => {
+      viewport.removeEventListener("resize", update);
+      viewport.removeEventListener("scroll", update);
+    };
+  }, []);
+
+
   if (!thread) {
     return (
       <div className="rounded-3xl border border-border bg-surface p-8 text-center">
