@@ -129,9 +129,7 @@ function ThreadView() {
     >
 
       {/* Header */}
-      <div className="z-10 flex shrink-0 items-center gap-3 border-b border-border bg-surface px-4 py-3 pt-[calc(env(safe-area-inset-top)+0.75rem)] lg:pt-3">
-
-
+      <div className="relative z-20 flex shrink-0 items-center gap-2 border-b border-border bg-surface px-4 py-3 pt-[calc(env(safe-area-inset-top)+0.75rem)] lg:pt-3">
         <button
           onClick={() => navigate({ to: "/message" })}
           aria-label="Back"
@@ -139,33 +137,179 @@ function ThreadView() {
         >
           <ArrowLeft className="h-5 w-5" />
         </button>
-        <div className="relative">
-          <div
-            className="grid h-10 w-10 place-items-center rounded-full text-sm font-bold text-white"
-            style={{ background: thread.avatarColor }}
-          >
-            {thread.initials}
+
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setOpenMenu(openMenu === "profile" ? null : "profile");
+          }}
+          className="flex min-w-0 flex-1 items-center gap-3 rounded-2xl px-1 py-1 text-left transition hover:bg-muted/60"
+        >
+          <div className="relative shrink-0">
+            <div
+              className="grid h-10 w-10 place-items-center rounded-full text-sm font-bold text-white"
+              style={{ background: thread.avatarColor }}
+            >
+              {thread.initials}
+            </div>
+            {thread.online && (
+              <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-surface" />
+            )}
           </div>
-          {thread.online && (
-            <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-surface" />
-          )}
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold">{thread.name}</p>
-          <p className="truncate text-[11px] text-muted-foreground">
-            {thread.online ? "Active now" : thread.lastSeen ? `Last seen ${thread.lastSeen}` : thread.subject}
-          </p>
-        </div>
-        <button aria-label="Call" className="grid h-9 w-9 place-items-center rounded-full text-foreground/70 hover:bg-muted">
+          <div className="min-w-0 flex-1">
+            <p className="flex items-center gap-1 truncate text-sm font-semibold">
+              {thread.name}
+              {notifMuted && <BellOff className="h-3 w-3 shrink-0 text-muted-foreground" />}
+            </p>
+            <p className="truncate text-[11px] text-muted-foreground">
+              {thread.online ? "Active now" : thread.lastSeen ? `Last seen ${thread.lastSeen}` : thread.subject}
+            </p>
+          </div>
+        </button>
+
+        <button
+          onClick={() => setCall("audio")}
+          aria-label="Call"
+          className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-primary hover:bg-primary/10"
+        >
           <Phone className="h-4 w-4" />
         </button>
-        <button aria-label="Video" className="grid h-9 w-9 place-items-center rounded-full text-foreground/70 hover:bg-muted">
+        <button
+          onClick={() => setCall("video")}
+          aria-label="Video"
+          className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-primary hover:bg-primary/10"
+        >
           <Video className="h-4 w-4" />
         </button>
-        <button aria-label="More" className="grid h-9 w-9 place-items-center rounded-full text-foreground/70 hover:bg-muted">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setOpenMenu(openMenu === "more" ? null : "more");
+          }}
+          aria-label="More"
+          className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-foreground/70 hover:bg-muted"
+        >
           <MoreVertical className="h-4 w-4" />
         </button>
+
+        {/* Profile popover */}
+        <AnimatePresence>
+          {openMenu === "profile" && (
+            <motion.div
+              initial={{ opacity: 0, y: -6, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -6, scale: 0.97 }}
+              transition={{ duration: 0.15 }}
+              onClick={(e) => e.stopPropagation()}
+              className="absolute left-3 top-full z-30 mt-1 w-72 overflow-hidden rounded-2xl border border-border bg-surface p-1.5 shadow-xl"
+            >
+              <div className="flex items-center gap-3 rounded-xl bg-muted/50 p-3">
+                <div
+                  className="grid h-11 w-11 place-items-center rounded-full text-sm font-bold text-white"
+                  style={{ background: thread.avatarColor }}
+                >
+                  {thread.initials}
+                </div>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold">{thread.name}</p>
+                  <p className="truncate text-[11px] text-muted-foreground">{thread.subject}</p>
+                </div>
+              </div>
+
+              <Link
+                to="/profile"
+                onClick={() => setOpenMenu(null)}
+                className="mt-1 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm hover:bg-muted"
+              >
+                <User className="h-4 w-4 text-primary" /> প্রোফাইল ভিজিট করুন
+                <ChevronRight className="ml-auto h-4 w-4 text-muted-foreground" />
+              </Link>
+              <MenuItem
+                icon={<BellOff className="h-4 w-4 text-primary" />}
+                label={notifMuted ? "নোটিফিকেশন চালু করুন" : "নোটিফিকেশন বন্ধ করুন"}
+                onClick={() => {
+                  setNotifMuted((v) => !v);
+                  notify(notifMuted ? "Notifications on" : "Notifications muted");
+                }}
+              />
+              <MenuItem
+                icon={<Search className="h-4 w-4 text-primary" />}
+                label="চ্যাটে খুঁজুন"
+                onClick={() => notify("Search in conversation")}
+              />
+              <MenuItem
+                icon={<ImageIcon className="h-4 w-4 text-primary" />}
+                label="মিডিয়া ও ফাইল দেখুন"
+                onClick={() => notify("Media & files")}
+              />
+              <MenuItem
+                icon={<Palette className="h-4 w-4 text-primary" />}
+                label="থিম পরিবর্তন করুন"
+                onClick={() => notify("Theme changed")}
+              />
+              <MenuItem
+                icon={<Ban className="h-4 w-4 text-red-500" />}
+                label="ব্লক করুন"
+                danger
+                onClick={() => notify("User blocked (demo)")}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Three-dot menu */}
+        <AnimatePresence>
+          {openMenu === "more" && (
+            <motion.div
+              initial={{ opacity: 0, y: -6, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -6, scale: 0.97 }}
+              transition={{ duration: 0.15 }}
+              onClick={(e) => e.stopPropagation()}
+              className="absolute right-3 top-full z-30 mt-1 w-64 overflow-hidden rounded-2xl border border-border bg-surface p-1.5 shadow-xl"
+            >
+              <MenuItem
+                icon={<CircleDot className="h-4 w-4 text-primary" />}
+                label="Mark as unread"
+                onClick={() => notify("Marked as unread")}
+              />
+              <MenuItem
+                icon={<Pin className="h-4 w-4 text-primary" />}
+                label={pinned ? "Unpin conversation" : "Pin conversation"}
+                onClick={() => {
+                  setPinned((v) => !v);
+                  notify(pinned ? "Unpinned" : "Pinned to top");
+                }}
+              />
+              <MenuItem
+                icon={<BellOff className="h-4 w-4 text-primary" />}
+                label={notifMuted ? "Unmute" : "Mute notifications"}
+                onClick={() => {
+                  setNotifMuted((v) => !v);
+                  notify(notifMuted ? "Notifications on" : "Notifications muted");
+                }}
+              />
+              <MenuItem
+                icon={<Archive className="h-4 w-4 text-primary" />}
+                label="Archive chat"
+                onClick={() => notify("Archived")}
+              />
+              <MenuItem
+                icon={<Flag className="h-4 w-4 text-primary" />}
+                label="Report"
+                onClick={() => notify("Reported (demo)")}
+              />
+              <MenuItem
+                icon={<Trash2 className="h-4 w-4 text-red-500" />}
+                label="Delete chat"
+                danger
+                onClick={() => notify("Chat deleted (demo)")}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
+
 
       {/* Messages */}
       <div className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain bg-muted/30 py-4 safe-x">
