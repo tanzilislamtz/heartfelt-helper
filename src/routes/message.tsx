@@ -340,20 +340,21 @@ function ThreadList() {
               )}
               <RowItem
                 icon={
-                  muted.includes(menu.thread.id) ? (
+                  isMuted(menu.thread.id) ? (
                     <Bell className="h-4 w-4 text-primary" />
                   ) : (
                     <BellOff className="h-4 w-4 text-primary" />
                   )
                 }
-                label={muted.includes(menu.thread.id) ? "Unmute notifications" : "Mute notifications"}
+                label={isMuted(menu.thread.id) ? "Unmute notifications" : "Mute notifications"}
                 onClick={() => {
-                  const was = muted.includes(menu.thread.id);
-                  toggle(muted, setMuted, menu.thread.id);
+                  const was = isMuted(menu.thread.id);
+                  setThreadState(menu.thread.id, { muted: !was });
                   setMenu(null);
                   notify(was ? "Notifications on" : "Notifications muted");
                 }}
               />
+
               <RowItem
                 icon={
                   pinned.includes(menu.thread.id) ? (
