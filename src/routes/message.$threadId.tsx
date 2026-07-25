@@ -11,7 +11,6 @@ import {
   User,
   BellOff,
   Search,
-  Palette,
   Image as ImageIcon,
   Pin,
   Archive,
@@ -261,11 +260,6 @@ function ThreadView() {
                 icon={<ImageIcon className="h-4 w-4 text-primary" />}
                 label="মিডিয়া ও ফাইল দেখুন"
                 onClick={() => notify("Media & files")}
-              />
-              <MenuItem
-                icon={<Palette className="h-4 w-4 text-primary" />}
-                label="থিম পরিবর্তন করুন"
-                onClick={() => notify("Theme changed")}
               />
 
             </motion.div>

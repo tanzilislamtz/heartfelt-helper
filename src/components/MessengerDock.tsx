@@ -12,7 +12,6 @@ import {
   MoreHorizontal,
   User,
   Images,
-  Palette,
   BellOff,
   Bell,
   Ban,
@@ -591,14 +590,6 @@ function ChatWindow({ threadId, minimized }: { threadId: string; minimized: bool
                 onClick={() => {
                   setProfileMenu(false);
                   notify("No media shared yet");
-                }}
-              />
-              <MenuRow
-                icon={<Palette className="h-4 w-4 text-primary" />}
-                label="Change theme"
-                onClick={() => {
-                  setProfileMenu(false);
-                  notify("Theme options coming soon");
                 }}
               />
             </motion.div>
