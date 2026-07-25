@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { Mic, MicOff, PhoneOff, Volume2, VolumeX, ChevronDown, Phone } from "lucide-react";
+import { Mic, MicOff, PhoneOff, Volume2, VolumeX, ChevronDown, Phone, GripVertical } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 export type CallKind = "audio";
@@ -29,6 +29,8 @@ export default function CallOverlay({ open, kind, name, initials, avatarColor, o
   const [muted, setMuted] = useState(false);
   const [speaker, setSpeaker] = useState(true);
   const [minimized, setMinimized] = useState(false);
+  const dragArea = useRef<HTMLDivElement>(null);
+  const dragged = useRef(false);
   const timers = useRef<number[]>([]);
 
   useEffect(() => {
