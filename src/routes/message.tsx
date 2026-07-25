@@ -35,6 +35,19 @@ function MessageLayout() {
     return () => window.clearTimeout(t);
   }, []);
 
+  // Lock page scroll on mobile while inside a chat thread
+  useEffect(() => {
+    if (!inThread) return;
+    const mq = window.matchMedia("(max-width: 1023px)");
+    if (!mq.matches) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [inThread]);
+
+
   return (
     <div
       className={`w-full max-w-full overflow-x-hidden bg-background text-foreground ${
