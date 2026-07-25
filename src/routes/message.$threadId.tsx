@@ -341,9 +341,30 @@ function ThreadView() {
                   initial={{ opacity: 0, y: 6, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{ duration: 0.18 }}
-                  className={`flex ${mine ? "justify-end" : "justify-start"}`}
+                  className={`group flex items-center gap-1 px-1 ${mine ? "justify-end" : "justify-start"}`}
                 >
+                  {mine && (
+                    <div className="hidden shrink-0 items-center gap-0.5 opacity-0 transition group-hover:opacity-100 lg:flex">
+                      <HoverAct
+                        label="Reply"
+                        icon={<Reply className="h-3.5 w-3.5" />}
+                        onClick={() => setReplyTo(m)}
+                      />
+                      <HoverAct
+                        label="Copy"
+                        icon={<Copy className="h-3.5 w-3.5" />}
+                        onClick={() => navigator.clipboard?.writeText(m.text)}
+                      />
+                      <HoverAct
+                        label="Delete"
+                        danger
+                        icon={<Trash2 className="h-3.5 w-3.5" />}
+                        onClick={() => deleteMessage(threadId, m.id)}
+                      />
+                    </div>
+                  )}
                   <div
+
                     data-allow-contextmenu
                     onContextMenu={(e) => {
                       e.preventDefault();
