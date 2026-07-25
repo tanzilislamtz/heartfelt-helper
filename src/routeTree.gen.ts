@@ -26,6 +26,7 @@ import { Route as QuizMockTestRouteImport } from './routes/quiz.mock-test'
 import { Route as QuizLeaderboardRouteImport } from './routes/quiz.leaderboard'
 import { Route as QuizAiSolverRouteImport } from './routes/quiz.ai-solver'
 import { Route as PostPostIdRouteImport } from './routes/post.$postId'
+import { Route as MessageRequestsRouteImport } from './routes/message.requests'
 import { Route as MessageThreadIdRouteImport } from './routes/message.$threadId'
 import { Route as QuizWrittenSubjectIdRouteImport } from './routes/quiz.written.$subjectId'
 import { Route as QuizSubjectSubjectIdRouteImport } from './routes/quiz.subject.$subjectId'
@@ -117,6 +118,11 @@ const PostPostIdRoute = PostPostIdRouteImport.update({
   path: '/post/$postId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MessageRequestsRoute = MessageRequestsRouteImport.update({
+  id: '/requests',
+  path: '/requests',
+  getParentRoute: () => MessageRoute,
+} as any)
 const MessageThreadIdRoute = MessageThreadIdRouteImport.update({
   id: '/$threadId',
   path: '/$threadId',
@@ -155,6 +161,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/welcome': typeof WelcomeRoute
   '/message/$threadId': typeof MessageThreadIdRoute
+  '/message/requests': typeof MessageRequestsRoute
   '/post/$postId': typeof PostPostIdRoute
   '/quiz/ai-solver': typeof QuizAiSolverRoute
   '/quiz/leaderboard': typeof QuizLeaderboardRoute
@@ -178,6 +185,7 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/welcome': typeof WelcomeRoute
   '/message/$threadId': typeof MessageThreadIdRoute
+  '/message/requests': typeof MessageRequestsRoute
   '/post/$postId': typeof PostPostIdRoute
   '/quiz/ai-solver': typeof QuizAiSolverRoute
   '/quiz/leaderboard': typeof QuizLeaderboardRoute
@@ -203,6 +211,7 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/welcome': typeof WelcomeRoute
   '/message/$threadId': typeof MessageThreadIdRoute
+  '/message/requests': typeof MessageRequestsRoute
   '/post/$postId': typeof PostPostIdRoute
   '/quiz/ai-solver': typeof QuizAiSolverRoute
   '/quiz/leaderboard': typeof QuizLeaderboardRoute
@@ -229,6 +238,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/welcome'
     | '/message/$threadId'
+    | '/message/requests'
     | '/post/$postId'
     | '/quiz/ai-solver'
     | '/quiz/leaderboard'
@@ -252,6 +262,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/welcome'
     | '/message/$threadId'
+    | '/message/requests'
     | '/post/$postId'
     | '/quiz/ai-solver'
     | '/quiz/leaderboard'
@@ -276,6 +287,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/welcome'
     | '/message/$threadId'
+    | '/message/requests'
     | '/post/$postId'
     | '/quiz/ai-solver'
     | '/quiz/leaderboard'
@@ -424,6 +436,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostPostIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/message/requests': {
+      id: '/message/requests'
+      path: '/requests'
+      fullPath: '/message/requests'
+      preLoaderRoute: typeof MessageRequestsRouteImport
+      parentRoute: typeof MessageRoute
+    }
     '/message/$threadId': {
       id: '/message/$threadId'
       path: '/$threadId'
@@ -464,10 +483,12 @@ declare module '@tanstack/react-router' {
 
 interface MessageRouteChildren {
   MessageThreadIdRoute: typeof MessageThreadIdRoute
+  MessageRequestsRoute: typeof MessageRequestsRoute
 }
 
 const MessageRouteChildren: MessageRouteChildren = {
   MessageThreadIdRoute: MessageThreadIdRoute,
+  MessageRequestsRoute: MessageRequestsRoute,
 }
 
 const MessageRouteWithChildren =
