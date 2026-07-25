@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { Mic, MicOff, PhoneOff, Volume2, VolumeX, ChevronDown, Phone } from "lucide-react";
+import { Mic, MicOff, PhoneOff, Volume2, VolumeX, ChevronDown, Phone, GripVertical } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 export type CallKind = "audio";
@@ -29,6 +29,8 @@ export default function CallOverlay({ open, kind, name, initials, avatarColor, o
   const [muted, setMuted] = useState(false);
   const [speaker, setSpeaker] = useState(true);
   const [minimized, setMinimized] = useState(false);
+  const dragArea = useRef<HTMLDivElement>(null);
+  const dragged = useRef(false);
   const timers = useRef<number[]>([]);
 
   useEffect(() => {
@@ -68,40 +70,63 @@ export default function CallOverlay({ open, kind, name, initials, avatarColor, o
 
   if (open && minimized) {
     return (
-      <motion.button
-        layout
-        initial={{ opacity: 0, y: -14 }}
-        animate={{ opacity: 1, y: 0 }}
-        onClick={() => setMinimized(false)}
-        className="fixed inset-x-0 top-0 z-[80] flex items-center gap-2 bg-emerald-600 px-3 pb-2 pt-[calc(env(safe-area-inset-top)+0.5rem)] text-left text-white shadow-lg lg:inset-x-auto lg:right-6 lg:top-4 lg:rounded-full lg:px-4 lg:py-2"
-      >
-        <motion.span
-          animate={{ scale: [1, 1.25, 1] }}
-          transition={{ duration: 1.4, repeat: Infinity }}
-          className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-white/20"
-        >
-          <Phone className="h-3.5 w-3.5" />
-        </motion.span>
-        <span className="min-w-0 flex-1 truncate text-xs font-semibold">
-          {name} · {phase === "ringing" ? "Ringing…" : fmt(seconds)}
-        </span>
-        <span className="shrink-0 rounded-full bg-white/20 px-2 py-1 text-[10px] font-bold uppercase tracking-wide">
-          Tap to return
-        </span>
-        <span
-          role="button"
-          aria-label="End call"
-          onClick={(e) => {
-            e.stopPropagation();
-            end();
+      <div ref={dragArea} className="pointer-events-none fixed inset-0 z-[80]">
+        <motion.button
+          drag
+          dragConstraints={dragArea}
+          dragElastic={0.06}
+          dragMomentum={false}
+          onDragStart={() => {
+            dragged.current = false;
           }}
-          className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-red-500"
+          onDrag={() => {
+            dragged.current = true;
+          }}
+          whileDrag={{ scale: 1.03, cursor: "grabbing" }}
+          initial={{ opacity: 0, y: -14 }}
+          animate={{ opacity: 1, y: 0 }}
+          onClick={() => {
+            if (dragged.current) {
+              dragged.current = false;
+              return;
+            }
+            setMinimized(false);
+          }}
+          className="pointer-events-auto absolute left-2 right-2 top-[calc(env(safe-area-inset-top)+0.5rem)] flex cursor-grab touch-none items-center gap-2 rounded-full bg-emerald-600 px-3 py-2 text-left text-white shadow-lg active:cursor-grabbing lg:left-auto lg:right-6 lg:top-4 lg:w-auto lg:px-4"
         >
-          <PhoneOff className="h-3.5 w-3.5" />
-        </span>
-      </motion.button>
+          <span className="hidden shrink-0 text-white/60 lg:block">
+            <GripVertical className="h-4 w-4" />
+          </span>
+          <motion.span
+            animate={{ scale: [1, 1.25, 1] }}
+            transition={{ duration: 1.4, repeat: Infinity }}
+            className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-white/20"
+          >
+            <Phone className="h-3.5 w-3.5" />
+          </motion.span>
+          <span className="min-w-0 flex-1 truncate text-xs font-semibold">
+            {name} · {phase === "ringing" ? "Ringing…" : fmt(seconds)}
+          </span>
+          <span className="shrink-0 rounded-full bg-white/20 px-2 py-1 text-[10px] font-bold uppercase tracking-wide">
+            Tap to return
+          </span>
+          <span
+            role="button"
+            aria-label="End call"
+            onPointerDownCapture={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation();
+              end();
+            }}
+            className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-red-500"
+          >
+            <PhoneOff className="h-3.5 w-3.5" />
+          </span>
+        </motion.button>
+      </div>
     );
   }
+
 
   return (
     <AnimatePresence>
