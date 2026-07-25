@@ -1,8 +1,31 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, Send, Phone, Video, MoreVertical, Check, CheckCheck, Paperclip, Smile } from "lucide-react";
+import {
+  ArrowLeft,
+  Send,
+  Phone,
+  Video,
+  MoreVertical,
+  Check,
+  CheckCheck,
+  Paperclip,
+  Smile,
+  User,
+  BellOff,
+  Search,
+  Palette,
+  Image as ImageIcon,
+  Pin,
+  Archive,
+  Trash2,
+  Ban,
+  Flag,
+  ChevronRight,
+  CircleDot,
+} from "lucide-react";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { getMessages, getThread, sendMessage, subscribe, formatTime, markRead } from "@/lib/chat";
 import { AnimatePresence, motion } from "framer-motion";
+import CallOverlay, { type CallKind } from "@/components/CallOverlay";
 
 export const Route = createFileRoute("/message/$threadId")({
   component: ThreadView,
