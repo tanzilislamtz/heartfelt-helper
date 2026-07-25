@@ -35,8 +35,25 @@ function MessageLayout() {
     return () => window.clearTimeout(t);
   }, []);
 
+  // Lock page scroll on mobile while inside a chat thread
+  useEffect(() => {
+    if (!inThread) return;
+    const mq = window.matchMedia("(max-width: 1023px)");
+    if (!mq.matches) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [inThread]);
+
+
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div
+      className={`w-full max-w-full overflow-x-hidden bg-background text-foreground ${
+        inThread ? "h-[100dvh] overflow-hidden lg:h-auto lg:min-h-screen lg:overflow-visible" : "min-h-screen"
+      }`}
+    >
       {/* Header visible everywhere, hidden on mobile only inside a thread */}
       <div className={inThread ? "hidden lg:block" : "block"}>
         <Topbar variant="app" onMenu={() => setMenuOpen(true)} />
@@ -44,10 +61,11 @@ function MessageLayout() {
 
       <MobileNav open={menuOpen} onClose={() => setMenuOpen(false)} />
       <main
-        className={`mx-auto grid max-w-[1400px] grid-cols-1 gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:px-8 lg:py-6 lg:pb-28 ${
+        className={`mx-auto grid w-full max-w-[1400px] grid-cols-1 gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:px-8 lg:py-6 lg:pb-28 ${
           inThread ? "px-0 py-0" : "px-4 py-4 pb-28"
         }`}
       >
+
         <LeftNav />
         <div className="min-w-0">
           <div className="grid gap-6 lg:grid-cols-[340px_minmax(0,1fr)]">
