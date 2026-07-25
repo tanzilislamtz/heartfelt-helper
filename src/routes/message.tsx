@@ -40,12 +40,13 @@ function MessageLayout() {
     if (!inThread) return;
     const mq = window.matchMedia("(max-width: 1023px)");
     if (!mq.matches) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    window.scrollTo(0, 0);
+    document.body.classList.add("chat-thread-open");
     return () => {
-      document.body.style.overflow = prev;
+      document.body.classList.remove("chat-thread-open");
     };
   }, [inThread]);
+
 
 
   return (
