@@ -97,7 +97,7 @@ function ThreadView() {
   const [call, setCall] = useState<null | CallKind>(null);
   const tState = getThreadState(threadId);
   const notifMuted = !!tState.muted;
-  const pinned = !!tState.pinned;
+  
   const blocked = !!tState.blocked;
   const pinnedMsg = messages.find((m) => m.id === tState.pinnedMessageId) ?? null;
   const [confirm, setConfirm] = useState<null | "block" | "unblock" | "deleteChat" | "report">(null);
