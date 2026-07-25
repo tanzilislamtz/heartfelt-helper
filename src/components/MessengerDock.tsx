@@ -818,18 +818,25 @@ function ChatWindow({ threadId, minimized }: { threadId: string; minimized: bool
               className="absolute w-56 rounded-2xl border border-border bg-surface p-1.5 shadow-2xl"
             >
               <div className="mb-1 flex items-center justify-between rounded-xl bg-muted/60 px-1.5 py-1">
-                {REACTIONS.map((emo) => (
-                  <button
-                    key={emo}
-                    onClick={() => {
-                      setReaction(threadId, msgMenu.msg.id, emo);
-                      setMsgMenu(null);
-                    }}
-                    className="grid h-7 w-7 place-items-center rounded-full text-base transition hover:scale-125"
-                  >
-                    {emo}
-                  </button>
-                ))}
+                {REACTIONS.map((emo) => {
+                  const active = msgMenu.msg.reaction === emo;
+                  return (
+                    <button
+                      key={emo}
+                      onClick={() => {
+                        setReaction(threadId, msgMenu.msg.id, emo);
+                        setMsgMenu(null);
+                      }}
+                      className={`grid h-7 w-7 place-items-center rounded-full text-base transition hover:scale-125 ${
+                        active
+                          ? "border-2 border-primary bg-primary/15 shadow-sm"
+                          : "border-2 border-transparent"
+                      }`}
+                    >
+                      {emo}
+                    </button>
+                  );
+                })}
               </div>
               <MenuRow
                 icon={<CornerUpLeft className="h-4 w-4 text-primary" />}
