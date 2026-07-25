@@ -51,7 +51,7 @@ function MessageLayout() {
   return (
     <div
       className={`w-full max-w-full overflow-x-hidden bg-background text-foreground ${
-        "h-[100dvh] overflow-hidden lg:h-auto lg:min-h-screen lg:overflow-visible"
+        "h-[100dvh] overflow-hidden"
       }`}
     >
       {/* Header visible everywhere, hidden on mobile only inside a thread */}
@@ -61,20 +61,20 @@ function MessageLayout() {
 
       <MobileNav open={menuOpen} onClose={() => setMenuOpen(false)} />
       <main
-        className={`mx-auto grid w-full max-w-[1400px] grid-cols-1 gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:px-8 lg:py-6 lg:pb-28 ${
+        className={`mx-auto grid w-full max-w-[1400px] grid-cols-1 gap-6 lg:h-[calc(100dvh-65px)] lg:grid-cols-[240px_minmax(0,1fr)] lg:overflow-hidden lg:px-8 lg:py-6 ${
           inThread ? "px-0 py-0" : "px-4 py-4"
         }`}
       >
 
         <LeftNav />
-        <div className="min-w-0">
-          <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[340px_minmax(0,1fr)]">
+        <div className="min-w-0 lg:h-full lg:min-h-0">
+          <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-6 lg:h-full lg:min-h-0 lg:grid-cols-[340px_minmax(0,1fr)]">
             {/* Threads list — hidden on mobile when inside a thread */}
-            <section className={`min-w-0 ${inThread ? "hidden lg:block" : "block"}`}>
+            <section className={`min-w-0 lg:h-full lg:min-h-0 ${inThread ? "hidden lg:block" : "block"}`}>
               <ThreadList />
             </section>
             {/* Thread view or empty state */}
-            <section className={`min-w-0 ${inThread ? "block" : "hidden lg:block"}`}>
+            <section className={`min-w-0 lg:h-full lg:min-h-0 ${inThread ? "block" : "hidden lg:block"}`}>
               {inThread ? <Outlet /> : <EmptyPane />}
             </section>
           </div>
@@ -94,7 +94,7 @@ function ThreadList() {
   );
 
   return (
-    <div className="flex h-[calc(100dvh-11rem)] min-w-0 flex-col overflow-hidden rounded-3xl border border-border bg-surface p-4 shadow-sm lg:h-auto lg:max-h-[calc(100dvh-8rem)]">
+    <div className="flex h-[calc(100dvh-11rem)] min-w-0 flex-col overflow-hidden rounded-3xl border border-border bg-surface p-4 shadow-sm lg:h-full">
       <div className="mb-3 flex shrink-0 items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="grid h-10 w-10 place-items-center rounded-2xl bg-primary/10 text-primary">
