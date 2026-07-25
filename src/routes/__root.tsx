@@ -14,6 +14,8 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { BottomNav } from "../components/BottomNav";
+import { MessengerDock } from "../components/MessengerDock";
+
 
 function NotFoundComponent() {
   return (
@@ -144,6 +146,8 @@ function RootComponent() {
 
       </AnimatePresence>
       {!hideBottomNav && <BottomNav />}
+      <MessengerDock />
+
     </QueryClientProvider>
   );
 }
