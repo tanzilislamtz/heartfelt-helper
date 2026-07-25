@@ -5,12 +5,12 @@ import { formatClock, type VoiceClip } from "@/lib/chat";
 const SPEEDS = [1, 1.5, 2] as const;
 
 /** Deterministic pseudo-waveform so every clip keeps a stable shape. */
-function bars(seed: string, count = 34): number[] {
+function bars(seed: string, count = 30): number[] {
   let h = 0;
   for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
   return Array.from({ length: count }, (_, i) => {
     h = (h * 1103515245 + 12345 + i) >>> 0;
-    return 0.28 + ((h >>> 8) % 100) / 140;
+    return 0.26 + ((h >>> 8) % 100) / 135;
   });
 }
 
@@ -18,10 +18,13 @@ export default function VoiceMessage({
   clip,
   mine,
   seed,
+  statusSlot,
 }: {
   clip: VoiceClip;
   mine: boolean;
   seed: string;
+  /** Read/delivered ticks, rendered on the meta row instead of inside the player. */
+  statusSlot?: React.ReactNode;
 }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [playing, setPlaying] = useState(false);
@@ -74,10 +77,11 @@ export default function VoiceMessage({
   };
 
   const accent = mine ? "bg-primary-foreground" : "bg-primary";
-  const dim = mine ? "bg-primary-foreground/35" : "bg-foreground/20";
+  const dim = mine ? "bg-primary-foreground/30" : "bg-foreground/15";
+  const meta = mine ? "text-primary-foreground/75" : "text-muted-foreground";
 
   return (
-    <div className="flex min-w-[210px] max-w-[260px] items-center gap-2.5 py-0.5">
+    <div className="w-[min(66vw,250px)] py-0.5 sm:w-[250px]">
       {clip.url ? (
         <audio
           ref={audioRef}
@@ -91,57 +95,59 @@ export default function VoiceMessage({
         />
       ) : null}
 
-      <button
-        type="button"
-        onClick={toggle}
-        disabled={!clip.url}
-        aria-label={playing ? "Pause voice message" : "Play voice message"}
-        className={`grid h-9 w-9 shrink-0 place-items-center rounded-full transition active:scale-95 disabled:opacity-40 ${
-          mine ? "bg-primary-foreground/20 text-primary-foreground" : "bg-primary/10 text-primary"
-        }`}
-      >
-        {playing ? <Pause className="h-4 w-4" /> : <Play className="ml-0.5 h-4 w-4" />}
-      </button>
+      {/* Row 1 — play control + waveform, both the same height */}
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={toggle}
+          disabled={!clip.url}
+          aria-label={playing ? "Pause voice message" : "Play voice message"}
+          className={`grid h-10 w-10 shrink-0 place-items-center rounded-full transition active:scale-95 disabled:opacity-40 ${
+            mine
+              ? "bg-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/30"
+              : "bg-primary text-primary-foreground hover:opacity-90"
+          }`}
+        >
+          {playing ? <Pause className="h-4 w-4" /> : <Play className="ml-0.5 h-4 w-4" />}
+        </button>
 
-      <div className="min-w-0 flex-1">
         <div
           onClick={seek}
-          className="flex h-7 cursor-pointer items-center gap-[2px]"
           role="presentation"
+          className="flex h-10 min-w-0 flex-1 cursor-pointer items-center gap-[2px]"
         >
           {shape.map((h, i) => {
             const filled = i / shape.length <= progress;
             return (
               <span
                 key={i}
-                style={{ height: `${Math.round(h * 26)}px` }}
-                className={`w-[3px] shrink-0 rounded-full transition-colors ${filled ? accent : dim}`}
+                style={{ height: `${Math.round(h * 30)}px` }}
+                className={`min-w-0 flex-1 rounded-full transition-colors ${filled ? accent : dim}`}
               />
             );
           })}
         </div>
-        <div
-          className={`flex items-center gap-1.5 text-[10px] ${
-            mine ? "text-primary-foreground/80" : "text-muted-foreground"
-          }`}
-        >
-          <Mic className="h-3 w-3" />
-          <span className="tabular-nums">{formatClock(playing || time ? time : total)}</span>
-        </div>
       </div>
 
-      <button
-        type="button"
-        onClick={() => setRateIdx((i) => (i + 1) % SPEEDS.length)}
-        aria-label={`Playback speed ${speed}x`}
-        className={`shrink-0 rounded-full px-2 py-1 text-[11px] font-bold tabular-nums transition active:scale-95 ${
-          mine
-            ? "bg-primary-foreground/20 text-primary-foreground"
-            : "bg-muted text-foreground/80 hover:bg-muted/70"
-        }`}
-      >
-        {speed}x
-      </button>
+      {/* Row 2 — meta: ticks · duration · speed */}
+      <div className={`mt-1.5 flex items-center gap-2 pl-0.5 text-[11px] ${meta}`}>
+        <Mic className="h-3 w-3 shrink-0" />
+        <span className="shrink-0 tabular-nums">{formatClock(playing || time ? time : total)}</span>
+        {statusSlot ? <span className="flex shrink-0 items-center">{statusSlot}</span> : null}
+        <span className="min-w-0 flex-1" />
+        <button
+          type="button"
+          onClick={() => setRateIdx((i) => (i + 1) % SPEEDS.length)}
+          aria-label={`Playback speed ${speed}x`}
+          className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold tabular-nums transition active:scale-95 ${
+            mine
+              ? "bg-primary-foreground/20 text-primary-foreground"
+              : "bg-muted text-foreground/80 hover:bg-muted/70"
+          }`}
+        >
+          {speed}x
+        </button>
+      </div>
     </div>
   );
 }
