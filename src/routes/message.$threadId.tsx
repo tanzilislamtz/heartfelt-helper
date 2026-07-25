@@ -175,13 +175,6 @@ function ThreadView() {
           <Phone className="h-4 w-4" />
         </button>
         <button
-          onClick={() => setCall("video")}
-          aria-label="Video"
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-primary hover:bg-primary/10"
-        >
-          <Video className="h-4 w-4" />
-        </button>
-        <button
           onClick={(e) => {
             e.stopPropagation();
             setOpenMenu(openMenu === "more" ? null : "more");
