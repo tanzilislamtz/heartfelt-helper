@@ -9,6 +9,8 @@ import {
   Command,
 } from "lucide-react";
 import logoAsset from "@/assets/learns-academy-logo.png.asset.json";
+import { toggleMessengerPopup } from "@/lib/messenger";
+
 
 
 type Variant = "app" | "auth";
