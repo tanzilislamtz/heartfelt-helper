@@ -345,15 +345,6 @@ function ThreadView() {
                   notify(notifMuted ? "Notifications on" : "Notifications muted");
                 }}
               />
-
-              <MenuItem
-                icon={<BellOff className="h-4 w-4 text-primary" />}
-                label={notifMuted ? "Unmute" : "Mute notifications"}
-                onClick={() => {
-                  setThreadState(threadId, { muted: !notifMuted });
-                  notify(notifMuted ? "Notifications on" : "Notifications muted");
-                }}
-              />
               <MenuItem
                 icon={<Archive className="h-4 w-4 text-primary" />}
                 label={tState.archived ? "Unarchive chat" : "Archive chat"}
@@ -361,10 +352,12 @@ function ThreadView() {
                   const next = !tState.archived;
                   setThreadState(threadId, { archived: next });
                   setOpenMenu(null);
-                  if (next) navigate({ to: "/message" });
-                  else notify("Moved back to inbox");
+                  if (next) {
+                    navigate({ to: "/message", search: { view: "archived" } as never });
+                  } else notify("Moved back to inbox");
                 }}
               />
+
               <MenuItem
                 icon={<Flag className="h-4 w-4 text-primary" />}
                 label="Report"
