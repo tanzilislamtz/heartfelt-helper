@@ -487,20 +487,27 @@ function ThreadView() {
               className="absolute w-60 overflow-hidden rounded-2xl border border-border bg-surface p-1.5 shadow-2xl"
             >
               <div className="mb-1 flex items-center justify-between gap-0.5 rounded-xl bg-muted/60 px-2 py-1.5">
-                {["👍", "❤️", "😂", "😮", "😢", "🙏"].map((emo) => (
-                  <motion.button
-                    key={emo}
-                    whileTap={{ scale: 0.85 }}
-                    whileHover={{ scale: 1.2 }}
-                    onClick={() => {
-                      setReaction(threadId, msgMenu.msg.id, emo);
-                      setMsgMenu(null);
-                    }}
-                    className="text-base leading-none"
-                  >
-                    {emo}
-                  </motion.button>
-                ))}
+                {["👍", "❤️", "😂", "😮", "😢", "🙏"].map((emo) => {
+                  const active = msgMenu.msg.reaction === emo;
+                  return (
+                    <motion.button
+                      key={emo}
+                      whileTap={{ scale: 0.85 }}
+                      whileHover={{ scale: 1.2 }}
+                      onClick={() => {
+                        setReaction(threadId, msgMenu.msg.id, emo);
+                        setMsgMenu(null);
+                      }}
+                      className={`grid h-8 w-8 place-items-center rounded-full text-base leading-none transition ${
+                        active
+                          ? "border-2 border-primary bg-primary/15 shadow-sm"
+                          : "border-2 border-transparent"
+                      }`}
+                    >
+                      {emo}
+                    </motion.button>
+                  );
+                })}
               </div>
               <MenuItem
                 icon={<Reply className="h-4 w-4 text-primary" />}
