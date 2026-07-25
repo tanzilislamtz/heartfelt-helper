@@ -128,6 +128,55 @@ export function getAllLatest(): Record<string, ChatMessage | undefined> {
   return out;
 }
 
+/* ---------- read / unread tracking ---------- */
+
+const READ_KEY = "la_chat_read_v1";
+
+function loadRead(): Record<string, number> {
+  if (typeof window === "undefined") return {};
+  try {
+    return JSON.parse(window.localStorage.getItem(READ_KEY) ?? "{}");
+  } catch {
+    return {};
+  }
+}
+
+export function markRead(threadId: string) {
+  if (typeof window === "undefined") return;
+  const read = loadRead();
+  const list = getMessages(threadId);
+  const last = list[list.length - 1];
+  const at = last ? last.at : Date.now();
+  if (read[threadId] === at) return;
+  read[threadId] = at;
+  window.localStorage.setItem(READ_KEY, JSON.stringify(read));
+  listeners.forEach((l) => l());
+}
+
+/** Number of unread incoming messages per thread. */
+export function getUnreadCounts(): Record<string, number> {
+  const store = load();
+  const read = loadRead();
+  const out: Record<string, number> = {};
+  for (const t of threads) {
+    const list = store[t.id] ?? [];
+    const since = read[t.id] ?? 0;
+    out[t.id] = list.filter((m) => m.from === "them" && m.at > since).length;
+  }
+  return out;
+}
+
+export function getTotalUnread(): number {
+  return Object.values(getUnreadCounts()).reduce((a, b) => a + b, 0);
+}
+
+/** Threads ordered by most recent activity (newest first). */
+export function getSortedThreads(): ChatThread[] {
+  const latest = getAllLatest();
+  return [...threads].sort((a, b) => (latest[b.id]?.at ?? 0) - (latest[a.id]?.at ?? 0));
+}
+
+
 export function sendMessage(threadId: string, text: string) {
   const store = load();
   const list = store[threadId] ?? [];
