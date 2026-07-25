@@ -373,13 +373,16 @@ function ThreadList() {
               />
               <RowItem
                 icon={<Archive className="h-4 w-4 text-primary" />}
-                label="Archive chat"
+                label={isArchived(menu.thread.id) ? "Unarchive chat" : "Archive chat"}
                 onClick={() => {
-                  setHidden((h) => [...h, menu.thread.id]);
+                  const was = isArchived(menu.thread.id);
+                  setThreadState(menu.thread.id, { archived: !was });
                   setMenu(null);
-                  notify("Chat archived");
+                  notify(was ? "Moved back to inbox" : "Chat moved to Archived");
+                  if (!was) setView("archived");
                 }}
               />
+
               <div className="my-1 h-px bg-border" />
               <RowItem
                 icon={<Ban className="h-4 w-4 text-red-500" />}
