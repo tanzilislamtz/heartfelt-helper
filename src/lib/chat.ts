@@ -349,6 +349,18 @@ export function stateSnapshot(threadId: string): string {
   return JSON.stringify(getThreadState(threadId));
 }
 
+/** Snapshot of every thread's state (for list-level subscriptions). */
+export function allStatesSnapshot(): string {
+  return JSON.stringify(loadStates());
+}
+
+/** IDs of threads the user has archived. */
+export function getArchivedIds(): string[] {
+  const all = loadStates();
+  return Object.keys(all).filter((id) => all[id]?.archived);
+}
+
+
 /** Pin (or unpin) a single message inside a thread. */
 export function pinMessage(threadId: string, messageId: string | null) {
   setThreadState(threadId, { pinnedMessageId: messageId ?? undefined });

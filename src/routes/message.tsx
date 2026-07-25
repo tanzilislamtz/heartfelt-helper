@@ -13,6 +13,9 @@ import {
   Ban,
   Trash2,
   CircleDot,
+  ArrowLeft,
+  ArchiveRestore,
+
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
@@ -22,7 +25,20 @@ import { Topbar } from "@/components/Topbar";
 import { MobileNav } from "@/components/MobileNav";
 import { LeftNav } from "@/components/LeftNav";
 import { messageRequests } from "@/lib/requests";
-import { threads, getAllLatest, getSortedThreads, getUnreadCounts, subscribe, formatTime, markRead } from "@/lib/chat";
+import {
+  threads,
+  getAllLatest,
+  getSortedThreads,
+  getUnreadCounts,
+  subscribe,
+  formatTime,
+  markRead,
+  allStatesSnapshot,
+  getArchivedIds,
+  getThreadState,
+  setThreadState,
+} from "@/lib/chat";
+
 
 export const Route = createFileRoute("/message")({
   head: () => ({
@@ -107,13 +123,37 @@ function ThreadList() {
   const latest = getAllLatest();
   const unread = getUnreadCounts();
   const [q, setQ] = useState("");
+  const [view, setView] = useState<"inbox" | "archived">("inbox");
   const [menu, setMenu] = useState<{ thread: ChatThread; x: number; y: number } | null>(null);
   const [confirm, setConfirm] = useState<{ thread: ChatThread; kind: "delete" | "block" } | null>(null);
   const [toast, setToast] = useState<string | null>(null);
-  const [muted, setMuted] = useState<string[]>([]);
   const [pinned, setPinned] = useState<string[]>([]);
   const [hidden, setHidden] = useState<string[]>([]);
   const longPress = useRef<number | null>(null);
+
+  const states = useSyncExternalStore(
+    (cb) => subscribe(cb),
+    () => allStatesSnapshot(),
+    () => "{}",
+  );
+  void states;
+  const archivedIds = getArchivedIds();
+  const isArchived = (id: string) => archivedIds.includes(id);
+  const isMuted = (id: string) => !!getThreadState(id).muted;
+
+  // Land directly on the Archived view right after archiving from a chat
+  useEffect(() => {
+    try {
+      if (window.sessionStorage.getItem("la_open_archived") === "1") {
+        window.sessionStorage.removeItem("la_open_archived");
+        setView("archived");
+        setToast("Chat moved to Archived");
+        window.setTimeout(() => setToast(null), 2200);
+      }
+    } catch {
+      /* ignore */
+    }
+  }, []);
 
   const notify = (msg: string) => {
     setToast(msg);
@@ -124,6 +164,7 @@ function ThreadList() {
 
   const filtered = getSortedThreads()
     .filter((t) => !hidden.includes(t.id))
+    .filter((t) => (view === "archived" ? isArchived(t.id) : !isArchived(t.id)))
     .filter(
       (t) =>
         t.name.toLowerCase().includes(q.toLowerCase()) ||
@@ -131,24 +172,43 @@ function ThreadList() {
     )
     .sort((a, b) => Number(pinned.includes(b.id)) - Number(pinned.includes(a.id)));
 
+
   return (
     <div className="flex h-[calc(100dvh-11rem)] min-w-0 flex-col overflow-hidden rounded-3xl border border-border bg-surface p-4 shadow-sm lg:h-full">
       <div className="mb-3 flex shrink-0 items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="grid h-10 w-10 place-items-center rounded-2xl bg-primary/10 text-primary">
-            <MessageSquare className="h-5 w-5" />
-          </div>
-          <div>
-            <h1 className="text-lg font-semibold tracking-tight">Messages</h1>
-            <p className="text-xs text-muted-foreground">{threads.length} conversations</p>
+        <div className="flex min-w-0 items-center gap-2">
+          {view === "archived" ? (
+            <button
+              onClick={() => setView("inbox")}
+              aria-label="Back to inbox"
+              className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-primary/10 text-primary transition hover:bg-primary/20"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </button>
+          ) : (
+            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-primary/10 text-primary">
+              <MessageSquare className="h-5 w-5" />
+            </div>
+          )}
+          <div className="min-w-0">
+            <h1 className="truncate text-lg font-semibold tracking-tight">
+              {view === "archived" ? "Archived" : "Messages"}
+            </h1>
+            <p className="text-xs text-muted-foreground">
+              {view === "archived"
+                ? `${archivedIds.length} archived ${archivedIds.length === 1 ? "chat" : "chats"}`
+                : `${threads.length - archivedIds.length} conversations`}
+            </p>
           </div>
         </div>
-        <button
-          aria-label="New chat"
-          className="grid h-9 w-9 place-items-center rounded-full bg-primary text-primary-foreground shadow-sm hover:opacity-95"
-        >
-          <Pencil className="h-4 w-4" />
-        </button>
+        {view === "inbox" && (
+          <button
+            aria-label="New chat"
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground shadow-sm hover:opacity-95"
+          >
+            <Pencil className="h-4 w-4" />
+          </button>
+        )}
       </div>
 
       <div className="relative mb-3 shrink-0">
@@ -156,37 +216,71 @@ function ThreadList() {
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Search conversations"
+          placeholder={view === "archived" ? "Search archived" : "Search conversations"}
           className="h-10 w-full rounded-full border border-border bg-muted/60 pl-9 pr-3 text-sm outline-none focus:border-primary/40 focus:bg-surface focus:ring-4 focus:ring-primary/10"
         />
       </div>
 
       <ul className="-mr-1 flex-1 space-y-1 overflow-y-auto overscroll-contain pr-1">
-        <li>
-          <Link
-            to="/message/requests"
-            className="mb-1 flex items-center gap-2.5 rounded-xl border border-border bg-accent/20 px-2.5 py-1.5 transition hover:bg-accent/30"
-          >
-            <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
-              <MailQuestion className="h-3.5 w-3.5" />
+        {view === "inbox" && (
+          <>
+            <li>
+              <Link
+                to="/message/requests"
+                className="mb-1 flex items-center gap-2.5 rounded-xl border border-border bg-accent/20 px-2.5 py-1.5 transition hover:bg-accent/30"
+              >
+                <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
+                  <MailQuestion className="h-3.5 w-3.5" />
+                </div>
+                <p className="min-w-0 flex-1 truncate text-xs font-semibold">
+                  Message requests
+                  <span className="ml-1 font-normal text-muted-foreground">· {messageRequests.length} new</span>
+                </p>
+                <span className="grid h-4 min-w-4 shrink-0 place-items-center rounded-full bg-primary px-1 text-[9px] font-bold text-primary-foreground">
+                  {messageRequests.length}
+                </span>
+                <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+              </Link>
+            </li>
+            <li>
+              <button
+                onClick={() => setView("archived")}
+                className="mb-1 flex w-full items-center gap-2.5 rounded-xl border border-border bg-muted/40 px-2.5 py-1.5 text-left transition hover:bg-muted"
+              >
+                <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
+                  <Archive className="h-3.5 w-3.5" />
+                </div>
+                <p className="min-w-0 flex-1 truncate text-xs font-semibold">
+                  Archived
+                  <span className="ml-1 font-normal text-muted-foreground">
+                    · {archivedIds.length} {archivedIds.length === 1 ? "chat" : "chats"}
+                  </span>
+                </p>
+                <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+              </button>
+            </li>
+          </>
+        )}
+
+        {view === "archived" && filtered.length === 0 && (
+          <li className="mt-8 flex flex-col items-center px-6 text-center">
+            <div className="grid h-14 w-14 place-items-center rounded-3xl bg-muted text-muted-foreground">
+              <Archive className="h-6 w-6" />
             </div>
-            <p className="min-w-0 flex-1 truncate text-xs font-semibold">
-              Message requests
-              <span className="ml-1 font-normal text-muted-foreground">· {messageRequests.length} new</span>
+            <p className="mt-3 text-sm font-semibold">No archived chats</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Archived chats are hidden from your inbox but never deleted. You can bring them back anytime.
             </p>
-            <span className="grid h-4 min-w-4 shrink-0 place-items-center rounded-full bg-primary px-1 text-[9px] font-bold text-primary-foreground">
-              {messageRequests.length}
-            </span>
-            <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-          </Link>
-        </li>
+          </li>
+        )}
+
 
         {filtered.map((t) => {
           const last = latest[t.id];
           const n = unread[t.id] ?? 0;
           const isUnread = n > 0;
           return (
-            <li key={t.id}>
+            <li key={t.id} className="relative">
               <Link
                 to="/message/$threadId"
                 params={{ threadId: t.id }}
@@ -225,7 +319,7 @@ function ThreadList() {
                       {t.name}
                     </p>
                     {pinned.includes(t.id) && <Pin className="h-3 w-3 shrink-0 text-primary" />}
-                    {muted.includes(t.id) && <BellOff className="h-3 w-3 shrink-0 text-muted-foreground" />}
+                    {isMuted(t.id) && <BellOff className="h-3 w-3 shrink-0 text-muted-foreground" />}
                     {last && (
                       <span
                         className={`shrink-0 text-[11px] ${isUnread ? "font-bold text-primary" : "text-muted-foreground"}`}
@@ -250,7 +344,22 @@ function ThreadList() {
                   </div>
                 </div>
               </Link>
+              {view === "archived" && (
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setThreadState(t.id, { archived: false });
+                    notify(`${t.name.split(" ")[0]} moved back to inbox`);
+                  }}
+                  className="absolute right-2 top-1/2 flex -translate-y-1/2 items-center gap-1 rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] font-semibold text-primary shadow-sm transition hover:bg-primary/10"
+                >
+                  <ArchiveRestore className="h-3.5 w-3.5" />
+                  Unarchive
+                </button>
+              )}
             </li>
+
           );
         })}
       </ul>
@@ -301,20 +410,21 @@ function ThreadList() {
               )}
               <RowItem
                 icon={
-                  muted.includes(menu.thread.id) ? (
+                  isMuted(menu.thread.id) ? (
                     <Bell className="h-4 w-4 text-primary" />
                   ) : (
                     <BellOff className="h-4 w-4 text-primary" />
                   )
                 }
-                label={muted.includes(menu.thread.id) ? "Unmute notifications" : "Mute notifications"}
+                label={isMuted(menu.thread.id) ? "Unmute notifications" : "Mute notifications"}
                 onClick={() => {
-                  const was = muted.includes(menu.thread.id);
-                  toggle(muted, setMuted, menu.thread.id);
+                  const was = isMuted(menu.thread.id);
+                  setThreadState(menu.thread.id, { muted: !was });
                   setMenu(null);
                   notify(was ? "Notifications on" : "Notifications muted");
                 }}
               />
+
               <RowItem
                 icon={
                   pinned.includes(menu.thread.id) ? (
@@ -333,13 +443,16 @@ function ThreadList() {
               />
               <RowItem
                 icon={<Archive className="h-4 w-4 text-primary" />}
-                label="Archive chat"
+                label={isArchived(menu.thread.id) ? "Unarchive chat" : "Archive chat"}
                 onClick={() => {
-                  setHidden((h) => [...h, menu.thread.id]);
+                  const was = isArchived(menu.thread.id);
+                  setThreadState(menu.thread.id, { archived: !was });
                   setMenu(null);
-                  notify("Chat archived");
+                  notify(was ? "Moved back to inbox" : "Chat moved to Archived");
+                  if (!was) setView("archived");
                 }}
               />
+
               <div className="my-1 h-px bg-border" />
               <RowItem
                 icon={<Ban className="h-4 w-4 text-red-500" />}

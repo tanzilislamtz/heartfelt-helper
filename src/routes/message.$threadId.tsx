@@ -97,7 +97,7 @@ function ThreadView() {
   const [call, setCall] = useState<null | CallKind>(null);
   const tState = getThreadState(threadId);
   const notifMuted = !!tState.muted;
-  const pinned = !!tState.pinned;
+  
   const blocked = !!tState.blocked;
   const pinnedMsg = messages.find((m) => m.id === tState.pinnedMessageId) ?? null;
   const [confirm, setConfirm] = useState<null | "block" | "unblock" | "deleteChat" | "report">(null);
@@ -338,14 +338,6 @@ function ThreadView() {
                 }}
               />
               <MenuItem
-                icon={<Pin className="h-4 w-4 text-primary" />}
-                label={pinned ? "Unpin conversation" : "Pin conversation"}
-                onClick={() => {
-                  setThreadState(threadId, { pinned: !pinned });
-                  notify(pinned ? "Unpinned" : "Pinned to top of your inbox");
-                }}
-              />
-              <MenuItem
                 icon={<BellOff className="h-4 w-4 text-primary" />}
                 label={notifMuted ? "Unmute" : "Mute notifications"}
                 onClick={() => {
@@ -360,10 +352,18 @@ function ThreadView() {
                   const next = !tState.archived;
                   setThreadState(threadId, { archived: next });
                   setOpenMenu(null);
-                  if (next) navigate({ to: "/message" });
-                  else notify("Moved back to inbox");
+                  if (next) {
+                    try {
+                      window.sessionStorage.setItem("la_open_archived", "1");
+                    } catch {
+                      /* ignore */
+                    }
+                    navigate({ to: "/message" });
+                  } else notify("Moved back to inbox");
+
                 }}
               />
+
               <MenuItem
                 icon={<Flag className="h-4 w-4 text-primary" />}
                 label="Report"
