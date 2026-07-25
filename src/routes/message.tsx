@@ -37,7 +37,6 @@ function MessageLayout() {
 
   // Lock page scroll on mobile while inside a chat thread
   useEffect(() => {
-    if (!inThread) return;
     const mq = window.matchMedia("(max-width: 1023px)");
     if (!mq.matches) return;
     window.scrollTo(0, 0);
