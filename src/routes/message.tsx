@@ -94,7 +94,7 @@ function ThreadList() {
   );
 
   return (
-    <div className="flex h-[calc(100dvh-17.5rem)] min-w-0 flex-col overflow-hidden rounded-3xl border border-border bg-surface p-4 shadow-sm lg:h-auto lg:max-h-[calc(100dvh-8rem)]">
+    <div className="flex h-[calc(100dvh-11rem)] min-w-0 flex-col overflow-hidden rounded-3xl border border-border bg-surface p-4 shadow-sm lg:h-auto lg:max-h-[calc(100dvh-8rem)]">
       <div className="mb-3 flex shrink-0 items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="grid h-10 w-10 place-items-center rounded-2xl bg-primary/10 text-primary">
