@@ -13,7 +13,6 @@ import {
   Ban,
   Trash2,
   CircleDot,
-  User,
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
@@ -289,24 +288,17 @@ function ThreadList() {
               </div>
               <div className="my-1 h-px bg-border" />
 
-              <RowItem
-                icon={<User className="h-4 w-4 text-primary" />}
-                label="Visit profile"
-                onClick={() => {
-                  setMenu(null);
-                  notify("Opening profile (demo)");
-                }}
-              />
-              <RowItem
-                icon={<CircleDot className="h-4 w-4 text-primary" />}
-                label={(unread[menu.thread.id] ?? 0) > 0 ? "Mark as read" : "Mark as unread"}
-                onClick={() => {
-                  const wasUnread = (unread[menu.thread.id] ?? 0) > 0;
-                  if (wasUnread) markRead(menu.thread.id);
-                  setMenu(null);
-                  notify(wasUnread ? "Marked as read" : "Marked as unread");
-                }}
-              />
+              {(unread[menu.thread.id] ?? 0) > 0 && (
+                <RowItem
+                  icon={<CircleDot className="h-4 w-4 text-primary" />}
+                  label="Mark as read"
+                  onClick={() => {
+                    markRead(menu.thread.id);
+                    setMenu(null);
+                    notify("Marked as read");
+                  }}
+                />
+              )}
               <RowItem
                 icon={
                   muted.includes(menu.thread.id) ? (
