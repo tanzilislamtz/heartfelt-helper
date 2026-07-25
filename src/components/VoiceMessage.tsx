@@ -5,7 +5,7 @@ import { formatClock, type VoiceClip } from "@/lib/chat";
 const SPEEDS = [1, 1.5, 2] as const;
 
 /** Deterministic pseudo-waveform so every clip keeps a stable shape. */
-function bars(seed: string, count = 30): number[] {
+function bars(seed: string, count = 26): number[] {
   let h = 0;
   for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
   return Array.from({ length: count }, (_, i) => {
