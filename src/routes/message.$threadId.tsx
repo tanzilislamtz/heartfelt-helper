@@ -540,6 +540,83 @@ function ThreadView() {
       </AnimatePresence>
 
 
+      {/* Delete confirmation */}
+      <AnimatePresence>
+        {delTarget && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setDelTarget(null)}
+            className="fixed inset-0 z-[75] flex items-end justify-center bg-black/45 p-4 backdrop-blur-sm sm:items-center"
+          >
+            <motion.div
+              initial={{ y: 30, scale: 0.97, opacity: 0 }}
+              animate={{ y: 0, scale: 1, opacity: 1 }}
+              exit={{ y: 20, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 26 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-sm overflow-hidden rounded-3xl border border-border bg-surface p-5 shadow-2xl"
+            >
+              <h3 className="text-base font-bold text-foreground">Delete message?</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {delTarget.from === "me"
+                  ? "Choose who this message should be removed for. This can't be undone."
+                  : `This will only be removed for you. ${name.split(" ")[0]} will still see it in the chat.`}
+              </p>
+
+              <div className="mt-4 space-y-2">
+                {delTarget.from === "me" && (
+                  <button
+                    onClick={() => {
+                      deleteMessage(threadId, delTarget.id, "everyone");
+                      setDelTarget(null);
+                      notify("Message unsent for everyone");
+                    }}
+                    className="flex w-full items-start gap-3 rounded-2xl border border-border p-3 text-left transition hover:bg-muted"
+                  >
+                    <Ban className="mt-0.5 h-4 w-4 shrink-0 text-red-500" />
+                    <span className="min-w-0">
+                      <span className="block text-sm font-semibold text-foreground">
+                        Unsent for everyone
+                      </span>
+                      <span className="block text-xs text-muted-foreground">
+                        Nobody in this chat will be able to see it
+                      </span>
+                    </span>
+                  </button>
+                )}
+                <button
+                  onClick={() => {
+                    deleteMessage(threadId, delTarget.id, "me");
+                    setDelTarget(null);
+                    notify("Message removed for you");
+                  }}
+                  className="flex w-full items-start gap-3 rounded-2xl border border-border p-3 text-left transition hover:bg-muted"
+                >
+                  <Trash2 className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                  <span className="min-w-0">
+                    <span className="block text-sm font-semibold text-foreground">
+                      Remove for you
+                    </span>
+                    <span className="block text-xs text-muted-foreground">
+                      It stays visible for {name.split(" ")[0]}
+                    </span>
+                  </span>
+                </button>
+              </div>
+
+              <button
+                onClick={() => setDelTarget(null)}
+                className="mt-3 w-full rounded-2xl px-3 py-2.5 text-sm font-semibold text-muted-foreground transition hover:bg-muted"
+              >
+                Cancel
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Composer */}
       <form
         onSubmit={(e) => {
