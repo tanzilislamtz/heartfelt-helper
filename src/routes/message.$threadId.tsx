@@ -129,7 +129,7 @@ function ThreadView() {
     >
 
       {/* Header */}
-      <div className="relative z-20 flex shrink-0 items-center gap-2 border-b border-border bg-surface px-4 py-3 pt-[calc(env(safe-area-inset-top)+0.75rem)] lg:pt-3">
+      <div className="relative z-20 flex shrink-0 items-center gap-2 border-b border-border bg-surface px-3 pb-3 pt-[calc(env(safe-area-inset-top)+1.25rem)] sm:px-4 lg:pt-4">
         <button
           onClick={() => navigate({ to: "/message" })}
           aria-label="Back"

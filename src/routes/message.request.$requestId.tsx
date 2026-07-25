@@ -31,7 +31,7 @@ function RequestThread() {
   return (
     <div className="flex h-[100dvh] min-w-0 flex-col overflow-hidden bg-surface lg:h-full lg:rounded-3xl lg:border lg:border-border lg:shadow-sm">
       {/* fixed header */}
-      <div className="flex shrink-0 items-center gap-3 border-b border-border px-3 py-2.5 safe-top">
+      <div className="flex shrink-0 items-center gap-3 border-b border-border px-3 pb-3 pt-[calc(env(safe-area-inset-top)+1.25rem)] sm:px-4 lg:pt-4">
         <Link
           to="/message/requests"
           className="grid h-9 w-9 place-items-center rounded-full text-foreground/70 hover:bg-muted"
