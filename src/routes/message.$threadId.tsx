@@ -1274,10 +1274,11 @@ function ThreadView() {
           type="submit"
           disabled={!text.trim()}
           aria-label="Send"
-          className="grid h-10 w-10 place-items-center rounded-full bg-primary text-primary-foreground shadow-sm transition disabled:opacity-40"
+          className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground shadow-sm transition active:scale-95 disabled:opacity-40"
         >
           <Send className="h-4 w-4" />
         </button>
+
         </div>
       </form>
       )}
