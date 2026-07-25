@@ -9,11 +9,11 @@ const items = [
 ];
 
 
-export function LeftNav() {
+export function LeftNav({ stickyClass = "sticky top-24" }: { stickyClass?: string } = {}) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   return (
     <aside className="hidden lg:block">
-      <nav className="sticky top-24 space-y-1">
+      <nav className={`${stickyClass} space-y-1`}>
         {items.map(({ icon: Icon, label, to, match }) => {
           const active =
             match === "home"
