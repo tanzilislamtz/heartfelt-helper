@@ -287,3 +287,62 @@ export function formatTime(ts: number): string {
   if (diff < 7) return d.toLocaleDateString([], { weekday: "short" });
   return d.toLocaleDateString([], { month: "short", day: "numeric" });
 }
+
+/* ---------- per-thread state (pin / mute / block / archive / report) ---------- */
+
+export type ThreadState = {
+  pinnedMessageId?: string;
+  muted?: boolean;
+  pinned?: boolean;
+  archived?: boolean;
+  blocked?: boolean;
+  reported?: string;
+};
+
+const STATE_KEY = "la_chat_state_v1";
+
+function loadStates(): Record<string, ThreadState> {
+  if (typeof window === "undefined") return {};
+  try {
+    return JSON.parse(window.localStorage.getItem(STATE_KEY) ?? "{}");
+  } catch {
+    return {};
+  }
+}
+
+export function getThreadState(threadId: string): ThreadState {
+  return loadStates()[threadId] ?? {};
+}
+
+export function setThreadState(threadId: string, patch: Partial<ThreadState>) {
+  if (typeof window === "undefined") return;
+  const all = loadStates();
+  all[threadId] = { ...(all[threadId] ?? {}), ...patch };
+  window.localStorage.setItem(STATE_KEY, JSON.stringify(all));
+  listeners.forEach((l) => l());
+}
+
+export function stateSnapshot(threadId: string): string {
+  return JSON.stringify(getThreadState(threadId));
+}
+
+/** Pin (or unpin) a single message inside a thread. */
+export function pinMessage(threadId: string, messageId: string | null) {
+  setThreadState(threadId, { pinnedMessageId: messageId ?? undefined });
+}
+
+/** Wipe every message of a conversation (local demo delete). */
+export function clearThread(threadId: string) {
+  const s = load();
+  s[threadId] = [];
+  save(s);
+}
+
+/** Mark a conversation as unread again. */
+export function markUnread(threadId: string) {
+  if (typeof window === "undefined") return;
+  const read = loadRead();
+  delete read[threadId];
+  window.localStorage.setItem(READ_KEY, JSON.stringify(read));
+  listeners.forEach((l) => l());
+}
