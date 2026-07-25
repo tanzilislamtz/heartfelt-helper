@@ -145,7 +145,7 @@ function ThreadView() {
           e.preventDefault();
           submit();
         }}
-        className="sticky bottom-0 z-10 flex items-end gap-2 border-t border-border bg-surface p-3 pb-[calc(env(safe-area-inset-bottom)+96px)] lg:pb-3"
+        className="z-10 flex shrink-0 items-end gap-2 border-t border-border bg-surface p-3 pb-[calc(env(safe-area-inset-bottom)+96px)] lg:pb-3"
       >
         <button type="button" aria-label="Attach" className="grid h-10 w-10 place-items-center rounded-full text-foreground/70 hover:bg-muted">
           <Paperclip className="h-4 w-4" />
