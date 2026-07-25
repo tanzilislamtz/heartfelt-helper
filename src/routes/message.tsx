@@ -173,21 +173,39 @@ function ThreadList() {
   return (
     <div className="flex h-[calc(100dvh-11rem)] min-w-0 flex-col overflow-hidden rounded-3xl border border-border bg-surface p-4 shadow-sm lg:h-full">
       <div className="mb-3 flex shrink-0 items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="grid h-10 w-10 place-items-center rounded-2xl bg-primary/10 text-primary">
-            <MessageSquare className="h-5 w-5" />
-          </div>
-          <div>
-            <h1 className="text-lg font-semibold tracking-tight">Messages</h1>
-            <p className="text-xs text-muted-foreground">{threads.length} conversations</p>
+        <div className="flex min-w-0 items-center gap-2">
+          {view === "archived" ? (
+            <button
+              onClick={() => setView("inbox")}
+              aria-label="Back to inbox"
+              className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-primary/10 text-primary transition hover:bg-primary/20"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </button>
+          ) : (
+            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-primary/10 text-primary">
+              <MessageSquare className="h-5 w-5" />
+            </div>
+          )}
+          <div className="min-w-0">
+            <h1 className="truncate text-lg font-semibold tracking-tight">
+              {view === "archived" ? "Archived" : "Messages"}
+            </h1>
+            <p className="text-xs text-muted-foreground">
+              {view === "archived"
+                ? `${archivedIds.length} archived ${archivedIds.length === 1 ? "chat" : "chats"}`
+                : `${threads.length - archivedIds.length} conversations`}
+            </p>
           </div>
         </div>
-        <button
-          aria-label="New chat"
-          className="grid h-9 w-9 place-items-center rounded-full bg-primary text-primary-foreground shadow-sm hover:opacity-95"
-        >
-          <Pencil className="h-4 w-4" />
-        </button>
+        {view === "inbox" && (
+          <button
+            aria-label="New chat"
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground shadow-sm hover:opacity-95"
+          >
+            <Pencil className="h-4 w-4" />
+          </button>
+        )}
       </div>
 
       <div className="relative mb-3 shrink-0">
@@ -195,30 +213,64 @@ function ThreadList() {
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Search conversations"
+          placeholder={view === "archived" ? "Search archived" : "Search conversations"}
           className="h-10 w-full rounded-full border border-border bg-muted/60 pl-9 pr-3 text-sm outline-none focus:border-primary/40 focus:bg-surface focus:ring-4 focus:ring-primary/10"
         />
       </div>
 
       <ul className="-mr-1 flex-1 space-y-1 overflow-y-auto overscroll-contain pr-1">
-        <li>
-          <Link
-            to="/message/requests"
-            className="mb-1 flex items-center gap-2.5 rounded-xl border border-border bg-accent/20 px-2.5 py-1.5 transition hover:bg-accent/30"
-          >
-            <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
-              <MailQuestion className="h-3.5 w-3.5" />
+        {view === "inbox" && (
+          <>
+            <li>
+              <Link
+                to="/message/requests"
+                className="mb-1 flex items-center gap-2.5 rounded-xl border border-border bg-accent/20 px-2.5 py-1.5 transition hover:bg-accent/30"
+              >
+                <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
+                  <MailQuestion className="h-3.5 w-3.5" />
+                </div>
+                <p className="min-w-0 flex-1 truncate text-xs font-semibold">
+                  Message requests
+                  <span className="ml-1 font-normal text-muted-foreground">· {messageRequests.length} new</span>
+                </p>
+                <span className="grid h-4 min-w-4 shrink-0 place-items-center rounded-full bg-primary px-1 text-[9px] font-bold text-primary-foreground">
+                  {messageRequests.length}
+                </span>
+                <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+              </Link>
+            </li>
+            <li>
+              <button
+                onClick={() => setView("archived")}
+                className="mb-1 flex w-full items-center gap-2.5 rounded-xl border border-border bg-muted/40 px-2.5 py-1.5 text-left transition hover:bg-muted"
+              >
+                <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
+                  <Archive className="h-3.5 w-3.5" />
+                </div>
+                <p className="min-w-0 flex-1 truncate text-xs font-semibold">
+                  Archived
+                  <span className="ml-1 font-normal text-muted-foreground">
+                    · {archivedIds.length} {archivedIds.length === 1 ? "chat" : "chats"}
+                  </span>
+                </p>
+                <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+              </button>
+            </li>
+          </>
+        )}
+
+        {view === "archived" && filtered.length === 0 && (
+          <li className="mt-8 flex flex-col items-center px-6 text-center">
+            <div className="grid h-14 w-14 place-items-center rounded-3xl bg-muted text-muted-foreground">
+              <Archive className="h-6 w-6" />
             </div>
-            <p className="min-w-0 flex-1 truncate text-xs font-semibold">
-              Message requests
-              <span className="ml-1 font-normal text-muted-foreground">· {messageRequests.length} new</span>
+            <p className="mt-3 text-sm font-semibold">No archived chats</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Archived chats are hidden from your inbox but never deleted. You can bring them back anytime.
             </p>
-            <span className="grid h-4 min-w-4 shrink-0 place-items-center rounded-full bg-primary px-1 text-[9px] font-bold text-primary-foreground">
-              {messageRequests.length}
-            </span>
-            <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-          </Link>
-        </li>
+          </li>
+        )}
+
 
         {filtered.map((t) => {
           const last = latest[t.id];
