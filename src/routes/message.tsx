@@ -37,7 +37,6 @@ function MessageLayout() {
 
   // Lock page scroll on mobile while inside a chat thread
   useEffect(() => {
-    if (!inThread) return;
     const mq = window.matchMedia("(max-width: 1023px)");
     if (!mq.matches) return;
     window.scrollTo(0, 0);
@@ -52,7 +51,7 @@ function MessageLayout() {
   return (
     <div
       className={`w-full max-w-full overflow-x-hidden bg-background text-foreground ${
-        inThread ? "h-[100dvh] overflow-hidden lg:h-auto lg:min-h-screen lg:overflow-visible" : "min-h-screen"
+        "h-[100dvh] overflow-hidden lg:h-auto lg:min-h-screen lg:overflow-visible"
       }`}
     >
       {/* Header visible everywhere, hidden on mobile only inside a thread */}
@@ -63,7 +62,7 @@ function MessageLayout() {
       <MobileNav open={menuOpen} onClose={() => setMenuOpen(false)} />
       <main
         className={`mx-auto grid w-full max-w-[1400px] grid-cols-1 gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:px-8 lg:py-6 lg:pb-28 ${
-          inThread ? "px-0 py-0" : "px-4 py-4 pb-28"
+          inThread ? "px-0 py-0" : "px-4 py-4"
         }`}
       >
 
@@ -95,8 +94,8 @@ function ThreadList() {
   );
 
   return (
-    <div className="min-w-0 overflow-hidden rounded-3xl border border-border bg-surface p-4 shadow-sm">
-      <div className="mb-3 flex items-center justify-between">
+    <div className="flex h-[calc(100dvh-11rem)] min-w-0 flex-col overflow-hidden rounded-3xl border border-border bg-surface p-4 shadow-sm lg:h-auto lg:max-h-[calc(100dvh-8rem)]">
+      <div className="mb-3 flex shrink-0 items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="grid h-10 w-10 place-items-center rounded-2xl bg-primary/10 text-primary">
             <MessageSquare className="h-5 w-5" />
@@ -114,7 +113,7 @@ function ThreadList() {
         </button>
       </div>
 
-      <div className="relative mb-3">
+      <div className="relative mb-3 shrink-0">
         <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <input
           value={q}
@@ -124,7 +123,7 @@ function ThreadList() {
         />
       </div>
 
-      <ul className="space-y-1">
+      <ul className="-mr-1 flex-1 space-y-1 overflow-y-auto overscroll-contain pr-1">
         {filtered.map((t) => {
           const last = latest[t.id];
           return (
