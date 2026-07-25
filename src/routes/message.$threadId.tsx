@@ -167,7 +167,7 @@ function ThreadView() {
   return (
     <div
       style={shellStyle}
-      className="fixed inset-x-0 bottom-0 top-0 z-30 flex w-full lg:relative max-w-[100vw] flex-col overflow-hidden overscroll-none border-border bg-surface lg:static lg:z-auto lg:h-full lg:min-h-0 lg:max-w-full lg:rounded-3xl lg:border lg:shadow-sm"
+      className="fixed inset-x-0 bottom-0 top-0 z-30 flex w-full max-w-[100vw] flex-col overflow-hidden overscroll-none border-border bg-surface lg:relative lg:z-auto lg:h-full lg:min-h-0 lg:max-w-full lg:rounded-3xl lg:border lg:shadow-sm"
     >
 
       {/* Brand bar (mobile) */}
