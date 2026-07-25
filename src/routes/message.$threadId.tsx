@@ -488,6 +488,184 @@ function ThreadView() {
         <div ref={bottomRef} />
       </div>
 
+      {/* Search / Media panel */}
+      <AnimatePresence>
+        {panel && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-40 flex flex-col bg-black/30 backdrop-blur-[2px]"
+            onClick={() => setPanel(null)}
+          >
+            <motion.div
+              initial={{ y: -24, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -24, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 320, damping: 30 }}
+              onClick={(e) => e.stopPropagation()}
+              className="flex max-h-[85%] min-h-0 flex-col overflow-hidden rounded-b-3xl border-b border-border bg-surface shadow-2xl"
+            >
+              <div className="flex shrink-0 items-center gap-2 border-b border-border px-3 py-2.5 pt-[calc(env(safe-area-inset-top)+0.625rem)] lg:pt-2.5">
+                {panel === "search" ? (
+                  <>
+                    <Search className="h-4 w-4 shrink-0 text-primary" />
+                    <input
+                      autoFocus
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      placeholder="Search in this conversation"
+                      className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+                    />
+                  </>
+                ) : (
+                  <>
+                    <ImageIcon className="h-4 w-4 shrink-0 text-primary" />
+                    <p className="flex-1 text-sm font-semibold">Media, files & links</p>
+                  </>
+                )}
+                <button
+                  onClick={() => setPanel(null)}
+                  aria-label="Close"
+                  className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-foreground/70 hover:bg-muted"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              <div className="min-h-0 flex-1 overflow-y-auto p-2">
+                {panel === "search" ? (
+                  (() => {
+                    const q = query.trim().toLowerCase();
+                    const hits = q
+                      ? messages.filter((m) => !m.deletedFor && m.text.toLowerCase().includes(q))
+                      : [];
+                    if (!q)
+                      return (
+                        <p className="px-3 py-8 text-center text-xs text-muted-foreground">
+                          Type to search messages in this chat.
+                        </p>
+                      );
+                    if (!hits.length)
+                      return (
+                        <p className="px-3 py-8 text-center text-xs text-muted-foreground">
+                          No messages found for “{query}”.
+                        </p>
+                      );
+                    return (
+                      <>
+                        <p className="px-3 pb-1 pt-1 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                          {hits.length} result{hits.length > 1 ? "s" : ""}
+                        </p>
+                        {hits
+                          .slice()
+                          .reverse()
+                          .map((m) => (
+                            <button
+                              key={m.id}
+                              onClick={() => jumpTo(m.id)}
+                              className="flex w-full items-start gap-3 rounded-xl px-3 py-2.5 text-left hover:bg-muted"
+                            >
+                              <div
+                                className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full text-[11px] font-bold text-white"
+                                style={{
+                                  background: m.from === "me" ? "var(--color-primary)" : thread.avatarColor,
+                                }}
+                              >
+                                {m.from === "me" ? "You" : thread.initials}
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <p className="line-clamp-2 text-sm font-bangla">{m.text}</p>
+                                <p className="mt-0.5 text-[10px] text-muted-foreground">{formatTime(m.at)}</p>
+                              </div>
+                            </button>
+                          ))}
+                      </>
+                    );
+                  })()
+                ) : (
+                  (() => {
+                    const files = messages.filter((m) => !m.deletedFor && m.text.startsWith("📎"));
+                    const links = messages.filter(
+                      (m) => !m.deletedFor && /https?:\/\//i.test(m.text),
+                    );
+                    return (
+                      <div className="space-y-4 p-1">
+                        <div>
+                          <p className="px-2 pb-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                            Files ({files.length})
+                          </p>
+                          {files.length ? (
+                            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                              {files
+                                .slice()
+                                .reverse()
+                                .map((m) => (
+                                  <button
+                                    key={m.id}
+                                    onClick={() => jumpTo(m.id)}
+                                    className="flex flex-col items-start gap-2 rounded-2xl border border-border bg-muted/40 p-3 text-left transition hover:border-primary/40 hover:bg-muted"
+                                  >
+                                    <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary/10">
+                                      <Paperclip className="h-4 w-4 text-primary" />
+                                    </span>
+                                    <span className="line-clamp-2 w-full break-all text-[11px] font-medium">
+                                      {m.text.replace("📎", "").trim()}
+                                    </span>
+                                    <span className="text-[10px] text-muted-foreground">{formatTime(m.at)}</span>
+                                  </button>
+                                ))}
+                            </div>
+                          ) : (
+                            <p className="rounded-2xl border border-dashed border-border px-3 py-6 text-center text-xs text-muted-foreground">
+                              No files shared yet.
+                            </p>
+                          )}
+                        </div>
+
+                        <div>
+                          <p className="px-2 pb-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                            Links ({links.length})
+                          </p>
+                          {links.length ? (
+                            <div className="space-y-1">
+                              {links
+                                .slice()
+                                .reverse()
+                                .map((m) => (
+                                  <button
+                                    key={m.id}
+                                    onClick={() => jumpTo(m.id)}
+                                    className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left hover:bg-muted"
+                                  >
+                                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-secondary/10 text-secondary">
+                                      <ChevronRight className="h-4 w-4" />
+                                    </span>
+                                    <span className="min-w-0 flex-1">
+                                      <span className="block truncate text-xs font-medium">{m.text}</span>
+                                      <span className="block text-[10px] text-muted-foreground">
+                                        {formatTime(m.at)}
+                                      </span>
+                                    </span>
+                                  </button>
+                                ))}
+                            </div>
+                          ) : (
+                            <p className="rounded-2xl border border-dashed border-border px-3 py-6 text-center text-xs text-muted-foreground">
+                              No links shared yet.
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })()
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Message action sheet */}
       <AnimatePresence>
         {msgMenu && (
