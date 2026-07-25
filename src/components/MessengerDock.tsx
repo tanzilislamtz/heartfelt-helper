@@ -24,6 +24,7 @@ import {
   Copy,
   Smile,
   Paperclip,
+  Image as ImageIcon,
 } from "lucide-react";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
