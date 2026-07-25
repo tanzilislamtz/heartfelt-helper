@@ -21,6 +21,8 @@ export type ChatMessage = {
   text: string;
   at: number; // epoch ms
   status?: "sent" | "delivered" | "read";
+  reaction?: string;
+  replyTo?: { from: "me" | "them"; text: string };
 };
 
 export const threads: ChatThread[] = [
@@ -177,7 +179,39 @@ export function getSortedThreads(): ChatThread[] {
 }
 
 
-export function sendMessage(threadId: string, text: string) {
+/* ---------- typing indicator ---------- */
+
+const typing = new Set<string>();
+
+export function isTyping(threadId: string) {
+  return typing.has(threadId);
+}
+
+function setTyping(threadId: string, on: boolean) {
+  if (on) typing.add(threadId);
+  else typing.delete(threadId);
+  listeners.forEach((l) => l());
+}
+
+/* ---------- reactions ---------- */
+
+export function setReaction(threadId: string, messageId: string, emoji: string) {
+  const s = load();
+  const l = s[threadId] ?? [];
+  s[threadId] = l.map((m) =>
+    m.id === messageId ? { ...m, reaction: m.reaction === emoji ? undefined : emoji } : m,
+  );
+  save(s);
+}
+
+export function deleteMessage(threadId: string, messageId: string) {
+  const s = load();
+  const l = s[threadId] ?? [];
+  s[threadId] = l.filter((m) => m.id !== messageId);
+  save(s);
+}
+
+export function sendMessage(threadId: string, text: string, replyTo?: ChatMessage) {
   const store = load();
   const list = store[threadId] ?? [];
   const msg: ChatMessage = {
@@ -187,6 +221,7 @@ export function sendMessage(threadId: string, text: string) {
     text,
     at: Date.now(),
     status: "sent",
+    replyTo: replyTo ? { from: replyTo.from, text: replyTo.text } : undefined,
   };
   store[threadId] = [...list, msg];
   save(store);
@@ -199,7 +234,11 @@ export function sendMessage(threadId: string, text: string) {
     save(s);
   }, 600);
 
+  const typingOn = setTimeout(() => setTyping(threadId, true), 900);
+  void typingOn;
+
   setTimeout(() => {
+    setTyping(threadId, false);
     const s = load();
     const l = s[threadId] ?? [];
     const replies = [
@@ -218,7 +257,7 @@ export function sendMessage(threadId: string, text: string) {
     };
     s[threadId] = [...l.map((m) => (m.id === msg.id ? { ...m, status: "read" as const } : m)), reply];
     save(s);
-  }, 1800);
+  }, 2600);
 }
 
 export function subscribe(fn: Listener): () => void {

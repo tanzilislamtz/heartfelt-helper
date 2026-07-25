@@ -20,9 +20,25 @@ import {
   Flag,
   ChevronRight,
   CircleDot,
+  Reply,
+  Forward,
+  Copy,
+  X,
 } from "lucide-react";
+import logoAsset from "@/assets/learns-academy-logo.png.asset.json";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { getMessages, getThread, sendMessage, subscribe, formatTime, markRead } from "@/lib/chat";
+import {
+  getMessages,
+  getThread,
+  sendMessage,
+  subscribe,
+  formatTime,
+  markRead,
+  isTyping,
+  setReaction,
+  deleteMessage,
+  type ChatMessage,
+} from "@/lib/chat";
 import { AnimatePresence, motion } from "framer-motion";
 import CallOverlay, { type CallKind } from "@/components/CallOverlay";
 
@@ -37,7 +53,7 @@ function ThreadView() {
 
   const snap = useSyncExternalStore(
     (cb) => subscribe(cb),
-    () => JSON.stringify(getMessages(threadId)),
+    () => JSON.stringify(getMessages(threadId)) + (isTyping(threadId) ? "|t" : ""),
     () => "[]",
   );
   const messages = getMessages(threadId);
@@ -52,6 +68,10 @@ function ThreadView() {
   const [notifMuted, setNotifMuted] = useState(false);
   const [pinned, setPinned] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [replyTo, setReplyTo] = useState<ChatMessage | null>(null);
+  const [msgMenu, setMsgMenu] = useState<{ msg: ChatMessage; x: number; y: number } | null>(null);
+  const longPress = useRef<number | null>(null);
+  const typing = isTyping(threadId);
 
   const notify = (msg: string) => {
     setToast(msg);
@@ -111,8 +131,9 @@ function ThreadView() {
   const submit = () => {
     const value = text.trim();
     if (!value) return;
-    sendMessage(threadId, value);
+    sendMessage(threadId, value, replyTo ?? undefined);
     setText("");
+    setReplyTo(null);
   };
 
   const isMobile = typeof window !== "undefined" ? window.innerWidth < 1024 : false;
@@ -127,8 +148,13 @@ function ThreadView() {
       className="fixed inset-x-0 bottom-0 top-0 z-30 flex w-full max-w-[100vw] flex-col overflow-hidden overscroll-none border-border bg-surface lg:static lg:z-auto lg:h-full lg:min-h-0 lg:max-w-full lg:rounded-3xl lg:border lg:shadow-sm"
     >
 
+      {/* Brand bar (mobile) */}
+      <div className="flex shrink-0 items-center justify-center border-b border-border bg-surface px-3 pb-2 pt-[calc(env(safe-area-inset-top)+0.75rem)] lg:hidden">
+        <img src={logoAsset.url} alt="Learns Academy" className="h-7 w-auto" />
+      </div>
+
       {/* Header */}
-      <div className="relative z-20 flex shrink-0 items-center gap-2 border-b border-border bg-surface px-3 pb-3 pt-[calc(env(safe-area-inset-top)+1.25rem)] sm:px-4 lg:pt-4">
+      <div className="relative z-20 flex shrink-0 items-center gap-2 border-b border-border bg-surface px-3 py-2.5 sm:px-4 lg:py-3">
         <button
           onClick={() => navigate({ to: "/message" })}
           aria-label="Back"
@@ -318,12 +344,42 @@ function ThreadView() {
                   className={`flex ${mine ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`max-w-[78%] whitespace-pre-wrap rounded-2xl px-3.5 py-2 text-sm leading-relaxed font-bangla ${
+                    data-allow-contextmenu
+                    onContextMenu={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setMsgMenu({ msg: m, x: e.clientX, y: e.clientY });
+                    }}
+                    onTouchStart={(e) => {
+                      const t = e.touches[0];
+                      longPress.current = window.setTimeout(
+                        () => setMsgMenu({ msg: m, x: t.clientX, y: t.clientY }),
+                        420,
+                      );
+                    }}
+                    onTouchEnd={() => {
+                      if (longPress.current) window.clearTimeout(longPress.current);
+                    }}
+                    onTouchMove={() => {
+                      if (longPress.current) window.clearTimeout(longPress.current);
+                    }}
+                    className={`relative max-w-[78%] select-none whitespace-pre-wrap rounded-2xl px-3.5 py-2 text-sm leading-relaxed font-bangla ${
                       mine
                         ? "rounded-br-md bg-primary text-primary-foreground"
                         : "rounded-bl-md border border-border bg-surface text-foreground"
-                    }`}
+                    } ${m.reaction ? "mb-3" : ""}`}
                   >
+                    {m.replyTo && (
+                      <div
+                        className={`mb-1.5 truncate rounded-lg border-l-2 px-2 py-1 text-[11px] ${
+                          mine
+                            ? "border-white/60 bg-white/15 text-primary-foreground/85"
+                            : "border-primary/50 bg-muted text-muted-foreground"
+                        }`}
+                      >
+                        {m.replyTo.text}
+                      </div>
+                    )}
                     {m.text}
                     {mine && (
                       <span className="ml-1.5 inline-flex translate-y-0.5 items-center text-[10px] opacity-80">
@@ -336,14 +392,126 @@ function ThreadView() {
                         )}
                       </span>
                     )}
+                    {m.reaction && (
+                      <motion.span
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        className={`absolute -bottom-3 ${mine ? "right-2" : "left-2"} rounded-full border border-border bg-surface px-1.5 py-0.5 text-[11px] shadow-sm`}
+                      >
+                        {m.reaction}
+                      </motion.span>
+                    )}
                   </div>
                 </motion.div>
               </div>
             );
           })}
         </AnimatePresence>
+
+        {/* Typing indicator */}
+        <AnimatePresence>
+          {typing && (
+            <motion.div
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 6 }}
+              className="flex justify-start"
+            >
+              <div className="flex items-center gap-1.5 rounded-2xl rounded-bl-md border border-border bg-surface px-3.5 py-2.5">
+                {[0, 1, 2].map((d) => (
+                  <motion.span
+                    key={d}
+                    className="h-1.5 w-1.5 rounded-full bg-muted-foreground"
+                    animate={{ y: [0, -4, 0], opacity: [0.4, 1, 0.4] }}
+                    transition={{ duration: 0.9, repeat: Infinity, delay: d * 0.15 }}
+                  />
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
         <div ref={bottomRef} />
       </div>
+
+      {/* Message action sheet */}
+      <AnimatePresence>
+        {msgMenu && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setMsgMenu(null)}
+            className="fixed inset-0 z-[70] bg-foreground/20 backdrop-blur-[2px]"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.94, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96 }}
+              transition={{ type: "spring", stiffness: 320, damping: 26 }}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                left: Math.min(Math.max(msgMenu.x - 110, 12), Math.max(window.innerWidth - 232, 12)),
+                top: Math.min(Math.max(msgMenu.y - 60, 80), Math.max(window.innerHeight - 300, 80)),
+              }}
+              className="absolute w-60 overflow-hidden rounded-2xl border border-border bg-surface p-1.5 shadow-2xl"
+            >
+              <div className="mb-1 flex items-center justify-between gap-0.5 rounded-xl bg-muted/60 px-2 py-1.5">
+                {["👍", "❤️", "😂", "😮", "😢", "🙏"].map((emo) => (
+                  <motion.button
+                    key={emo}
+                    whileTap={{ scale: 0.85 }}
+                    whileHover={{ scale: 1.2 }}
+                    onClick={() => {
+                      setReaction(threadId, msgMenu.msg.id, emo);
+                      setMsgMenu(null);
+                    }}
+                    className="text-base leading-none"
+                  >
+                    {emo}
+                  </motion.button>
+                ))}
+              </div>
+              <MenuItem
+                icon={<Reply className="h-4 w-4 text-primary" />}
+                label="Reply"
+                onClick={() => {
+                  setReplyTo(msgMenu.msg);
+                  setMsgMenu(null);
+                  inputRef.current?.focus();
+                }}
+              />
+              <MenuItem
+                icon={<Forward className="h-4 w-4 text-primary" />}
+                label="Forward"
+                onClick={() => {
+                  setMsgMenu(null);
+                  notify("Message forwarded (demo)");
+                }}
+              />
+              <MenuItem
+                icon={<Copy className="h-4 w-4 text-primary" />}
+                label="Copy text"
+                onClick={() => {
+                  navigator.clipboard?.writeText(msgMenu.msg.text);
+                  setMsgMenu(null);
+                  notify("Copied");
+                }}
+              />
+              <MenuItem
+                icon={<Trash2 className="h-4 w-4 text-red-500" />}
+                label="Delete"
+                danger
+                onClick={() => {
+                  deleteMessage(threadId, msgMenu.msg.id);
+                  setMsgMenu(null);
+                  notify("Message deleted");
+                }}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
 
       {/* Composer */}
       <form
@@ -351,8 +519,34 @@ function ThreadView() {
           e.preventDefault();
           submit();
         }}
-        className="z-10 flex shrink-0 items-end gap-2 border-t border-border bg-surface py-3 pb-[calc(env(safe-area-inset-bottom)+12px)] safe-x lg:pb-3"
+        className="z-10 flex shrink-0 flex-col gap-2 border-t border-border bg-surface py-3 pb-[calc(env(safe-area-inset-bottom)+12px)] safe-x lg:pb-3"
       >
+      <AnimatePresence>
+        {replyTo && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="flex items-center gap-2 overflow-hidden rounded-xl border-l-2 border-primary bg-muted/60 px-3 py-2"
+          >
+            <div className="min-w-0 flex-1">
+              <p className="text-[11px] font-semibold text-primary">
+                Replying to {replyTo.from === "me" ? "yourself" : thread.name}
+              </p>
+              <p className="truncate text-xs text-muted-foreground font-bangla">{replyTo.text}</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setReplyTo(null)}
+              aria-label="Cancel reply"
+              className="grid h-7 w-7 shrink-0 place-items-center rounded-full hover:bg-surface"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <div className="flex items-end gap-2">
         <button type="button" aria-label="Attach" className="grid h-10 w-10 place-items-center rounded-full text-foreground/70 hover:bg-muted">
           <Paperclip className="h-4 w-4" />
         </button>
@@ -383,6 +577,7 @@ function ThreadView() {
         >
           <Send className="h-4 w-4" />
         </button>
+        </div>
       </form>
 
       {/* Toast */}
