@@ -127,8 +127,10 @@ function RootComponent() {
   const search = useRouterState({ select: (s) => s.location.search as Record<string, unknown> });
 
   const inExamMode = /^\/quiz\/exam\//.test(pathname) && search?.mode === "exam";
+  const inChatThread = /^\/message\/[^/]+/.test(pathname);
   const hideBottomNav =
-    /^\/(welcome|login|register|create-post)(\/|$)/.test(pathname) || inExamMode;
+    /^\/(welcome|login|register|create-post)(\/|$)/.test(pathname) || inExamMode || inChatThread;
+
 
   return (
     <QueryClientProvider client={queryClient}>
