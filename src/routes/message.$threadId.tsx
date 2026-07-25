@@ -84,7 +84,8 @@ function ThreadView() {
     >
 
       {/* Header */}
-      <div className="z-10 flex shrink-0 items-center gap-3 border-b border-border bg-surface px-4 py-3">
+      <div className="z-10 flex shrink-0 items-center gap-3 border-b border-border bg-surface px-4 py-3 pt-[calc(env(safe-area-inset-top)+0.75rem)] lg:pt-3">
+
 
         <button
           onClick={() => navigate({ to: "/message" })}
