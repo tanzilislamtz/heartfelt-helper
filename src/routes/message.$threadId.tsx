@@ -338,13 +338,14 @@ function ThreadView() {
                 }}
               />
               <MenuItem
-                icon={<Pin className="h-4 w-4 text-primary" />}
-                label={pinned ? "Unpin conversation" : "Pin conversation"}
+                icon={<BellOff className="h-4 w-4 text-primary" />}
+                label={notifMuted ? "Unmute" : "Mute notifications"}
                 onClick={() => {
-                  setThreadState(threadId, { pinned: !pinned });
-                  notify(pinned ? "Unpinned" : "Pinned to top of your inbox");
+                  setThreadState(threadId, { muted: !notifMuted });
+                  notify(notifMuted ? "Notifications on" : "Notifications muted");
                 }}
               />
+
               <MenuItem
                 icon={<BellOff className="h-4 w-4 text-primary" />}
                 label={notifMuted ? "Unmute" : "Mute notifications"}
