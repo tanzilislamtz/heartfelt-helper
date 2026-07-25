@@ -23,6 +23,7 @@ import {
   Reply,
   Forward,
   Copy,
+  SmilePlus,
   X,
 } from "lucide-react";
 import logoAsset from "@/assets/learns-academy-logo.png.asset.json";
@@ -423,6 +424,27 @@ function ThreadView() {
                       </motion.span>
                     )}
                   </div>
+                  {!mine && (
+                    <div className="hidden shrink-0 items-center gap-0.5 opacity-0 transition group-hover:opacity-100 lg:flex">
+                      <HoverAct
+                        label="Reply"
+                        icon={<Reply className="h-3.5 w-3.5" />}
+                        onClick={() => setReplyTo(m)}
+                      />
+                      <HoverAct
+                        label="Forward"
+                        icon={<Forward className="h-3.5 w-3.5" />}
+                        onClick={() => setToast("Message forwarded")}
+                      />
+                      <HoverAct
+                        label="React"
+                        icon={<SmilePlus className="h-3.5 w-3.5" />}
+                        onClick={(e) =>
+                          setMsgMenu({ msg: m, x: e.clientX, y: e.clientY })
+                        }
+                      />
+                    </div>
+                  )}
                 </motion.div>
               </div>
             );
@@ -651,3 +673,28 @@ function MenuItem({
   );
 }
 
+
+function HoverAct({
+  label,
+  icon,
+  onClick,
+  danger,
+}: {
+  label: string;
+  icon: React.ReactNode;
+  onClick: (e: React.MouseEvent) => void;
+  danger?: boolean;
+}) {
+  return (
+    <button
+      title={label}
+      aria-label={label}
+      onClick={onClick}
+      className={`grid h-7 w-7 place-items-center rounded-full border border-border bg-surface shadow-sm transition hover:bg-muted ${
+        danger ? "text-red-500" : "text-muted-foreground hover:text-foreground"
+      }`}
+    >
+      {icon}
+    </button>
+  );
+}
