@@ -20,9 +20,25 @@ import {
   Flag,
   ChevronRight,
   CircleDot,
+  Reply,
+  Forward,
+  Copy,
+  X,
 } from "lucide-react";
+import logoAsset from "@/assets/learns-academy-logo.png.asset.json";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { getMessages, getThread, sendMessage, subscribe, formatTime, markRead } from "@/lib/chat";
+import {
+  getMessages,
+  getThread,
+  sendMessage,
+  subscribe,
+  formatTime,
+  markRead,
+  isTyping,
+  setReaction,
+  deleteMessage,
+  type ChatMessage,
+} from "@/lib/chat";
 import { AnimatePresence, motion } from "framer-motion";
 import CallOverlay, { type CallKind } from "@/components/CallOverlay";
 
@@ -52,6 +68,10 @@ function ThreadView() {
   const [notifMuted, setNotifMuted] = useState(false);
   const [pinned, setPinned] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [replyTo, setReplyTo] = useState<ChatMessage | null>(null);
+  const [msgMenu, setMsgMenu] = useState<{ msg: ChatMessage; x: number; y: number } | null>(null);
+  const longPress = useRef<number | null>(null);
+  const typing = isTyping(threadId);
 
   const notify = (msg: string) => {
     setToast(msg);
@@ -111,8 +131,9 @@ function ThreadView() {
   const submit = () => {
     const value = text.trim();
     if (!value) return;
-    sendMessage(threadId, value);
+    sendMessage(threadId, value, replyTo ?? undefined);
     setText("");
+    setReplyTo(null);
   };
 
   const isMobile = typeof window !== "undefined" ? window.innerWidth < 1024 : false;
@@ -127,8 +148,13 @@ function ThreadView() {
       className="fixed inset-x-0 bottom-0 top-0 z-30 flex w-full max-w-[100vw] flex-col overflow-hidden overscroll-none border-border bg-surface lg:static lg:z-auto lg:h-full lg:min-h-0 lg:max-w-full lg:rounded-3xl lg:border lg:shadow-sm"
     >
 
+      {/* Brand bar (mobile) */}
+      <div className="flex shrink-0 items-center justify-center border-b border-border bg-surface px-3 pb-2 pt-[calc(env(safe-area-inset-top)+0.75rem)] lg:hidden">
+        <img src={logoAsset.url} alt="Learns Academy" className="h-7 w-auto" />
+      </div>
+
       {/* Header */}
-      <div className="relative z-20 flex shrink-0 items-center gap-2 border-b border-border bg-surface px-3 pb-3 pt-[calc(env(safe-area-inset-top)+1.25rem)] sm:px-4 lg:pt-4">
+      <div className="relative z-20 flex shrink-0 items-center gap-2 border-b border-border bg-surface px-3 py-2.5 sm:px-4 lg:py-3">
         <button
           onClick={() => navigate({ to: "/message" })}
           aria-label="Back"
