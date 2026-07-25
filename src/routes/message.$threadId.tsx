@@ -353,8 +353,14 @@ function ThreadView() {
                   setThreadState(threadId, { archived: next });
                   setOpenMenu(null);
                   if (next) {
-                    navigate({ to: "/message", search: { view: "archived" } as never });
+                    try {
+                      window.sessionStorage.setItem("la_open_archived", "1");
+                    } catch {
+                      /* ignore */
+                    }
+                    navigate({ to: "/message" });
                   } else notify("Moved back to inbox");
+
                 }}
               />
 
