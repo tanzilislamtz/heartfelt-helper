@@ -37,10 +37,11 @@ function MessageLayout() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Messenger-style: header hidden on mobile, kept on desktop */}
-      <div className="hidden lg:block">
+      {/* Header visible everywhere, hidden on mobile only inside a thread */}
+      <div className={inThread ? "hidden lg:block" : "block"}>
         <Topbar variant="app" onMenu={() => setMenuOpen(true)} />
       </div>
+
       <MobileNav open={menuOpen} onClose={() => setMenuOpen(false)} />
       <main
         className={`mx-auto grid max-w-[1400px] grid-cols-1 gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:px-8 lg:py-6 lg:pb-28 ${
