@@ -344,7 +344,22 @@ function ThreadList() {
                   </div>
                 </div>
               </Link>
+              {view === "archived" && (
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setThreadState(t.id, { archived: false });
+                    notify(`${t.name.split(" ")[0]} moved back to inbox`);
+                  }}
+                  className="absolute right-2 top-1/2 flex -translate-y-1/2 items-center gap-1 rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] font-semibold text-primary shadow-sm transition hover:bg-primary/10"
+                >
+                  <ArchiveRestore className="h-3.5 w-3.5" />
+                  Unarchive
+                </button>
+              )}
             </li>
+
           );
         })}
       </ul>
