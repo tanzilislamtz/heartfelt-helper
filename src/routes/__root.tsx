@@ -131,6 +131,20 @@ function RootComponent() {
   const hideBottomNav =
     /^\/(welcome|login|register|create-post)(\/|$)/.test(pathname) || inExamMode || inChatThread;
 
+  // Block the browser context menu app-wide. Elements that provide their own
+  // custom menu (chat bubbles) opt out with [data-allow-contextmenu].
+  useEffect(() => {
+    const onCtx = (e: MouseEvent) => {
+      const el = e.target as HTMLElement | null;
+      if (el?.closest("[data-allow-contextmenu]")) return;
+      e.preventDefault();
+    };
+    document.addEventListener("contextmenu", onCtx);
+    return () => document.removeEventListener("contextmenu", onCtx);
+  }, []);
+
+
+
 
   return (
     <QueryClientProvider client={queryClient}>
