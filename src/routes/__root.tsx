@@ -146,6 +146,8 @@ function RootComponent() {
 
       </AnimatePresence>
       {!hideBottomNav && <BottomNav />}
+      <MessengerDock />
+
     </QueryClientProvider>
   );
 }
