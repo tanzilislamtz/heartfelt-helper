@@ -71,8 +71,15 @@ function ThreadView() {
     setText("");
   };
 
+  const isMobile = typeof window !== "undefined" ? window.innerWidth < 1024 : false;
+  const shellStyle =
+    isMobile && vv ? { height: `${vv.height}px`, top: `${vv.top}px`, bottom: "auto" as const } : undefined;
+
   return (
-    <div className="fixed inset-0 z-30 flex w-full max-w-full flex-col overflow-hidden overscroll-none border-border bg-surface lg:static lg:z-auto lg:h-[calc(100vh-160px)] lg:min-h-[500px] lg:rounded-3xl lg:border lg:shadow-sm">
+    <div
+      style={shellStyle}
+      className="fixed inset-0 z-30 flex w-full max-w-full flex-col overflow-hidden overscroll-none border-border bg-surface lg:static lg:z-auto lg:h-[calc(100vh-160px)] lg:min-h-[500px] lg:rounded-3xl lg:border lg:shadow-sm"
+    >
       {/* Header */}
       <div className="z-10 flex shrink-0 items-center gap-3 border-b border-border bg-surface px-4 py-3">
 
