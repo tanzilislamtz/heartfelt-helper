@@ -23,6 +23,9 @@ import {
   Forward,
   Copy,
   X,
+  PinOff,
+  AlertTriangle,
+  ShieldCheck,
 } from "lucide-react";
 import logoAsset from "@/assets/learns-academy-logo.png.asset.json";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
@@ -36,8 +39,23 @@ import {
   isTyping,
   setReaction,
   deleteMessage,
+  pinMessage,
+  clearThread,
+  markUnread,
+  getThreadState,
+  setThreadState,
+  stateSnapshot,
   type ChatMessage,
 } from "@/lib/chat";
+
+const REPORT_REASONS = [
+  "Spam or scam",
+  "Harassment or bullying",
+  "Fake account / impersonation",
+  "Inappropriate content",
+  "Selling illegal or unsafe items",
+  "Something else",
+];
 import { AnimatePresence, motion } from "framer-motion";
 import CallOverlay, { type CallKind } from "@/components/CallOverlay";
 
@@ -59,7 +77,10 @@ function ThreadView() {
 
   const snap = useSyncExternalStore(
     (cb) => subscribe(cb),
-    () => JSON.stringify(getMessages(threadId)) + (isTyping(threadId) ? "|t" : ""),
+    () =>
+      JSON.stringify(getMessages(threadId)) +
+      stateSnapshot(threadId) +
+      (isTyping(threadId) ? "|t" : ""),
     () => "[]",
   );
   const messages = getMessages(threadId);
@@ -71,8 +92,14 @@ function ThreadView() {
 
   const [openMenu, setOpenMenu] = useState<null | "profile" | "more">(null);
   const [call, setCall] = useState<null | CallKind>(null);
-  const [notifMuted, setNotifMuted] = useState(false);
-  const [pinned, setPinned] = useState(false);
+  const tState = getThreadState(threadId);
+  const notifMuted = !!tState.muted;
+  const pinned = !!tState.pinned;
+  const blocked = !!tState.blocked;
+  const pinnedMsg = messages.find((m) => m.id === tState.pinnedMessageId) ?? null;
+  const [confirm, setConfirm] = useState<null | "block" | "unblock" | "deleteChat" | "report">(null);
+  const [reportReason, setReportReason] = useState<string | null>(null);
+  const [reportDone, setReportDone] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [replyTo, setReplyTo] = useState<ChatMessage | null>(null);
   const [emojiOpen, setEmojiOpen] = useState(false);
@@ -301,52 +328,108 @@ function ThreadView() {
               <MenuItem
                 icon={<CircleDot className="h-4 w-4 text-primary" />}
                 label="Mark as unread"
-                onClick={() => notify("Marked as unread")}
+                onClick={() => {
+                  markUnread(threadId);
+                  setOpenMenu(null);
+                  navigate({ to: "/message" });
+                }}
               />
               <MenuItem
                 icon={<Pin className="h-4 w-4 text-primary" />}
                 label={pinned ? "Unpin conversation" : "Pin conversation"}
                 onClick={() => {
-                  setPinned((v) => !v);
-                  notify(pinned ? "Unpinned" : "Pinned to top");
+                  setThreadState(threadId, { pinned: !pinned });
+                  notify(pinned ? "Unpinned" : "Pinned to top of your inbox");
                 }}
               />
               <MenuItem
                 icon={<BellOff className="h-4 w-4 text-primary" />}
                 label={notifMuted ? "Unmute" : "Mute notifications"}
                 onClick={() => {
-                  setNotifMuted((v) => !v);
+                  setThreadState(threadId, { muted: !notifMuted });
                   notify(notifMuted ? "Notifications on" : "Notifications muted");
                 }}
               />
               <MenuItem
                 icon={<Archive className="h-4 w-4 text-primary" />}
-                label="Archive chat"
-                onClick={() => notify("Archived")}
+                label={tState.archived ? "Unarchive chat" : "Archive chat"}
+                onClick={() => {
+                  const next = !tState.archived;
+                  setThreadState(threadId, { archived: next });
+                  setOpenMenu(null);
+                  if (next) navigate({ to: "/message" });
+                  else notify("Moved back to inbox");
+                }}
               />
               <MenuItem
                 icon={<Flag className="h-4 w-4 text-primary" />}
                 label="Report"
-                onClick={() => notify("Reported (demo)")}
+                onClick={() => {
+                  setOpenMenu(null);
+                  setReportReason(null);
+                  setReportDone(false);
+                  setConfirm("report");
+                }}
               />
               <MenuItem
-                icon={<Ban className="h-4 w-4 text-red-500" />}
-                label="Block"
-                danger
-                onClick={() => notify("User blocked (demo)")}
+                icon={<Ban className={`h-4 w-4 ${blocked ? "text-primary" : "text-red-500"}`} />}
+                label={blocked ? "Unblock" : "Block"}
+                danger={!blocked}
+                onClick={() => {
+                  setOpenMenu(null);
+                  setConfirm(blocked ? "unblock" : "block");
+                }}
               />
 
               <MenuItem
                 icon={<Trash2 className="h-4 w-4 text-red-500" />}
                 label="Delete chat"
                 danger
-                onClick={() => notify("Chat deleted (demo)")}
+                onClick={() => {
+                  setOpenMenu(null);
+                  setConfirm("deleteChat");
+                }}
               />
             </motion.div>
           )}
         </AnimatePresence>
       </div>
 
+
+      {/* Pinned message banner */}
+      <AnimatePresence initial={false}>
+        {pinnedMsg && (
+          <motion.button
+            key={pinnedMsg.id}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            onClick={() => jumpTo(pinnedMsg.id)}
+            className="z-10 flex w-full shrink-0 items-center gap-2 overflow-hidden border-b border-border bg-primary/5 px-3 py-2 text-left sm:px-4"
+          >
+            <Pin className="h-3.5 w-3.5 shrink-0 rotate-45 text-primary" />
+            <span className="min-w-0 flex-1">
+              <span className="block text-[11px] font-semibold text-primary">Pinned message</span>
+              <span className="block truncate text-xs text-muted-foreground font-bangla">
+                {pinnedMsg.text}
+              </span>
+            </span>
+            <span
+              role="button"
+              tabIndex={0}
+              onClick={(e) => {
+                e.stopPropagation();
+                pinMessage(threadId, null);
+                notify("Message unpinned");
+              }}
+              aria-label="Unpin"
+              className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground hover:bg-surface"
+            >
+              <PinOff className="h-3.5 w-3.5" />
+            </span>
+          </motion.button>
+        )}
+      </AnimatePresence>
 
       {/* Messages */}
       <div className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain bg-muted/30 py-4 safe-x">
@@ -718,6 +801,22 @@ function ThreadView() {
                   setReplyTo(msgMenu.msg);
                   setMsgMenu(null);
                   inputRef.current?.focus();
+                }}
+              />
+              <MenuItem
+                icon={
+                  tState.pinnedMessageId === msgMenu.msg.id ? (
+                    <PinOff className="h-4 w-4 text-primary" />
+                  ) : (
+                    <Pin className="h-4 w-4 text-primary" />
+                  )
+                }
+                label={tState.pinnedMessageId === msgMenu.msg.id ? "Unpin message" : "Pin message"}
+                onClick={() => {
+                  const isPinned = tState.pinnedMessageId === msgMenu.msg.id;
+                  pinMessage(threadId, isPinned ? null : msgMenu.msg.id);
+                  setMsgMenu(null);
+                  notify(isPinned ? "Message unpinned" : "Message pinned to top");
                 }}
               />
               <MenuItem
