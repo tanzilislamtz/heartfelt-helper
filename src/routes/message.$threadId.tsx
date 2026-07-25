@@ -398,7 +398,9 @@ function ThreadView() {
                         : mine
                           ? "rounded-br-md bg-primary text-primary-foreground"
                           : "rounded-bl-md border border-border bg-surface text-foreground"
-                    } ${m.reaction && !m.deletedFor ? "mb-3" : ""}`}
+                    } ${m.reaction && !m.deletedFor ? "mb-3" : ""} ${
+                      highlight === m.id ? "ring-2 ring-accent ring-offset-2 ring-offset-muted/30" : ""
+                    }`}
                   >
                     {m.deletedFor ? (
                       <span className="flex flex-col gap-0.5">
