@@ -14,6 +14,7 @@ import {
   threads,
   getSortedThreads,
   getUnreadCounts,
+  markRead,
   getAllLatest,
   getMessages,
   getThread,
@@ -193,8 +194,11 @@ function ChatWindow({ threadId, minimized }: { threadId: string; minimized: bool
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!minimized) bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages.length, minimized]);
+    if (minimized) return;
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const id = window.setTimeout(() => markRead(threadId), 300);
+    return () => window.clearTimeout(id);
+  }, [messages.length, minimized, threadId]);
 
   if (!thread) return null;
 
