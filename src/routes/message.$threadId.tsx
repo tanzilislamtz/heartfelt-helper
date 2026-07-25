@@ -519,8 +519,34 @@ function ThreadView() {
           e.preventDefault();
           submit();
         }}
-        className="z-10 flex shrink-0 items-end gap-2 border-t border-border bg-surface py-3 pb-[calc(env(safe-area-inset-bottom)+12px)] safe-x lg:pb-3"
+        className="z-10 flex shrink-0 flex-col gap-2 border-t border-border bg-surface py-3 pb-[calc(env(safe-area-inset-bottom)+12px)] safe-x lg:pb-3"
       >
+      <AnimatePresence>
+        {replyTo && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="flex items-center gap-2 overflow-hidden rounded-xl border-l-2 border-primary bg-muted/60 px-3 py-2"
+          >
+            <div className="min-w-0 flex-1">
+              <p className="text-[11px] font-semibold text-primary">
+                Replying to {replyTo.from === "me" ? "yourself" : thread.name}
+              </p>
+              <p className="truncate text-xs text-muted-foreground font-bangla">{replyTo.text}</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setReplyTo(null)}
+              aria-label="Cancel reply"
+              className="grid h-7 w-7 shrink-0 place-items-center rounded-full hover:bg-surface"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <div className="flex items-end gap-2">
         <button type="button" aria-label="Attach" className="grid h-10 w-10 place-items-center rounded-full text-foreground/70 hover:bg-muted">
           <Paperclip className="h-4 w-4" />
         </button>
@@ -551,6 +577,7 @@ function ThreadView() {
         >
           <Send className="h-4 w-4" />
         </button>
+        </div>
       </form>
 
       {/* Toast */}
