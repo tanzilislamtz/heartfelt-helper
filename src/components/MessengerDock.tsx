@@ -458,6 +458,18 @@ function ChatWindow({ threadId, minimized }: { threadId: string; minimized: bool
   const messages = getMessages(threadId);
   const [text, setText] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
+  const [profileMenu, setProfileMenu] = useState(false);
+  const [moreMenu, setMoreMenu] = useState(false);
+  const [call, setCall] = useState(false);
+  const [muted, setMuted] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
+  const [replyTo, setReplyTo] = useState<ChatMessage | null>(null);
+  const [msgMenu, setMsgMenu] = useState<{ msg: ChatMessage; x: number; y: number } | null>(null);
+  const [delTarget, setDelTarget] = useState<ChatMessage | null>(null);
+  const notify = (m: string) => {
+    setToast(m);
+    window.setTimeout(() => setToast(null), 1800);
+  };
 
   useEffect(() => {
     if (minimized) return;
@@ -471,8 +483,9 @@ function ChatWindow({ threadId, minimized }: { threadId: string; minimized: bool
   const submit = () => {
     const v = text.trim();
     if (!v) return;
-    sendMessage(threadId, v);
+    sendMessage(threadId, v, replyTo ?? undefined);
     setText("");
+    setReplyTo(null);
   };
 
   return (
@@ -485,10 +498,13 @@ function ChatWindow({ threadId, minimized }: { threadId: string; minimized: bool
       className="pointer-events-auto flex w-[328px] flex-col overflow-hidden rounded-t-2xl border border-b-0 border-border bg-surface shadow-2xl"
       style={{ height: minimized ? 48 : 440 }}
     >
-      <div className="flex items-center gap-2 border-b border-border bg-surface px-3 py-2">
+      <div className="relative flex items-center gap-1 border-b border-border bg-surface px-3 py-2">
         <button
-          onClick={() => toggleMinimizeChat(threadId)}
-          className="flex min-w-0 flex-1 items-center gap-2 text-left"
+          onClick={() => {
+            setMoreMenu(false);
+            setProfileMenu((v) => !v);
+          }}
+          className="flex min-w-0 flex-1 items-center gap-2 rounded-xl px-1 py-0.5 text-left transition hover:bg-muted"
         >
           <div
             className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-xs font-bold text-white"
@@ -504,6 +520,23 @@ function ChatWindow({ threadId, minimized }: { threadId: string; minimized: bool
           </div>
         </button>
         <button
+          aria-label="Audio call"
+          onClick={() => setCall(true)}
+          className="grid h-7 w-7 place-items-center rounded-full text-primary hover:bg-muted"
+        >
+          <Phone className="h-4 w-4" />
+        </button>
+        <button
+          aria-label="More options"
+          onClick={() => {
+            setProfileMenu(false);
+            setMoreMenu((v) => !v);
+          }}
+          className="grid h-7 w-7 place-items-center rounded-full text-primary hover:bg-muted"
+        >
+          <MoreHorizontal className="h-4 w-4" />
+        </button>
+        <button
           aria-label="Minimize"
           onClick={() => toggleMinimizeChat(threadId)}
           className="grid h-7 w-7 place-items-center rounded-full text-foreground/60 hover:bg-muted"
@@ -517,6 +550,100 @@ function ChatWindow({ threadId, minimized }: { threadId: string; minimized: bool
         >
           <X className="h-4 w-4" />
         </button>
+
+        <AnimatePresence>
+          {profileMenu && (
+            <motion.div
+              initial={{ opacity: 0, y: -6, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -6, scale: 0.97 }}
+              className="absolute left-2 top-[46px] z-30 w-56 rounded-2xl border border-border bg-surface p-1.5 shadow-2xl"
+            >
+              <Link
+                to="/message/$threadId"
+                params={{ threadId }}
+                onClick={() => setProfileMenu(false)}
+                className="flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-sm transition hover:bg-muted"
+              >
+                <User className="h-4 w-4 text-primary" /> Visit profile
+              </Link>
+              <MenuRow
+                icon={<Search className="h-4 w-4 text-primary" />}
+                label="Search in chat"
+                onClick={() => {
+                  setProfileMenu(false);
+                  notify("Search in chat (demo)");
+                }}
+              />
+              <MenuRow
+                icon={<Images className="h-4 w-4 text-primary" />}
+                label="View media"
+                onClick={() => {
+                  setProfileMenu(false);
+                  notify("No media shared yet");
+                }}
+              />
+              <MenuRow
+                icon={<Palette className="h-4 w-4 text-primary" />}
+                label="Change theme"
+                onClick={() => {
+                  setProfileMenu(false);
+                  notify("Theme options coming soon");
+                }}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {moreMenu && (
+            <motion.div
+              initial={{ opacity: 0, y: -6, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -6, scale: 0.97 }}
+              className="absolute right-2 top-[46px] z-30 w-56 rounded-2xl border border-border bg-surface p-1.5 shadow-2xl"
+            >
+              <MenuRow
+                icon={muted ? <Bell className="h-4 w-4 text-primary" /> : <BellOff className="h-4 w-4 text-primary" />}
+                label={muted ? "Turn on notifications" : "Mute notifications"}
+                onClick={() => {
+                  setMuted((v) => !v);
+                  setMoreMenu(false);
+                  notify(muted ? "Notifications on" : "Notifications muted");
+                }}
+              />
+              <MenuRow
+                icon={<Archive className="h-4 w-4 text-primary" />}
+                label="Archive chat"
+                onClick={() => {
+                  setMoreMenu(false);
+                  closeChatWindow(threadId);
+                  notify("Chat archived");
+                }}
+              />
+              <div className="my-1 h-px bg-border" />
+              <MenuRow
+                icon={<Ban className="h-4 w-4 text-red-500" />}
+                label="Block user"
+                danger
+                onClick={() => {
+                  setMoreMenu(false);
+                  notify("User blocked");
+                }}
+              />
+              <MenuRow
+                icon={<Trash2 className="h-4 w-4 text-red-500" />}
+                label="Delete chat"
+                danger
+                onClick={() => {
+                  setMoreMenu(false);
+                  closeChatWindow(threadId);
+                  notify("Chat deleted");
+                }}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {!minimized && (
@@ -524,17 +651,49 @@ function ChatWindow({ threadId, minimized }: { threadId: string; minimized: bool
           <div className="flex-1 space-y-1.5 overflow-y-auto bg-muted/30 px-3 py-3">
             {messages.map((m) => {
               const mine = m.from === "me";
+              if (m.deletedFor === "me" && mine) return null;
+              const tomb = !!m.deletedFor;
               return (
-                <div key={m.id} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
+                <div key={m.id} className={`flex ${mine ? "justify-end" : "justify-start"} ${m.reaction && !tomb ? "mb-3" : ""}`}>
                   <div
-                    className={`max-w-[80%] whitespace-pre-wrap rounded-2xl px-3 py-1.5 text-sm leading-relaxed font-bangla ${
-                      mine
-                        ? "rounded-br-md bg-primary text-primary-foreground"
-                        : "rounded-bl-md border border-border bg-surface text-foreground"
+                    onContextMenu={(e) => {
+                      if (tomb) return;
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setMsgMenu({ msg: m, x: e.clientX, y: e.clientY });
+                    }}
+                    className={`relative max-w-[80%] whitespace-pre-wrap rounded-2xl px-3 py-1.5 text-sm leading-relaxed font-bangla ${
+                      tomb
+                        ? "border border-dashed border-border bg-transparent italic text-muted-foreground"
+                        : mine
+                          ? "rounded-br-md bg-primary text-primary-foreground"
+                          : "rounded-bl-md border border-border bg-surface text-foreground"
                     }`}
                   >
-                    {m.text}
-                    {mine && (
+                    {tomb ? (
+                      <span className="text-xs">
+                        {m.deletedFor === "everyone"
+                          ? mine
+                            ? "You unsent a message"
+                            : "This message was removed"
+                          : "You removed this message"}
+                      </span>
+                    ) : (
+                      <>
+                        {m.replyTo && (
+                          <span className="mb-1 block truncate rounded-lg bg-black/10 px-2 py-1 text-[11px] opacity-80">
+                            {m.replyTo.text}
+                          </span>
+                        )}
+                        {m.text}
+                      </>
+                    )}
+                    {m.reaction && !tomb && (
+                      <span className="absolute -bottom-3 right-1 rounded-full border border-border bg-surface px-1 text-[11px] shadow-sm">
+                        {m.reaction}
+                      </span>
+                    )}
+                    {!tomb && mine && (
                       <span className="ml-1.5 inline-flex translate-y-0.5 items-center text-[10px] opacity-80">
                         {m.status === "read" ? (
                           <CheckCheck className="h-3 w-3 text-accent" />
@@ -551,6 +710,16 @@ function ChatWindow({ threadId, minimized }: { threadId: string; minimized: bool
             })}
             <div ref={bottomRef} />
           </div>
+
+          {replyTo && (
+            <div className="flex items-center gap-2 border-t border-border bg-muted/40 px-3 py-1.5">
+              <CornerUpLeft className="h-3.5 w-3.5 shrink-0 text-primary" />
+              <p className="min-w-0 flex-1 truncate text-[11px] text-muted-foreground font-bangla">{replyTo.text}</p>
+              <button onClick={() => setReplyTo(null)} aria-label="Cancel reply" className="text-muted-foreground">
+                <X className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          )}
 
           <form
             onSubmit={(e) => {
@@ -576,6 +745,147 @@ function ChatWindow({ threadId, minimized }: { threadId: string; minimized: bool
           </form>
         </>
       )}
+
+      <AnimatePresence>
+        {msgMenu && (
+          <div className="pointer-events-auto fixed inset-0 z-[85]" onClick={() => setMsgMenu(null)}>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.96 }}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                left: Math.min(msgMenu.x - 100, window.innerWidth - 240),
+                top: Math.min(msgMenu.y - 20, window.innerHeight - 260),
+              }}
+              className="absolute w-56 rounded-2xl border border-border bg-surface p-1.5 shadow-2xl"
+            >
+              <div className="mb-1 flex items-center justify-between rounded-xl bg-muted/60 px-1.5 py-1">
+                {REACTIONS.map((emo) => (
+                  <button
+                    key={emo}
+                    onClick={() => {
+                      setReaction(threadId, msgMenu.msg.id, emo);
+                      setMsgMenu(null);
+                    }}
+                    className="grid h-7 w-7 place-items-center rounded-full text-base transition hover:scale-125"
+                  >
+                    {emo}
+                  </button>
+                ))}
+              </div>
+              <MenuRow
+                icon={<CornerUpLeft className="h-4 w-4 text-primary" />}
+                label="Reply"
+                onClick={() => {
+                  setReplyTo(msgMenu.msg);
+                  setMsgMenu(null);
+                }}
+              />
+              <MenuRow
+                icon={<Forward className="h-4 w-4 text-primary" />}
+                label="Forward"
+                onClick={() => {
+                  setMsgMenu(null);
+                  notify("Forwarding coming soon");
+                }}
+              />
+              <MenuRow
+                icon={<Copy className="h-4 w-4 text-primary" />}
+                label="Copy text"
+                onClick={() => {
+                  navigator.clipboard?.writeText(msgMenu.msg.text);
+                  setMsgMenu(null);
+                  notify("Copied to clipboard");
+                }}
+              />
+              <MenuRow
+                icon={<Smile className="h-4 w-4 text-primary" />}
+                label="Remove reaction"
+                onClick={() => {
+                  if (msgMenu.msg.reaction) setReaction(threadId, msgMenu.msg.id, msgMenu.msg.reaction);
+                  setMsgMenu(null);
+                }}
+              />
+              <div className="my-1 h-px bg-border" />
+              <MenuRow
+                icon={<Trash2 className="h-4 w-4 text-red-500" />}
+                label="Delete"
+                danger
+                onClick={() => {
+                  setDelTarget(msgMenu.msg);
+                  setMsgMenu(null);
+                }}
+              />
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {delTarget && (
+          <div
+            className="pointer-events-auto fixed inset-0 z-[90] grid place-items-center bg-black/45 backdrop-blur-sm"
+            onClick={() => setDelTarget(null)}
+          >
+            <motion.div
+              initial={{ y: 16, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 12, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-sm rounded-3xl border border-border bg-surface p-5 shadow-2xl"
+            >
+              <h3 className="text-base font-bold">Delete message?</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {delTarget.from === "me"
+                  ? "Unsend for everyone removes it for all. Remove for you keeps it on their side."
+                  : "This message will only be removed from your side."}
+              </p>
+              <div className="mt-4 space-y-2">
+                {delTarget.from === "me" && (
+                  <button
+                    onClick={() => {
+                      deleteMessage(threadId, delTarget.id, "everyone");
+                      setDelTarget(null);
+                      notify("Message unsent");
+                    }}
+                    className="w-full rounded-2xl bg-red-500 px-3 py-2.5 text-sm font-semibold text-white hover:bg-red-600"
+                  >
+                    Unsend for everyone
+                  </button>
+                )}
+                <button
+                  onClick={() => {
+                    deleteMessage(threadId, delTarget.id, "me");
+                    setDelTarget(null);
+                    notify("Removed for you");
+                  }}
+                  className="w-full rounded-2xl border border-border px-3 py-2.5 text-sm font-semibold hover:bg-muted"
+                >
+                  Remove for you
+                </button>
+                <button
+                  onClick={() => setDelTarget(null)}
+                  className="w-full rounded-2xl px-3 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted"
+                >
+                  Cancel
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      <CallOverlay
+        open={call}
+        kind="audio"
+        name={thread.name}
+        initials={thread.initials}
+        avatarColor={thread.avatarColor}
+        onClose={() => setCall(false)}
+      />
+
+      <DockToast text={toast} />
     </motion.div>
   );
 }
