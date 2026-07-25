@@ -51,7 +51,7 @@ function MessageLayout() {
   return (
     <div
       className={`w-full max-w-full overflow-x-hidden bg-background text-foreground ${
-        inThread ? "h-[100dvh] overflow-hidden lg:h-auto lg:min-h-screen lg:overflow-visible" : "min-h-screen"
+        "h-[100dvh] overflow-hidden lg:h-auto lg:min-h-screen lg:overflow-visible"
       }`}
     >
       {/* Header visible everywhere, hidden on mobile only inside a thread */}
@@ -62,7 +62,7 @@ function MessageLayout() {
       <MobileNav open={menuOpen} onClose={() => setMenuOpen(false)} />
       <main
         className={`mx-auto grid w-full max-w-[1400px] grid-cols-1 gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:px-8 lg:py-6 lg:pb-28 ${
-          inThread ? "px-0 py-0" : "px-4 py-4 pb-28"
+          inThread ? "px-0 py-0" : "px-4 py-4"
         }`}
       >
 
