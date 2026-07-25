@@ -42,6 +42,13 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import CallOverlay, { type CallKind } from "@/components/CallOverlay";
 
+const COMPOSER_EMOJIS = [
+  "😀","😁","😂","🤣","😊","😍","😘","😎",
+  "🤔","😐","😴","😢","😭","😡","🥳","😇",
+  "👍","👎","👏","🙏","💪","🤝","✌️","👌",
+  "❤️","🔥","⭐","✅","🎉","📚","✏️","💡",
+];
+
 export const Route = createFileRoute("/message/$threadId")({
   component: ThreadView,
 });
@@ -69,6 +76,8 @@ function ThreadView() {
   const [pinned, setPinned] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [replyTo, setReplyTo] = useState<ChatMessage | null>(null);
+  const [emojiOpen, setEmojiOpen] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
   const [msgMenu, setMsgMenu] = useState<{ msg: ChatMessage; x: number; y: number } | null>(null);
   const [delTarget, setDelTarget] = useState<ChatMessage | null>(null);
   const longPress = useRef<number | null>(null);
@@ -650,8 +659,26 @@ function ThreadView() {
           </motion.div>
         )}
       </AnimatePresence>
-      <div className="flex items-end gap-2">
-        <button type="button" aria-label="Attach" className="grid h-10 w-10 place-items-center rounded-full text-foreground/70 hover:bg-muted">
+      <div className="relative flex items-end gap-2">
+        <input
+          ref={fileRef}
+          type="file"
+          className="hidden"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) {
+              sendMessage(threadId, `📎 ${f.name}`, replyTo ?? undefined);
+              setReplyTo(null);
+            }
+            e.target.value = "";
+          }}
+        />
+        <button
+          type="button"
+          aria-label="Attach"
+          onClick={() => fileRef.current?.click()}
+          className="grid h-10 w-10 place-items-center rounded-full text-foreground/70 hover:bg-muted"
+        >
           <Paperclip className="h-4 w-4" />
         </button>
         <div className="flex flex-1 items-end gap-2 rounded-3xl border border-border bg-muted/50 px-3 py-1.5">
@@ -669,9 +696,37 @@ function ThreadView() {
             placeholder="Write a message…"
             className="max-h-32 flex-1 resize-none bg-transparent py-2 text-sm outline-none placeholder:text-muted-foreground font-bangla"
           />
-          <button type="button" aria-label="Emoji" className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-foreground/60 hover:bg-surface">
+          <button
+            type="button"
+            aria-label="Emoji"
+            onClick={() => setEmojiOpen((v) => !v)}
+            className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-foreground/60 hover:bg-surface"
+          >
             <Smile className="h-4 w-4" />
           </button>
+          <AnimatePresence>
+            {emojiOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                className="absolute bottom-14 right-2 z-40 w-[264px] rounded-2xl border border-border bg-surface p-2 shadow-2xl"
+              >
+                <div className="grid grid-cols-8 gap-1">
+                  {COMPOSER_EMOJIS.map((e) => (
+                    <button
+                      key={e}
+                      type="button"
+                      onClick={() => setText((t) => t + e)}
+                      className="grid h-8 w-8 place-items-center rounded-lg text-lg transition hover:scale-110 hover:bg-muted"
+                    >
+                      {e}
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
         <button
           type="submit"
