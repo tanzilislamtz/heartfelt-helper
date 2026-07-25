@@ -33,6 +33,26 @@ function ThreadView() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages.length]);
 
+  // Keep the chat shell locked to the visual viewport so the mobile keyboard
+  // never pushes/crops the header or composer.
+  const [vv, setVv] = useState<{ height: number; top: number } | null>(null);
+  useEffect(() => {
+    const viewport = typeof window !== "undefined" ? window.visualViewport : null;
+    if (!viewport) return;
+    const update = () => {
+      setVv({ height: viewport.height, top: viewport.offsetTop });
+      bottomRef.current?.scrollIntoView({ block: "end" });
+    };
+    update();
+    viewport.addEventListener("resize", update);
+    viewport.addEventListener("scroll", update);
+    return () => {
+      viewport.removeEventListener("resize", update);
+      viewport.removeEventListener("scroll", update);
+    };
+  }, []);
+
+
   if (!thread) {
     return (
       <div className="rounded-3xl border border-border bg-surface p-8 text-center">
@@ -51,8 +71,15 @@ function ThreadView() {
     setText("");
   };
 
+  const isMobile = typeof window !== "undefined" ? window.innerWidth < 1024 : false;
+  const shellStyle =
+    isMobile && vv ? { height: `${vv.height}px`, top: `${vv.top}px`, bottom: "auto" as const } : undefined;
+
   return (
-    <div className="fixed inset-0 z-30 flex w-full max-w-full flex-col overflow-hidden overscroll-none border-border bg-surface lg:static lg:z-auto lg:h-[calc(100vh-160px)] lg:min-h-[500px] lg:rounded-3xl lg:border lg:shadow-sm">
+    <div
+      style={shellStyle}
+      className="fixed inset-0 z-30 flex w-full max-w-full flex-col overflow-hidden overscroll-none border-border bg-surface lg:static lg:z-auto lg:h-[calc(100vh-160px)] lg:min-h-[500px] lg:rounded-3xl lg:border lg:shadow-sm"
+    >
       {/* Header */}
       <div className="z-10 flex shrink-0 items-center gap-3 border-b border-border bg-surface px-4 py-3">
 
