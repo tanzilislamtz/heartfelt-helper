@@ -69,13 +69,13 @@ function MessageLayout() {
 
         <LeftNav />
         <div className="min-w-0">
-          <div className="grid gap-6 lg:grid-cols-[340px_minmax(0,1fr)]">
+          <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[340px_minmax(0,1fr)]">
             {/* Threads list — hidden on mobile when inside a thread */}
-            <section className={`${inThread ? "hidden lg:block" : "block"}`}>
+            <section className={`min-w-0 ${inThread ? "hidden lg:block" : "block"}`}>
               <ThreadList />
             </section>
             {/* Thread view or empty state */}
-            <section className={`${inThread ? "block" : "hidden lg:block"}`}>
+            <section className={`min-w-0 ${inThread ? "block" : "hidden lg:block"}`}>
               {inThread ? <Outlet /> : <EmptyPane />}
             </section>
           </div>
@@ -95,7 +95,7 @@ function ThreadList() {
   );
 
   return (
-    <div className="rounded-3xl border border-border bg-surface p-4 shadow-sm">
+    <div className="min-w-0 overflow-hidden rounded-3xl border border-border bg-surface p-4 shadow-sm">
       <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="grid h-10 w-10 place-items-center rounded-2xl bg-primary/10 text-primary">
