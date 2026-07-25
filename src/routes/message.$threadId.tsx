@@ -520,11 +520,26 @@ function ThreadView() {
                       </div>
                     )}
                     {m.voice ? (
-                      <VoiceMessage clip={m.voice} mine={mine} seed={m.id} />
+                      <VoiceMessage
+                        clip={m.voice}
+                        mine={mine}
+                        seed={m.id}
+                        statusSlot={
+                          mine ? (
+                            m.status === "read" ? (
+                              <CheckCheck className="h-3 w-3 text-accent" />
+                            ) : m.status === "delivered" ? (
+                              <CheckCheck className="h-3 w-3" />
+                            ) : (
+                              <Check className="h-3 w-3" />
+                            )
+                          ) : undefined
+                        }
+                      />
                     ) : (
                       m.text
                     )}
-                    {mine && (
+                    {mine && !m.voice && (
                       <span className="ml-1.5 inline-flex translate-y-0.5 items-center text-[10px] opacity-80">
                         {m.status === "read" ? (
                           <CheckCheck className="h-3 w-3 text-accent" />
@@ -535,6 +550,7 @@ function ThreadView() {
                         )}
                       </span>
                     )}
+
                     </>
                     )}
                     {m.reaction && !m.deletedFor && (
@@ -1178,7 +1194,7 @@ function ThreadView() {
           </motion.div>
         )}
       </AnimatePresence>
-      <div className="relative flex items-end gap-2">
+      <div className="relative flex items-end gap-1 sm:gap-2">
         <input
           ref={fileRef}
           type="file"
@@ -1196,10 +1212,11 @@ function ThreadView() {
           type="button"
           aria-label="Attach"
           onClick={() => fileRef.current?.click()}
-          className="grid h-10 w-10 place-items-center rounded-full text-foreground/70 hover:bg-muted"
+          className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-foreground/70 hover:bg-muted"
         >
           <Paperclip className="h-4 w-4" />
         </button>
+
         <VoiceRecorder
           onSend={(clip) => {
             sendVoiceMessage(threadId, clip, replyTo ?? undefined);
@@ -1257,10 +1274,11 @@ function ThreadView() {
           type="submit"
           disabled={!text.trim()}
           aria-label="Send"
-          className="grid h-10 w-10 place-items-center rounded-full bg-primary text-primary-foreground shadow-sm transition disabled:opacity-40"
+          className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground shadow-sm transition active:scale-95 disabled:opacity-40"
         >
           <Send className="h-4 w-4" />
         </button>
+
         </div>
       </form>
       )}
