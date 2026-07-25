@@ -30,14 +30,7 @@ function RequestsPane() {
         </div>
       </div>
 
-      {/* notice */}
-      <div className="mx-4 mt-3 flex shrink-0 items-start gap-2 rounded-2xl bg-accent/25 px-3 py-2.5">
-        <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-        <p className="text-[12px] leading-relaxed text-foreground/80">
-          এরা আপনার connection নয়। Accept না করা পর্যন্ত তারা সর্বোচ্চ{" "}
-          <span className="font-semibold">3টি message</span> পাঠাতে পারবে, আর আপনি online আছেন কিনা সেটাও দেখতে পাবে না।
-        </p>
-      </div>
+
 
       <ul className="flex-1 space-y-1 overflow-y-auto overscroll-contain p-3">
         {messageRequests.map((r, i) => {
