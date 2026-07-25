@@ -107,13 +107,37 @@ function ThreadList() {
   const latest = getAllLatest();
   const unread = getUnreadCounts();
   const [q, setQ] = useState("");
+  const [view, setView] = useState<"inbox" | "archived">("inbox");
   const [menu, setMenu] = useState<{ thread: ChatThread; x: number; y: number } | null>(null);
   const [confirm, setConfirm] = useState<{ thread: ChatThread; kind: "delete" | "block" } | null>(null);
   const [toast, setToast] = useState<string | null>(null);
-  const [muted, setMuted] = useState<string[]>([]);
   const [pinned, setPinned] = useState<string[]>([]);
   const [hidden, setHidden] = useState<string[]>([]);
   const longPress = useRef<number | null>(null);
+
+  const states = useSyncExternalStore(
+    (cb) => subscribe(cb),
+    () => allStatesSnapshot(),
+    () => "{}",
+  );
+  void states;
+  const archivedIds = getArchivedIds();
+  const isArchived = (id: string) => archivedIds.includes(id);
+  const isMuted = (id: string) => !!getThreadState(id).muted;
+
+  // Land directly on the Archived view right after archiving from a chat
+  useEffect(() => {
+    try {
+      if (window.sessionStorage.getItem("la_open_archived") === "1") {
+        window.sessionStorage.removeItem("la_open_archived");
+        setView("archived");
+        setToast("Chat moved to Archived");
+        window.setTimeout(() => setToast(null), 2200);
+      }
+    } catch {
+      /* ignore */
+    }
+  }, []);
 
   const notify = (msg: string) => {
     setToast(msg);
@@ -124,12 +148,14 @@ function ThreadList() {
 
   const filtered = getSortedThreads()
     .filter((t) => !hidden.includes(t.id))
+    .filter((t) => (view === "archived" ? isArchived(t.id) : !isArchived(t.id)))
     .filter(
       (t) =>
         t.name.toLowerCase().includes(q.toLowerCase()) ||
         (t.subject ?? "").toLowerCase().includes(q.toLowerCase()),
     )
     .sort((a, b) => Number(pinned.includes(b.id)) - Number(pinned.includes(a.id)));
+
 
   return (
     <div className="flex h-[calc(100dvh-11rem)] min-w-0 flex-col overflow-hidden rounded-3xl border border-border bg-surface p-4 shadow-sm lg:h-full">
