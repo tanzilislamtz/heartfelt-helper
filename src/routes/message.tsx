@@ -1,12 +1,29 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
-import { MessageSquare, Search, Pencil, MailQuestion, ChevronRight } from "lucide-react";
-import { useEffect, useState, useSyncExternalStore } from "react";
+import {
+  MessageSquare,
+  Search,
+  Pencil,
+  MailQuestion,
+  ChevronRight,
+  BellOff,
+  Bell,
+  Pin,
+  PinOff,
+  Archive,
+  Ban,
+  Trash2,
+  CircleDot,
+  User,
+} from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import type { ChatThread } from "@/lib/chat";
 import { clearUnread } from "@/lib/notifications";
 import { Topbar } from "@/components/Topbar";
 import { MobileNav } from "@/components/MobileNav";
 import { LeftNav } from "@/components/LeftNav";
 import { messageRequests } from "@/lib/requests";
-import { threads, getAllLatest, getSortedThreads, getUnreadCounts, subscribe, formatTime } from "@/lib/chat";
+import { threads, getAllLatest, getSortedThreads, getUnreadCounts, subscribe, formatTime, markRead } from "@/lib/chat";
 
 export const Route = createFileRoute("/message")({
   head: () => ({
@@ -91,9 +108,29 @@ function ThreadList() {
   const latest = getAllLatest();
   const unread = getUnreadCounts();
   const [q, setQ] = useState("");
-  const filtered = getSortedThreads().filter((t) =>
-    t.name.toLowerCase().includes(q.toLowerCase()) || (t.subject ?? "").toLowerCase().includes(q.toLowerCase()),
-  );
+  const [menu, setMenu] = useState<{ thread: ChatThread; x: number; y: number } | null>(null);
+  const [confirm, setConfirm] = useState<{ thread: ChatThread; kind: "delete" | "block" } | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
+  const [muted, setMuted] = useState<string[]>([]);
+  const [pinned, setPinned] = useState<string[]>([]);
+  const [hidden, setHidden] = useState<string[]>([]);
+  const longPress = useRef<number | null>(null);
+
+  const notify = (msg: string) => {
+    setToast(msg);
+    window.setTimeout(() => setToast(null), 1800);
+  };
+  const toggle = (list: string[], set: (v: string[]) => void, id: string) =>
+    set(list.includes(id) ? list.filter((x) => x !== id) : [...list, id]);
+
+  const filtered = getSortedThreads()
+    .filter((t) => !hidden.includes(t.id))
+    .filter(
+      (t) =>
+        t.name.toLowerCase().includes(q.toLowerCase()) ||
+        (t.subject ?? "").toLowerCase().includes(q.toLowerCase()),
+    )
+    .sort((a, b) => Number(pinned.includes(b.id)) - Number(pinned.includes(a.id)));
 
   return (
     <div className="flex h-[calc(100dvh-11rem)] min-w-0 flex-col overflow-hidden rounded-3xl border border-border bg-surface p-4 shadow-sm lg:h-full">
@@ -154,6 +191,21 @@ function ThreadList() {
               <Link
                 to="/message/$threadId"
                 params={{ threadId: t.id }}
+                data-allow-contextmenu
+                onContextMenu={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setMenu({ thread: t, x: e.clientX, y: e.clientY });
+                }}
+                onTouchStart={(e) => {
+                  const touch = e.touches[0];
+                  longPress.current = window.setTimeout(
+                    () => setMenu({ thread: t, x: touch.clientX, y: touch.clientY }),
+                    420,
+                  );
+                }}
+                onTouchEnd={() => longPress.current && window.clearTimeout(longPress.current)}
+                onTouchMove={() => longPress.current && window.clearTimeout(longPress.current)}
                 className={`group flex items-center gap-3 rounded-2xl px-2 py-2.5 transition hover:bg-muted ${isUnread ? "bg-primary/[0.06]" : ""}`}
                 activeProps={{ className: "bg-accent/40" }}
               >
@@ -173,6 +225,8 @@ function ThreadList() {
                     <p className={`truncate text-sm ${isUnread ? "font-extrabold text-foreground" : "font-semibold"}`}>
                       {t.name}
                     </p>
+                    {pinned.includes(t.id) && <Pin className="h-3 w-3 shrink-0 text-primary" />}
+                    {muted.includes(t.id) && <BellOff className="h-3 w-3 shrink-0 text-muted-foreground" />}
                     {last && (
                       <span
                         className={`shrink-0 text-[11px] ${isUnread ? "font-bold text-primary" : "text-muted-foreground"}`}
@@ -201,7 +255,210 @@ function ThreadList() {
           );
         })}
       </ul>
+
+      {/* Long-press / right-click menu */}
+      <AnimatePresence>
+        {menu && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setMenu(null)}
+            className="fixed inset-0 z-[70] bg-black/25 backdrop-blur-[2px]"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96 }}
+              transition={{ type: "spring", stiffness: 320, damping: 26 }}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                left: Math.min(Math.max(menu.x - 110, 12), Math.max(window.innerWidth - 252, 12)),
+                top: Math.min(Math.max(menu.y - 40, 70), Math.max(window.innerHeight - 380, 70)),
+              }}
+              className="absolute w-60 overflow-hidden rounded-2xl border border-border bg-surface p-1.5 shadow-2xl"
+            >
+              <div className="flex items-center gap-2 px-2 py-2">
+                <div
+                  className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-[11px] font-bold text-white"
+                  style={{ background: menu.thread.avatarColor }}
+                >
+                  {menu.thread.initials}
+                </div>
+                <p className="min-w-0 truncate text-sm font-semibold">{menu.thread.name}</p>
+              </div>
+              <div className="my-1 h-px bg-border" />
+
+              <RowItem
+                icon={<User className="h-4 w-4 text-primary" />}
+                label="Visit profile"
+                onClick={() => {
+                  setMenu(null);
+                  notify("Opening profile (demo)");
+                }}
+              />
+              <RowItem
+                icon={<CircleDot className="h-4 w-4 text-primary" />}
+                label={(unread[menu.thread.id] ?? 0) > 0 ? "Mark as read" : "Mark as unread"}
+                onClick={() => {
+                  const wasUnread = (unread[menu.thread.id] ?? 0) > 0;
+                  if (wasUnread) markRead(menu.thread.id);
+                  setMenu(null);
+                  notify(wasUnread ? "Marked as read" : "Marked as unread");
+                }}
+              />
+              <RowItem
+                icon={
+                  muted.includes(menu.thread.id) ? (
+                    <Bell className="h-4 w-4 text-primary" />
+                  ) : (
+                    <BellOff className="h-4 w-4 text-primary" />
+                  )
+                }
+                label={muted.includes(menu.thread.id) ? "Unmute notifications" : "Mute notifications"}
+                onClick={() => {
+                  const was = muted.includes(menu.thread.id);
+                  toggle(muted, setMuted, menu.thread.id);
+                  setMenu(null);
+                  notify(was ? "Notifications on" : "Notifications muted");
+                }}
+              />
+              <RowItem
+                icon={
+                  pinned.includes(menu.thread.id) ? (
+                    <PinOff className="h-4 w-4 text-primary" />
+                  ) : (
+                    <Pin className="h-4 w-4 text-primary" />
+                  )
+                }
+                label={pinned.includes(menu.thread.id) ? "Unpin chat" : "Pin chat"}
+                onClick={() => {
+                  const was = pinned.includes(menu.thread.id);
+                  toggle(pinned, setPinned, menu.thread.id);
+                  setMenu(null);
+                  notify(was ? "Chat unpinned" : "Chat pinned to top");
+                }}
+              />
+              <RowItem
+                icon={<Archive className="h-4 w-4 text-primary" />}
+                label="Archive chat"
+                onClick={() => {
+                  setHidden((h) => [...h, menu.thread.id]);
+                  setMenu(null);
+                  notify("Chat archived");
+                }}
+              />
+              <div className="my-1 h-px bg-border" />
+              <RowItem
+                icon={<Ban className="h-4 w-4 text-red-500" />}
+                label="Block user"
+                danger
+                onClick={() => {
+                  setConfirm({ thread: menu.thread, kind: "block" });
+                  setMenu(null);
+                }}
+              />
+              <RowItem
+                icon={<Trash2 className="h-4 w-4 text-red-500" />}
+                label="Delete chat"
+                danger
+                onClick={() => {
+                  setConfirm({ thread: menu.thread, kind: "delete" });
+                  setMenu(null);
+                }}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Confirmation */}
+      <AnimatePresence>
+        {confirm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setConfirm(null)}
+            className="fixed inset-0 z-[75] flex items-end justify-center bg-black/45 p-4 backdrop-blur-sm sm:items-center"
+          >
+            <motion.div
+              initial={{ y: 26, scale: 0.97, opacity: 0 }}
+              animate={{ y: 0, scale: 1, opacity: 1 }}
+              exit={{ y: 18, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 26 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-sm rounded-3xl border border-border bg-surface p-5 shadow-2xl"
+            >
+              <h3 className="text-base font-bold">
+                {confirm.kind === "delete" ? "Delete chat?" : `Block ${confirm.thread.name.split(" ")[0]}?`}
+              </h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {confirm.kind === "delete"
+                  ? `This conversation will be removed from your inbox only. ${confirm.thread.name.split(" ")[0]} will still have their copy.`
+                  : "They won't be able to message or call you, and this chat moves out of your inbox."}
+              </p>
+              <div className="mt-4 flex gap-2">
+                <button
+                  onClick={() => setConfirm(null)}
+                  className="flex-1 rounded-2xl border border-border px-3 py-2.5 text-sm font-semibold transition hover:bg-muted"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    setHidden((h) => [...h, confirm.thread.id]);
+                    notify(confirm.kind === "delete" ? "Chat deleted" : "User blocked");
+                    setConfirm(null);
+                  }}
+                  className="flex-1 rounded-2xl bg-red-500 px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-red-600"
+                >
+                  {confirm.kind === "delete" ? "Delete" : "Block"}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Toast */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 12 }}
+            className="fixed bottom-24 left-1/2 z-[80] -translate-x-1/2 rounded-full bg-foreground px-4 py-2 text-xs font-semibold text-background shadow-lg lg:bottom-10"
+          >
+            {toast}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
+  );
+}
+
+function RowItem({
+  icon,
+  label,
+  onClick,
+  danger,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  onClick: () => void;
+  danger?: boolean;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex w-full items-center gap-3 rounded-xl px-2.5 py-2 text-left text-sm transition hover:bg-muted ${
+        danger ? "text-red-500" : "text-foreground"
+      }`}
+    >
+      {icon}
+      <span>{label}</span>
+    </button>
   );
 }
 
