@@ -267,13 +267,21 @@ function ThreadView() {
               <MenuItem
                 icon={<Search className="h-4 w-4 text-primary" />}
                 label="চ্যাটে খুঁজুন"
-                onClick={() => notify("Search in conversation")}
+                onClick={() => {
+                  setOpenMenu(null);
+                  setQuery("");
+                  setPanel("search");
+                }}
               />
               <MenuItem
                 icon={<ImageIcon className="h-4 w-4 text-primary" />}
                 label="মিডিয়া ও ফাইল দেখুন"
-                onClick={() => notify("Media & files")}
+                onClick={() => {
+                  setOpenMenu(null);
+                  setPanel("media");
+                }}
               />
+
 
             </motion.div>
           )}
