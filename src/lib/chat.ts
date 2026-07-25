@@ -23,6 +23,7 @@ export type ChatMessage = {
   status?: "sent" | "delivered" | "read";
   reaction?: string;
   replyTo?: { from: "me" | "them"; text: string };
+  deletedFor?: "me" | "everyone";
 };
 
 export const threads: ChatThread[] = [
@@ -204,10 +205,16 @@ export function setReaction(threadId: string, messageId: string, emoji: string) 
   save(s);
 }
 
-export function deleteMessage(threadId: string, messageId: string) {
+export function deleteMessage(
+  threadId: string,
+  messageId: string,
+  scope: "me" | "everyone" = "me",
+) {
   const s = load();
   const l = s[threadId] ?? [];
-  s[threadId] = l.filter((m) => m.id !== messageId);
+  s[threadId] = l.map((m) =>
+    m.id === messageId ? { ...m, deletedFor: scope, reaction: undefined } : m,
+  );
   save(s);
 }
 
