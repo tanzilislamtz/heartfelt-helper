@@ -389,7 +389,7 @@ function ThreadView() {
                         </span>
                         {m.deletedFor === "me" && (
                           <span className="text-[10px] not-italic opacity-80">
-                            Only removed for you — {name.split(" ")[0]} can still see it
+                            Only removed for you — {thread.name.split(" ")[0]} can still see it
                           </span>
                         )}
                       </span>
@@ -562,7 +562,7 @@ function ThreadView() {
               <p className="mt-1 text-sm text-muted-foreground">
                 {delTarget.from === "me"
                   ? "Choose who this message should be removed for. This can't be undone."
-                  : `This will only be removed for you. ${name.split(" ")[0]} will still see it in the chat.`}
+                  : `This will only be removed for you. ${thread.thread.name.split(" ")[0]} will still see it in the chat.`}
               </p>
 
               <div className="mt-4 space-y-2">
@@ -600,7 +600,7 @@ function ThreadView() {
                       Remove for you
                     </span>
                     <span className="block text-xs text-muted-foreground">
-                      It stays visible for {name.split(" ")[0]}
+                      It stays visible for {thread.name.split(" ")[0]}
                     </span>
                   </span>
                 </button>
