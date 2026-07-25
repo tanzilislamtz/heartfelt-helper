@@ -369,3 +369,57 @@ export function markUnread(threadId: string) {
   window.localStorage.setItem(READ_KEY, JSON.stringify(read));
   listeners.forEach((l) => l());
 }
+
+/* ---------- voice messages ---------- */
+
+/** Send a recorded voice clip as a message (demo: data URL in localStorage). */
+export function sendVoiceMessage(
+  threadId: string,
+  clip: VoiceClip,
+  replyTo?: ChatMessage,
+) {
+  const store = load();
+  const list = store[threadId] ?? [];
+  const msg: ChatMessage = {
+    id: Math.random().toString(36).slice(2),
+    threadId,
+    from: "me",
+    text: "🎤 Voice message",
+    at: Date.now(),
+    status: "sent",
+    voice: clip,
+    replyTo: replyTo ? { from: replyTo.from, text: replyTo.text } : undefined,
+  };
+  store[threadId] = [...list, msg];
+  save(store);
+
+  setTimeout(() => {
+    const s = load();
+    s[threadId] = (s[threadId] ?? []).map((m) =>
+      m.id === msg.id ? { ...m, status: "delivered" as const } : m,
+    );
+    save(s);
+  }, 700);
+
+  setTimeout(() => {
+    const s = load();
+    const l = s[threadId] ?? [];
+    const reply: ChatMessage = {
+      id: Math.random().toString(36).slice(2),
+      threadId,
+      from: "them",
+      text: "Voice ta shunlam, thanks! 🎧",
+      at: Date.now(),
+    };
+    s[threadId] = [
+      ...l.map((m) => (m.id === msg.id ? { ...m, status: "read" as const } : m)),
+      reply,
+    ];
+    save(s);
+  }, 2800);
+}
+
+export function formatClock(sec: number): string {
+  const s = Math.max(0, Math.round(sec));
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+}
