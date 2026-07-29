@@ -85,7 +85,6 @@ export type PracticeTopic = {
   id: string;
   name: string;
   questions: number;
-  difficulty: "Easy" | "Medium" | "Hard";
   minutes: number;
   progress: number; // 0-100
   locked: boolean;
@@ -109,12 +108,10 @@ export function getChapters(subjectId: string): PracticeChapter[] {
     const topics: PracticeTopic[] = Array.from({ length: topicCount }, (_, t) => {
       const tid = `${id}-t${t + 1}`;
       const p = pick(`${subjectId}${tid}p`, 0, 100);
-      const diffSeed = pick(`${subjectId}${tid}d`, 0, 2);
       return {
         id: tid,
         name: t === 0 ? `What is ${name}?` : `${name} · ${topicSuffix[(t + i) % topicSuffix.length]}`,
         questions: pick(`${subjectId}${tid}q`, 6, 24),
-        difficulty: (["Easy", "Medium", "Hard"] as const)[diffSeed],
         minutes: pick(`${subjectId}${tid}m`, 3, 9),
         progress: t > 0 && p < 12 ? 0 : p,
         locked: false,
