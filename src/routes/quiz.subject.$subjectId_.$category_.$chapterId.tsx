@@ -126,14 +126,18 @@ function ChapterTopics() {
               const isActive = t.id === active?.id;
               const done = t.progress >= 100;
               return (
-                <motion.button
+                <motion.div
                   key={t.id}
-                  type="button"
+                  role="button"
+                  tabIndex={0}
                   onClick={() => setActiveId(t.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") setActiveId(t.id);
+                  }}
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.03 * i }}
-                  className={`grid w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3.5 text-left transition ${
+                  className={`grid w-full cursor-pointer grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3.5 text-left transition ${
                     isActive ? "bg-accent/30" : "hover:bg-muted/40"
                   }`}
                 >
@@ -152,16 +156,20 @@ function ChapterTopics() {
                       <span className="text-[11px] tabular-nums text-muted-foreground">{t.progress}%</span>
                     </div>
                   </div>
-                  <span
-                    className={`shrink-0 rounded-full px-3 py-1.5 text-[11px] font-semibold ${
+                  <Link
+                    to="/quiz/exam/$subjectId"
+                    params={{ subjectId }}
+                    search={{ board: "dhaka", mode: "exam" as const }}
+                    onClick={(e) => e.stopPropagation()}
+                    className={`shrink-0 rounded-full px-3 py-1.5 text-[11px] font-semibold transition ${
                       done
-                        ? "border border-border text-muted-foreground"
-                        : "bg-primary text-primary-foreground"
+                        ? "border border-border text-muted-foreground hover:border-primary/40 hover:text-primary"
+                        : "bg-primary text-primary-foreground hover:opacity-95"
                     }`}
                   >
                     {done ? "Review" : t.progress > 0 ? "Continue" : "Start"}
-                  </span>
-                </motion.button>
+                  </Link>
+                </motion.div>
               );
             })}
           </div>
