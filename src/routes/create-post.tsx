@@ -25,11 +25,11 @@ function CreatePostPage() {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-background lg:h-[100dvh] lg:overflow-hidden">
+    <div className="min-h-screen bg-background">
       <Topbar variant="app" onMenu={() => setMenuOpen(true)} />
-      <main className="mx-auto grid max-w-[1400px] grid-cols-1 gap-6 px-4 pb-24 pt-4 sm:px-6 sm:pt-6 lg:h-[calc(100dvh-65px)] lg:grid-cols-[240px_minmax(0,1fr)] lg:overflow-hidden lg:px-8 lg:pb-6">
-        <LeftNav stickyClass="lg:h-full lg:overflow-y-auto lg:overscroll-contain lg:pr-1" />
-        <div className="min-w-0 lg:h-full lg:overflow-y-auto lg:overscroll-contain lg:pr-1">
+      <main className="mx-auto grid max-w-[1400px] grid-cols-1 gap-6 px-4 pb-24 pt-4 sm:px-6 sm:pt-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:px-8 lg:pb-10">
+        <LeftNav />
+        <div className="min-w-0">
           <CreatePostForm />
         </div>
       </main>

@@ -202,14 +202,14 @@ function AvailableTutorPage() {
   void gender;
 
   return (
-    <div className="min-h-screen bg-background text-foreground lg:h-[100dvh] lg:overflow-hidden">
+    <div className="min-h-screen bg-background text-foreground">
       <Topbar variant="app" onMenu={() => setMenuOpen(true)} />
       <MobileNav open={menuOpen} onClose={() => setMenuOpen(false)} />
 
-      <main className="mx-auto grid max-w-[1400px] grid-cols-1 gap-6 px-3 py-4 pb-28 sm:px-4 sm:py-6 lg:h-[calc(100dvh-65px)] lg:grid-cols-[240px_minmax(0,1fr)] lg:overflow-hidden lg:px-8 lg:pb-6">
-        <LeftNav stickyClass="lg:h-full lg:overflow-y-auto lg:overscroll-contain lg:pr-1" />
+      <main className="mx-auto grid max-w-[1400px] grid-cols-1 gap-6 px-3 py-4 pb-28 sm:px-4 sm:py-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:px-8">
+        <LeftNav />
 
-        <div className="min-w-0 space-y-5 lg:h-full lg:overflow-y-auto lg:overscroll-contain lg:pr-1">
+        <div className="min-w-0 space-y-5">
           {/* Simple heading */}
           <header className="flex flex-wrap items-end justify-between gap-2 border-b border-border pb-4">
             <div>
