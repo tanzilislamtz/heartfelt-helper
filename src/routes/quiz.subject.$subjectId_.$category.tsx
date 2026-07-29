@@ -1,10 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   ArrowLeft,
   CheckCircle2,
-  ChevronDown,
   ChevronRight,
   Clock,
   FileText,
@@ -95,7 +93,6 @@ function ChapterPicker() {
                 index={i}
                 subjectId={subjectId}
                 category={category}
-                defaultOpen={i === 0}
               />
             ))}
           </div>
@@ -110,15 +107,12 @@ function ChapterRow({
   index,
   subjectId,
   category,
-  defaultOpen,
 }: {
   chapter: ReturnType<typeof getChapters>[number];
   index: number;
   subjectId: string;
   category: string;
-  defaultOpen: boolean;
 }) {
-  const [open, setOpen] = useState(defaultOpen);
   const done = chapter.progress >= 100;
 
   return (
@@ -126,14 +120,12 @@ function ChapterRow({
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.02 * index }}
-      className={`overflow-hidden rounded-2xl border bg-surface shadow-sm transition ${
-        open ? "border-primary/40 shadow-md" : "border-border hover:border-primary/30"
-      }`}
+      className="overflow-hidden rounded-2xl border border-border bg-surface shadow-sm transition hover:border-primary/40 hover:shadow-md"
     >
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        className="grid w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-4 text-left sm:gap-4"
+      <Link
+        to="/quiz/subject/$subjectId/$category/$chapterId"
+        params={{ subjectId, category, chapterId: chapter.id }}
+        className="group grid w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-4 text-left sm:gap-4"
       >
         <span
           className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl text-sm font-bold ${
@@ -145,7 +137,7 @@ function ChapterRow({
         <div className="min-w-0">
           <p className="truncate text-sm font-semibold text-foreground">{chapter.name}</p>
           <p className="mt-0.5 inline-flex items-center gap-1 text-[11px] text-muted-foreground">
-            <FileText className="h-3 w-3" /> {chapter.questions} Questions · {chapter.topics.length} topics
+            <FileText className="h-3 w-3" /> {chapter.questions} Questions
           </p>
           <div className="mt-2 flex items-center gap-2 sm:hidden">
             <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
@@ -163,52 +155,9 @@ function ChapterRow({
               <div className="h-full rounded-full bg-primary" style={{ width: `${chapter.progress}%` }} />
             </div>
           </div>
-          <ChevronDown
-            className={`h-4 w-4 text-muted-foreground transition-transform ${open ? "rotate-180 text-primary" : ""}`}
-          />
+          <ChevronRight className="h-4 w-4 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-primary" />
         </div>
-      </button>
-
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.22 }}
-            className="overflow-hidden border-t border-border bg-muted/20"
-          >
-            <div className="divide-y divide-border/70">
-              {chapter.topics.map((t) => (
-                <Link
-                  key={t.id}
-                  to="/quiz/subject/$subjectId/$category/$chapterId"
-                  params={{ subjectId, category, chapterId: chapter.id }}
-                  className="group grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 transition hover:bg-surface"
-                >
-                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary/60" />
-                  <div className="min-w-0">
-                    <p className="truncate text-[13px] font-medium text-foreground">{t.name}</p>
-                    <p className="text-[11px] text-muted-foreground">
-                      {t.questions} Questions · {t.minutes} min
-                    </p>
-                  </div>
-                  <span className="flex shrink-0 items-center gap-2">
-                    <span className="hidden h-1.5 w-20 overflow-hidden rounded-full bg-muted sm:block">
-                      <span
-                        className="block h-full rounded-full bg-primary"
-                        style={{ width: `${t.progress}%` }}
-                      />
-                    </span>
-                    <span className="text-[11px] tabular-nums text-muted-foreground">{t.progress}%</span>
-                    <ChevronRight className="h-4 w-4 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-primary" />
-                  </span>
-                </Link>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      </Link>
     </motion.div>
   );
 }
