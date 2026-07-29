@@ -99,7 +99,7 @@ function MessageLayout() {
         }`}
       >
 
-        <LeftNav stickyClass="sticky top-0" />
+        <LeftNav stickyClass="lg:h-full" />
         <div className="min-w-0 lg:h-full lg:min-h-0">
           <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-6 lg:h-full lg:min-h-0 lg:grid-cols-[340px_minmax(0,1fr)]">
             {/* Threads list — hidden on mobile when inside a thread */}
