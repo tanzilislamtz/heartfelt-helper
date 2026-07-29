@@ -87,7 +87,7 @@ function Index() {
       <Topbar variant="app" onMenu={() => setMenuOpen(true)} />
       <MobileNav open={menuOpen} onClose={() => setMenuOpen(false)} />
       <main className="mx-auto grid max-w-[1400px] grid-cols-1 gap-6 px-4 py-6 lg:h-[calc(100dvh-65px)] lg:grid-cols-[240px_minmax(0,1fr)_320px] lg:overflow-hidden lg:px-8">
-        <LeftNav stickyClass="lg:h-full lg:overflow-y-auto lg:overscroll-contain lg:pr-1" />
+        <LeftNav stickyClass="lg:h-full" />
         <Feed />
         <RightRail />
       </main>

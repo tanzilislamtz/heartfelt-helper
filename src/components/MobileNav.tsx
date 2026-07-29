@@ -2,6 +2,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import { X, Home, UserCheck, GraduationCap, BookOpen, MessagesSquare, Timer } from "lucide-react";
 import { useEffect } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
+import { useState } from "react";
+import { getSession, type Session } from "@/lib/session";
+import { ChevronRight } from "lucide-react";
 
 type NavItem = {
   icon: typeof Home;
@@ -32,6 +35,14 @@ const sections: { items: NavItem[] }[] = [
 
 export function MobileNav({ open, onClose }: { open: boolean; onClose: () => void }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const [session, setSession] = useState<Session | null>(null);
+  useEffect(() => {
+    const sync = () => setSession(getSession());
+    sync();
+    window.addEventListener("la:auth", sync);
+    return () => window.removeEventListener("la:auth", sync);
+  }, []);
+  const name = session?.name || session?.email?.split("@")[0] || "Guest";
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => {
@@ -55,7 +66,7 @@ export function MobileNav({ open, onClose }: { open: boolean; onClose: () => voi
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
             transition={{ type: "spring", stiffness: 260, damping: 30 }}
-            className="fixed inset-y-0 left-0 z-50 w-[82%] max-w-sm border-r border-border bg-surface p-5 shadow-2xl lg:hidden"
+            className="fixed inset-y-0 left-0 z-50 flex w-[82%] max-w-sm flex-col border-r border-border bg-surface p-5 shadow-2xl lg:hidden"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -76,7 +87,7 @@ export function MobileNav({ open, onClose }: { open: boolean; onClose: () => voi
               </button>
             </div>
 
-            <nav className="mt-6 space-y-4">
+            <nav className="mt-6 min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain">
               {sections.map((section, sIdx) => (
                 <div
                   key={sIdx}
@@ -119,6 +130,26 @@ export function MobileNav({ open, onClose }: { open: boolean; onClose: () => voi
                 </div>
               ))}
             </nav>
+
+            {/* Menu footer — profile */}
+            <div className="mt-3 shrink-0 border-t border-border pt-3">
+              <Link
+                to="/profile"
+                onClick={onClose}
+                className="flex items-center gap-3 rounded-xl border border-border bg-surface p-2.5 transition hover:bg-muted"
+              >
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+                  {name.charAt(0).toUpperCase()}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-sm font-semibold text-foreground">{name}</span>
+                  <span className="block truncate text-[11px] text-muted-foreground">
+                    {session?.email ?? "View profile"}
+                  </span>
+                </span>
+                <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+              </Link>
+            </div>
           </motion.aside>
 
         </>
