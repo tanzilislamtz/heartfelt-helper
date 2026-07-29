@@ -571,17 +571,6 @@ function LearningForm() {
       <InfoCard icon={BookOpen} tone="learning" title="Share Knowledge" desc="Share educational content, notes, tips, or resources with others." />
       <TitleInput />
 
-      <section className="mb-10">
-        <SectionHeader title="Academic Context" />
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-          <Field label="Education Level" required><Select placeholder="Select level" /></Field>
-          <Field label="Version"><Select placeholder="Select version" /></Field>
-          <Field label="Class / Level"><Select placeholder="Select class" /></Field>
-          <Field label="Subject"><Select placeholder="Select subject" /></Field>
-          <Field label="Topic" hint="(Optional)"><input className={inputCls} placeholder="Enter topic" /></Field>
-          <Field label="Chapter" hint="(Optional)"><input className={inputCls} placeholder="Enter chapter" /></Field>
-        </div>
-      </section>
 
       <section className="mb-10">
         <SectionHeader title="Post Content" />
