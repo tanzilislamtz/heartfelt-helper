@@ -1,5 +1,7 @@
-import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, BookOpen, UserCheck, MessagesSquare, Timer } from "lucide-react";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { Home, BookOpen, UserCheck, MessagesSquare, Timer, LogOut, ChevronRight } from "lucide-react";
+import { useEffect, useState } from "react";
+import { getSession, signOut, type Session } from "@/lib/session";
 
 const items = [
   { icon: Home, label: "Home", to: "/" as const, match: "home" as const },
@@ -12,10 +14,24 @@ const items = [
 
 export function LeftNav({ stickyClass = "sticky top-24" }: { stickyClass?: string } = {}) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const navigate = useNavigate();
+  const [session, setSession] = useState<Session | null>(null);
+
+  useEffect(() => {
+    const sync = () => setSession(getSession());
+    sync();
+    window.addEventListener("la:auth", sync);
+    return () => window.removeEventListener("la:auth", sync);
+  }, []);
+
+  const name = session?.name || session?.email?.split("@")[0] || "Guest";
+  const initial = name.charAt(0).toUpperCase();
+
   const isMock = pathname.startsWith("/quiz/mock-test");
   return (
     <aside className="hidden lg:block">
-      <nav className={`${stickyClass} space-y-1`}>
+      <nav className={`${stickyClass} flex flex-col space-y-1`}>
+
         {items.map(({ icon: Icon, label, to, match }) => {
           const active =
             match === "home"
@@ -45,7 +61,37 @@ export function LeftNav({ stickyClass = "sticky top-24" }: { stickyClass?: strin
             </Link>
           );
         })}
+
+        {/* Profile + logout */}
+        <div className="mt-4 shrink-0 space-y-2 border-t border-border pt-4">
+          <Link
+            to="/profile"
+            className="group flex items-center gap-3 rounded-xl border border-border bg-surface p-2.5 transition hover:border-primary/40 hover:bg-muted"
+          >
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+              {initial}
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-sm font-semibold text-foreground">{name}</span>
+              <span className="block truncate text-[11px] text-muted-foreground">
+                {session?.email ?? "View profile"}
+              </span>
+            </span>
+            <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-primary" />
+          </Link>
+          <button
+            onClick={() => {
+              signOut();
+              navigate({ to: "/login" });
+            }}
+            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-destructive transition hover:bg-destructive/10"
+          >
+            <LogOut className="h-5 w-5" />
+            Log out
+          </button>
+        </div>
       </nav>
+
     </aside>
   );
 }
