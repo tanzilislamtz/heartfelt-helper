@@ -83,11 +83,11 @@ function Index() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground lg:h-[100dvh] lg:overflow-hidden">
       <Topbar variant="app" onMenu={() => setMenuOpen(true)} />
       <MobileNav open={menuOpen} onClose={() => setMenuOpen(false)} />
-      <main className="mx-auto grid max-w-[1400px] grid-cols-1 gap-6 px-4 py-6 lg:grid-cols-[240px_minmax(0,1fr)_320px] lg:px-8">
-        <LeftNav />
+      <main className="mx-auto grid max-w-[1400px] grid-cols-1 gap-6 px-4 py-6 lg:h-[calc(100dvh-65px)] lg:grid-cols-[240px_minmax(0,1fr)_320px] lg:overflow-hidden lg:px-8">
+        <LeftNav stickyClass="lg:h-full lg:overflow-y-auto lg:overscroll-contain lg:pr-1" />
         <Feed />
         <RightRail />
       </main>
@@ -111,26 +111,31 @@ function IconBtn({ children, label }: { children: React.ReactNode; label: string
 
 function Feed() {
   return (
-    <section className="space-y-5">
-      <Leaderboard />
-      <Composer />
-      <FeedToolbar />
+    <section className="min-w-0 lg:flex lg:h-full lg:min-h-0 lg:flex-col">
+      {/* Fixed section header — stays put while the feed scrolls */}
+      <div className="space-y-5 lg:shrink-0 lg:pb-4">
+        <Leaderboard />
+        <Composer />
+        <FeedToolbar />
+      </div>
 
-      {posts.slice(0, 2).map((p) => (
-        <Post key={p.id} {...p} />
-      ))}
+      <div className="mt-5 space-y-5 lg:mt-0 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:overscroll-contain lg:pr-1">
+        {posts.slice(0, 2).map((p) => (
+          <Post key={p.id} {...p} />
+        ))}
 
-      <NearbyTutors />
+        <NearbyTutors />
 
-      {posts.slice(2, 3).map((p) => (
-        <Post key={p.id} {...p} />
-      ))}
+        {posts.slice(2, 3).map((p) => (
+          <Post key={p.id} {...p} />
+        ))}
 
-      <BestTutorCard />
+        <BestTutorCard />
 
-      {posts.slice(3).map((p) => (
-        <Post key={p.id} {...p} />
-      ))}
+        {posts.slice(3).map((p) => (
+          <Post key={p.id} {...p} />
+        ))}
+      </div>
     </section>
   );
 }
@@ -912,8 +917,9 @@ function Post({
 function RightRail() {
   const [msgTab, setMsgTab] = useState<"active" | "all">("active");
   return (
-    <aside className="hidden space-y-5 lg:block">
-      <div className="sticky top-24 space-y-5">
+    <aside className="hidden space-y-5 lg:block lg:h-full lg:overflow-y-auto lg:overscroll-contain lg:pr-1">
+      <div className="space-y-5">
+
         {/* Sponsored */}
         <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
           <div className="mb-2 flex items-center justify-between">
