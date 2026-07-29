@@ -29,8 +29,10 @@ export function LeftNav({ stickyClass = "sticky top-24" }: { stickyClass?: strin
 
   const isMock = pathname.startsWith("/quiz/mock-test");
   return (
-    <aside className="hidden lg:block">
-      <nav className={`${stickyClass} flex flex-col space-y-1`}>
+    <aside className="hidden lg:block lg:h-full">
+      <nav className={`${stickyClass} flex h-full flex-col`}>
+        <div className="min-h-0 flex-1 space-y-1 overflow-y-auto overscroll-contain pr-1">
+
 
         {items.map(({ icon: Icon, label, to, match }) => {
           const active =
