@@ -1,17 +1,24 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { X, Home, UserCheck, GraduationCap, Brain, MessagesSquare } from "lucide-react";
+import { X, Home, UserCheck, GraduationCap, BookOpen, MessagesSquare, Timer } from "lucide-react";
 import { useEffect } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 
-type NavItem = { icon: typeof Home; label: string; to: "/" | "/quiz" | "/available-tutor" | "/message" };
+type NavItem = {
+  icon: typeof Home;
+  label: string;
+  to: "/" | "/quiz" | "/quiz/mock-test" | "/available-tutor" | "/message";
+};
 
 const sections: { items: NavItem[] }[] = [
   {
     items: [
       { icon: Home, label: "Home", to: "/" },
-      { icon: Brain, label: "Quiz", to: "/quiz" },
+      { icon: BookOpen, label: "Practice", to: "/quiz" },
       { icon: MessagesSquare, label: "Messages", to: "/message" },
     ],
+  },
+  {
+    items: [{ icon: Timer, label: "Mock Test", to: "/quiz/mock-test" }],
   },
   {
 
@@ -20,6 +27,7 @@ const sections: { items: NavItem[] }[] = [
     ],
   },
 ];
+
 
 
 export function MobileNav({ open, onClose }: { open: boolean; onClose: () => void }) {

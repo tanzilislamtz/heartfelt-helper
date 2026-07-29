@@ -33,6 +33,7 @@ import { Route as QuizSubjectSubjectIdRouteImport } from './routes/quiz.subject.
 import { Route as QuizExamSubjectIdRouteImport } from './routes/quiz.exam.$subjectId'
 import { Route as MessageRequestRequestIdRouteImport } from './routes/message.request.$requestId'
 import { Route as QuizSubjectSubjectIdCategoryRouteImport } from './routes/quiz.subject.$subjectId_.$category'
+import { Route as QuizSubjectSubjectIdCategoryChapterIdRouteImport } from './routes/quiz.subject.$subjectId_.$category_.$chapterId'
 
 const WelcomeRoute = WelcomeRouteImport.update({
   id: '/welcome',
@@ -155,6 +156,12 @@ const QuizSubjectSubjectIdCategoryRoute =
     path: '/subject/$subjectId/$category',
     getParentRoute: () => QuizRoute,
   } as any)
+const QuizSubjectSubjectIdCategoryChapterIdRoute =
+  QuizSubjectSubjectIdCategoryChapterIdRouteImport.update({
+    id: '/subject/$subjectId_/$category_/$chapterId',
+    path: '/subject/$subjectId/$category/$chapterId',
+    getParentRoute: () => QuizRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -181,6 +188,7 @@ export interface FileRoutesByFullPath {
   '/quiz/subject/$subjectId': typeof QuizSubjectSubjectIdRoute
   '/quiz/written/$subjectId': typeof QuizWrittenSubjectIdRoute
   '/quiz/subject/$subjectId/$category': typeof QuizSubjectSubjectIdCategoryRoute
+  '/quiz/subject/$subjectId/$category/$chapterId': typeof QuizSubjectSubjectIdCategoryChapterIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -206,6 +214,7 @@ export interface FileRoutesByTo {
   '/quiz/subject/$subjectId': typeof QuizSubjectSubjectIdRoute
   '/quiz/written/$subjectId': typeof QuizWrittenSubjectIdRoute
   '/quiz/subject/$subjectId/$category': typeof QuizSubjectSubjectIdCategoryRoute
+  '/quiz/subject/$subjectId/$category/$chapterId': typeof QuizSubjectSubjectIdCategoryChapterIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -233,6 +242,7 @@ export interface FileRoutesById {
   '/quiz/subject/$subjectId': typeof QuizSubjectSubjectIdRoute
   '/quiz/written/$subjectId': typeof QuizWrittenSubjectIdRoute
   '/quiz/subject/$subjectId_/$category': typeof QuizSubjectSubjectIdCategoryRoute
+  '/quiz/subject/$subjectId_/$category_/$chapterId': typeof QuizSubjectSubjectIdCategoryChapterIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -261,6 +271,7 @@ export interface FileRouteTypes {
     | '/quiz/subject/$subjectId'
     | '/quiz/written/$subjectId'
     | '/quiz/subject/$subjectId/$category'
+    | '/quiz/subject/$subjectId/$category/$chapterId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -286,6 +297,7 @@ export interface FileRouteTypes {
     | '/quiz/subject/$subjectId'
     | '/quiz/written/$subjectId'
     | '/quiz/subject/$subjectId/$category'
+    | '/quiz/subject/$subjectId/$category/$chapterId'
   id:
     | '__root__'
     | '/'
@@ -312,6 +324,7 @@ export interface FileRouteTypes {
     | '/quiz/subject/$subjectId'
     | '/quiz/written/$subjectId'
     | '/quiz/subject/$subjectId_/$category'
+    | '/quiz/subject/$subjectId_/$category_/$chapterId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -497,6 +510,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof QuizSubjectSubjectIdCategoryRouteImport
       parentRoute: typeof QuizRoute
     }
+    '/quiz/subject/$subjectId_/$category_/$chapterId': {
+      id: '/quiz/subject/$subjectId_/$category_/$chapterId'
+      path: '/subject/$subjectId/$category/$chapterId'
+      fullPath: '/quiz/subject/$subjectId/$category/$chapterId'
+      preLoaderRoute: typeof QuizSubjectSubjectIdCategoryChapterIdRouteImport
+      parentRoute: typeof QuizRoute
+    }
   }
 }
 
@@ -527,6 +547,7 @@ interface QuizRouteChildren {
   QuizSubjectSubjectIdRoute: typeof QuizSubjectSubjectIdRoute
   QuizWrittenSubjectIdRoute: typeof QuizWrittenSubjectIdRoute
   QuizSubjectSubjectIdCategoryRoute: typeof QuizSubjectSubjectIdCategoryRoute
+  QuizSubjectSubjectIdCategoryChapterIdRoute: typeof QuizSubjectSubjectIdCategoryChapterIdRoute
 }
 
 const QuizRouteChildren: QuizRouteChildren = {
@@ -541,6 +562,8 @@ const QuizRouteChildren: QuizRouteChildren = {
   QuizSubjectSubjectIdRoute: QuizSubjectSubjectIdRoute,
   QuizWrittenSubjectIdRoute: QuizWrittenSubjectIdRoute,
   QuizSubjectSubjectIdCategoryRoute: QuizSubjectSubjectIdCategoryRoute,
+  QuizSubjectSubjectIdCategoryChapterIdRoute:
+    QuizSubjectSubjectIdCategoryChapterIdRoute,
 }
 
 const QuizRouteWithChildren = QuizRoute._addFileChildren(QuizRouteChildren)
