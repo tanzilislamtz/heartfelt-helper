@@ -95,7 +95,6 @@ function ChapterPicker() {
                 index={i}
                 subjectId={subjectId}
                 category={category}
-                defaultOpen={i === 0}
               />
             ))}
           </div>
