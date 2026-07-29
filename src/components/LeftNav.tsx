@@ -1,5 +1,7 @@
-import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, BookOpen, UserCheck, MessagesSquare, Timer } from "lucide-react";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { Home, BookOpen, UserCheck, MessagesSquare, Timer, LogOut, ChevronRight } from "lucide-react";
+import { useEffect, useState } from "react";
+import { getSession, signOut, type Session } from "@/lib/session";
 
 const items = [
   { icon: Home, label: "Home", to: "/" as const, match: "home" as const },
@@ -12,10 +14,24 @@ const items = [
 
 export function LeftNav({ stickyClass = "sticky top-24" }: { stickyClass?: string } = {}) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const navigate = useNavigate();
+  const [session, setSession] = useState<Session | null>(null);
+
+  useEffect(() => {
+    const sync = () => setSession(getSession());
+    sync();
+    window.addEventListener("la:auth", sync);
+    return () => window.removeEventListener("la:auth", sync);
+  }, []);
+
+  const name = session?.name || session?.email?.split("@")[0] || "Guest";
+  const initial = name.charAt(0).toUpperCase();
+
   const isMock = pathname.startsWith("/quiz/mock-test");
   return (
     <aside className="hidden lg:block">
-      <nav className={`${stickyClass} space-y-1`}>
+      <nav className={`${stickyClass} flex flex-col space-y-1`}>
+
         {items.map(({ icon: Icon, label, to, match }) => {
           const active =
             match === "home"
