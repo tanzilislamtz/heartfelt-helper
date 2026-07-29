@@ -83,14 +83,17 @@ export function MobileNav({ open, onClose }: { open: boolean; onClose: () => voi
                   className={`space-y-1 ${sIdx > 0 ? "border-t border-border pt-4" : ""}`}
                 >
                   {section.items.map(({ icon: Icon, label, to }, i) => {
+                    const isMock = pathname.startsWith("/quiz/mock-test");
                     const active =
                       to === "/quiz"
-                        ? pathname.startsWith("/quiz")
-                        : to === "/available-tutor"
-                          ? pathname.startsWith("/available-tutor")
-                          : to === "/message"
-                            ? pathname.startsWith("/message")
-                            : pathname === to && label === "Home";
+                        ? pathname.startsWith("/quiz") && !isMock
+                        : to === "/quiz/mock-test"
+                          ? isMock
+                          : to === "/available-tutor"
+                            ? pathname.startsWith("/available-tutor")
+                            : to === "/message"
+                              ? pathname.startsWith("/message")
+                              : pathname === to && label === "Home";
                     return (
                       <motion.div
                         key={label}
