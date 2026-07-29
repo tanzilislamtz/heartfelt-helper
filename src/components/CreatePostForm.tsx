@@ -171,37 +171,190 @@ function Select({ placeholder }: { placeholder: string }) {
   );
 }
 
+type Attachment = {
+  id: string;
+  name: string;
+  size: number;
+  kind: "image" | "video" | "file";
+  url?: string;
+};
+
+function prettySize(bytes: number) {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+  return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+}
+
 function UploadBox() {
+  const [files, setFiles] = useState<Attachment[]>([]);
+  const [dragging, setDragging] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const addFiles = (list: FileList | null) => {
+    if (!list) return;
+    const next: Attachment[] = Array.from(list)
+      .slice(0, 10 - files.length)
+      .map((f) => ({
+        id: `${f.name}-${f.size}-${Math.random().toString(36).slice(2, 7)}`,
+        name: f.name,
+        size: f.size,
+        kind: f.type.startsWith("image/") ? "image" : f.type.startsWith("video/") ? "video" : "file",
+        url: f.type.startsWith("image/") ? URL.createObjectURL(f) : undefined,
+      }));
+    setFiles((prev) => [...prev, ...next]);
+  };
+
+  const remove = (id: string) =>
+    setFiles((prev) => {
+      const target = prev.find((f) => f.id === id);
+      if (target?.url) URL.revokeObjectURL(target.url);
+      return prev.filter((f) => f.id !== id);
+    });
+
+  const total = files.reduce((s, f) => s + f.size, 0);
+
   return (
-    <div className="group relative cursor-pointer overflow-hidden rounded-2xl border-2 border-dashed border-border bg-gradient-to-br from-muted/40 via-surface to-primary/5 p-6 transition hover:border-primary/60 hover:from-primary/5 hover:to-primary/10">
-      <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-primary/10 opacity-0 blur-2xl transition group-hover:opacity-100" />
-      <div className="flex items-start gap-4">
-        <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-primary to-primary/70 text-white shadow-md shadow-primary/20 transition group-hover:scale-105">
-          <Upload className="h-5 w-5" strokeWidth={2.4} />
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="text-sm font-semibold text-foreground group-hover:text-primary">
-            Click to upload or drag & drop
+    <div className="space-y-3">
+      <input
+        ref={inputRef}
+        type="file"
+        multiple
+        className="hidden"
+        onChange={(e) => {
+          addFiles(e.target.files);
+          e.target.value = "";
+        }}
+      />
+
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={() => inputRef.current?.click()}
+        onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && inputRef.current?.click()}
+        onDragOver={(e) => {
+          e.preventDefault();
+          setDragging(true);
+        }}
+        onDragLeave={() => setDragging(false)}
+        onDrop={(e) => {
+          e.preventDefault();
+          setDragging(false);
+          addFiles(e.dataTransfer.files);
+        }}
+        className={`group relative cursor-pointer overflow-hidden rounded-2xl border-2 border-dashed p-6 text-left transition ${
+          dragging
+            ? "border-primary bg-primary/10 ring-4 ring-primary/10"
+            : "border-border bg-gradient-to-br from-muted/40 via-surface to-primary/5 hover:border-primary/60 hover:from-primary/5 hover:to-primary/10"
+        }`}
+      >
+        <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-primary/10 opacity-0 blur-2xl transition group-hover:opacity-100" />
+        <div className="flex items-start gap-4">
+          <div
+            className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-primary to-primary/70 text-white shadow-md shadow-primary/20 transition ${
+              dragging ? "scale-110" : "group-hover:scale-105"
+            }`}
+          >
+            <Upload className="h-5 w-5" strokeWidth={2.4} />
           </div>
-          <div className="mt-0.5 text-[11px] text-muted-foreground">
-            Max 5 MB per file · 50 MB per video
-          </div>
-          <div className="mt-2.5 flex flex-wrap gap-1.5">
-            {[
-              { icon: ImageIcon, label: "Images" },
-              { icon: Video, label: "Video" },
-              { icon: FileText, label: "PDF · DOC · PPT · XLS · TXT" },
-            ].map(({ icon: I, label }) => (
-              <span
-                key={label}
-                className="inline-flex items-center gap-1 rounded-full border border-border bg-surface/80 px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
-              >
-                <I className="h-3 w-3" /> {label}
-              </span>
-            ))}
+          <div className="min-w-0 flex-1">
+            <div className="text-sm font-semibold text-foreground group-hover:text-primary">
+              {dragging ? "Drop files to attach" : "Click to upload or drag & drop"}
+            </div>
+            <div className="mt-0.5 text-[11px] text-muted-foreground">
+              Up to 10 files · Max 5 MB per file · 50 MB per video
+            </div>
+            <div className="mt-2.5 flex flex-wrap gap-1.5">
+              {[
+                { icon: ImageIcon, label: "Images" },
+                { icon: Video, label: "Video" },
+                { icon: FileText, label: "PDF · DOC · PPT · XLS · TXT" },
+              ].map(({ icon: I, label }) => (
+                <span
+                  key={label}
+                  className="inline-flex items-center gap-1 rounded-full border border-border bg-surface/80 px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
+                >
+                  <I className="h-3 w-3" /> {label}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       </div>
+
+      <AnimatePresence initial={false}>
+        {files.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            className="rounded-2xl border border-border bg-surface p-3"
+          >
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                {files.length} attachment{files.length > 1 ? "s" : ""} · {prettySize(total)}
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  files.forEach((f) => f.url && URL.revokeObjectURL(f.url));
+                  setFiles([]);
+                }}
+                className="text-[11px] font-semibold text-muted-foreground transition hover:text-danger"
+              >
+                Clear all
+              </button>
+            </div>
+            <ul className="space-y-1.5">
+              <AnimatePresence initial={false}>
+                {files.map((f) => {
+                  const Icon = f.kind === "image" ? ImageIcon : f.kind === "video" ? Video : FileText;
+                  return (
+                    <motion.li
+                      key={f.id}
+                      layout
+                      initial={{ opacity: 0, x: -8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 8 }}
+                      className="flex items-center gap-3 rounded-xl border border-border bg-muted/30 p-2"
+                    >
+                      <div className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-lg bg-primary/10 text-primary">
+                        {f.url ? (
+                          <img src={f.url} alt={f.name} className="h-full w-full object-cover" />
+                        ) : (
+                          <Icon className="h-4.5 w-4.5" />
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-xs font-semibold text-foreground">{f.name}</p>
+                        <p className="text-[11px] text-muted-foreground">
+                          {f.kind === "image" ? "Image" : f.kind === "video" ? "Video" : "Document"} ·{" "}
+                          {prettySize(f.size)}
+                        </p>
+                        <div className="mt-1 h-1 w-full overflow-hidden rounded-full bg-border">
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: "100%" }}
+                            transition={{ duration: 0.8 }}
+                            className="h-full rounded-full bg-primary"
+                          />
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => remove(f.id)}
+                        aria-label={`Remove ${f.name}`}
+                        className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition hover:bg-danger/10 hover:text-danger"
+                      >
+                        <X className="h-3.5 w-3.5" />
+                      </button>
+                    </motion.li>
+                  );
+                })}
+              </AnimatePresence>
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -296,13 +449,44 @@ function SectionHeader({ title }: { title: string }) {
 
 /* ─────────────────────────  shared blocks  ───────────────────────── */
 
-function TitleInput({ placeholder = "Enter a compelling title for your post…" }: { placeholder?: string }) {
+function TitleInput({
+  placeholder = "Give your post a clear, searchable title…",
+  hint = "A good title says exactly what your post is about — e.g. “Physics 1st paper: Newton's 3rd law explained simply”.",
+}: {
+  placeholder?: string;
+  hint?: string;
+}) {
+  const [value, setValue] = useState("");
+  const max = 120;
+  const strong = value.trim().length >= 20;
+
   return (
-    <input
-      type="text"
-      placeholder={placeholder}
-      className="mb-8 w-full border-none bg-transparent p-0 text-2xl font-semibold leading-tight text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-0 sm:text-3xl"
-    />
+    <div className="mb-8">
+      <SectionHeader title="Title" />
+      <div className="rounded-2xl border border-border bg-gradient-to-br from-muted/30 via-surface to-primary/5 p-4 transition focus-within:border-primary/50 focus-within:ring-4 focus-within:ring-primary/10 sm:p-5">
+        <input
+          type="text"
+          value={value}
+          maxLength={max}
+          onChange={(e) => setValue(e.target.value)}
+          placeholder={placeholder}
+          className="w-full border-none bg-transparent p-0 text-2xl font-bold leading-tight tracking-tight text-foreground placeholder:font-semibold placeholder:text-muted-foreground/40 focus:outline-none focus:ring-0 sm:text-3xl"
+        />
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-border/70 pt-2.5">
+          <p className="flex min-w-0 items-center gap-1.5 text-[11px] text-muted-foreground">
+            <Sparkles className={`h-3 w-3 shrink-0 ${strong ? "text-primary" : "text-muted-foreground/60"}`} />
+            <span className="min-w-0">{strong ? "Nice — this title is clear and descriptive." : hint}</span>
+          </p>
+          <span
+            className={`shrink-0 text-[11px] font-semibold tabular-nums ${
+              value.length > max - 15 ? "text-danger" : "text-muted-foreground"
+            }`}
+          >
+            {value.length}/{max}
+          </span>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -387,17 +571,6 @@ function LearningForm() {
       <InfoCard icon={BookOpen} tone="learning" title="Share Knowledge" desc="Share educational content, notes, tips, or resources with others." />
       <TitleInput />
 
-      <section className="mb-10">
-        <SectionHeader title="Academic Context" />
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-          <Field label="Education Level" required><Select placeholder="Select level" /></Field>
-          <Field label="Version"><Select placeholder="Select version" /></Field>
-          <Field label="Class / Level"><Select placeholder="Select class" /></Field>
-          <Field label="Subject"><Select placeholder="Select subject" /></Field>
-          <Field label="Topic" hint="(Optional)"><input className={inputCls} placeholder="Enter topic" /></Field>
-          <Field label="Chapter" hint="(Optional)"><input className={inputCls} placeholder="Enter chapter" /></Field>
-        </div>
-      </section>
 
       <section className="mb-10">
         <SectionHeader title="Post Content" />
