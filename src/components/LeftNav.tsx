@@ -1,9 +1,10 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, Brain, UserCheck, MessagesSquare } from "lucide-react";
+import { Home, BookOpen, UserCheck, MessagesSquare, Timer } from "lucide-react";
 
 const items = [
   { icon: Home, label: "Home", to: "/" as const, match: "home" as const },
-  { icon: Brain, label: "Quiz", to: "/quiz" as const, match: "quiz" as const },
+  { icon: BookOpen, label: "Practice", to: "/quiz" as const, match: "practice" as const },
+  { icon: Timer, label: "Mock Test", to: "/quiz/mock-test" as const, match: "mock" as const },
   { icon: MessagesSquare, label: "Messages", to: "/message" as const, match: "message" as const },
   { icon: UserCheck, label: "Available Tutor", to: "/available-tutor" as const, match: "available" as const },
 ];
@@ -11,6 +12,7 @@ const items = [
 
 export function LeftNav({ stickyClass = "sticky top-24" }: { stickyClass?: string } = {}) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isMock = pathname.startsWith("/quiz/mock-test");
   return (
     <aside className="hidden lg:block">
       <nav className={`${stickyClass} space-y-1`}>
@@ -18,13 +20,15 @@ export function LeftNav({ stickyClass = "sticky top-24" }: { stickyClass?: strin
           const active =
             match === "home"
               ? pathname === "/"
-              : match === "quiz"
-                ? pathname.startsWith("/quiz")
-                : match === "message"
-                  ? pathname.startsWith("/message")
-                  : match === "available"
-                    ? pathname.startsWith("/available-tutor")
-                    : false;
+              : match === "practice"
+                ? pathname.startsWith("/quiz") && !isMock
+                : match === "mock"
+                  ? isMock
+                  : match === "message"
+                    ? pathname.startsWith("/message")
+                    : match === "available"
+                      ? pathname.startsWith("/available-tutor")
+                      : false;
           return (
             <Link
               key={label}

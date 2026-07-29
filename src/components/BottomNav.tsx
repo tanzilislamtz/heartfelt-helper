@@ -1,7 +1,8 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   House,
-  Brain,
+  BookOpen,
+  Timer,
   MessagesSquare,
   CircleUserRound,
 } from "lucide-react";
@@ -11,7 +12,7 @@ import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 type IconCmp = ComponentType<SVGProps<SVGSVGElement> & { strokeWidth?: number }>;
 
 type Item = {
-  to: "/" | "/quiz" | "/message" | "/profile";
+  to: "/" | "/quiz" | "/quiz/mock-test" | "/message" | "/profile";
   label: string;
   Icon: IconCmp;
   accent: string;
@@ -31,8 +32,15 @@ const items: Item[] = [
   },
   {
     to: "/quiz",
-    label: "Quiz",
-    Icon: Brain,
+    label: "Practice",
+    Icon: BookOpen,
+    accent: HOME_ACCENT,
+    glow: HOME_GLOW,
+  },
+  {
+    to: "/quiz/mock-test",
+    label: "Mock",
+    Icon: Timer,
     accent: HOME_ACCENT,
     glow: HOME_GLOW,
   },
@@ -56,12 +64,18 @@ const COUNT = items.length;
 
 export function BottomNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const matchIndex = items.findIndex(
-    (i) => i.to !== "/" && (pathname === i.to || pathname.startsWith(i.to + "/")),
-  );
-  const activeIndex = matchIndex >= 0 ? matchIndex : pathname === "/" ? 0 : -1;
+  const isMock = pathname.startsWith("/quiz/mock-test");
+  const activeIndex = (() => {
+    if (pathname === "/") return 0;
+    if (isMock) return 2;
+    if (pathname.startsWith("/quiz")) return 1;
+    if (pathname.startsWith("/message")) return 3;
+    if (pathname.startsWith("/profile")) return 4;
+    return -1;
+  })();
   const hasActive = activeIndex >= 0;
   const active = items[activeIndex] ?? items[0];
+
 
   const unread = useUnreadMessages();
 
