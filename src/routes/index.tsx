@@ -917,8 +917,9 @@ function Post({
 function RightRail() {
   const [msgTab, setMsgTab] = useState<"active" | "all">("active");
   return (
-    <aside className="hidden space-y-5 lg:block">
-      <div className="sticky top-24 space-y-5">
+    <aside className="hidden space-y-5 lg:block lg:h-full lg:overflow-y-auto lg:overscroll-contain lg:pr-1">
+      <div className="space-y-5">
+
         {/* Sponsored */}
         <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm">
           <div className="mb-2 flex items-center justify-between">
