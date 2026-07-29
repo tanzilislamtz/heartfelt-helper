@@ -7,10 +7,10 @@ import { LeftNav } from "@/components/LeftNav";
 export const Route = createFileRoute("/quiz")({
   head: () => ({
     meta: [
-      { title: "Quiz — Learns Academy" },
-      { name: "description", content: "Mock tests, question bank, AI solver, leaderboard — all your prep in one place." },
-      { property: "og:title", content: "Quiz — Learns Academy" },
-      { property: "og:description", content: "Practise at your own pace with board-wise question papers and AI explanations." },
+      { title: "Practice — Learns Academy" },
+      { name: "description", content: "Chapter-wise MCQ, CQ and board question practice with progress tracking." },
+      { property: "og:title", content: "Practice — Learns Academy" },
+      { property: "og:description", content: "Practise at your own pace with chapter-wise questions and AI explanations." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
