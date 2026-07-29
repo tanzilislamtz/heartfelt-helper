@@ -8,7 +8,6 @@ import {
   ChevronRight,
   Clock,
   FileText,
-  Gauge,
   Users,
 } from "lucide-react";
 import { subjects } from "@/data/quiz";
