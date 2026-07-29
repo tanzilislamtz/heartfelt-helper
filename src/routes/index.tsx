@@ -111,15 +111,15 @@ function IconBtn({ children, label }: { children: React.ReactNode; label: string
 
 function Feed() {
   return (
-    <section className="min-w-0 lg:flex lg:h-full lg:min-h-0 lg:flex-col">
-      {/* Fixed section header — stays put while the feed scrolls */}
-      <div className="space-y-5 lg:shrink-0 lg:pb-4">
+    <section className="min-w-0 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:overscroll-contain lg:pr-1">
+      <div className="space-y-5">
         <Leaderboard />
         <Composer />
         <FeedToolbar />
       </div>
 
-      <div className="mt-5 space-y-5 lg:mt-0 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:overscroll-contain lg:pr-1">
+      <div className="mt-5 space-y-5">
+
         {posts.slice(0, 2).map((p) => (
           <Post key={p.id} {...p} />
         ))}
