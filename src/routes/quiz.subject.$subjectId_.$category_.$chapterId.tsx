@@ -8,7 +8,6 @@ import {
   ChevronRight,
   Clock,
   FileText,
-  Gauge,
   Users,
 } from "lucide-react";
 import { subjects } from "@/data/quiz";
@@ -84,10 +83,9 @@ function ChapterTopics() {
               </p>
             </div>
           </div>
-          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="mt-4 grid grid-cols-3 gap-3">
             <MiniStat Icon={FileText} value={`${chapter.questions}`} label="Questions" />
             <MiniStat Icon={Clock} value={`${chapter.topics.length * 5} min`} label="Est. Time" />
-            <MiniStat Icon={Gauge} value="Medium" label="Difficulty" />
             <MiniStat Icon={Users} value={`${chapter.progress}%`} label="Your Progress" />
           </div>
         </div>
@@ -145,7 +143,7 @@ function ChapterTopics() {
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold text-foreground">{t.name}</p>
                     <p className="truncate text-[11px] text-muted-foreground">
-                      {t.questions} Questions · {t.difficulty} · {t.minutes} min
+                      {t.questions} Questions · {t.minutes} min
                     </p>
                     <div className="mt-2 flex items-center gap-2">
                       <div className="h-1.5 w-full max-w-[140px] overflow-hidden rounded-full bg-muted">
@@ -190,9 +188,6 @@ function ChapterTopics() {
               <ul className="mt-4 space-y-2 text-xs text-muted-foreground">
                 <li className="flex items-center gap-2">
                   <FileText className="h-3.5 w-3.5 text-primary" /> {active.questions} Questions
-                </li>
-                <li className="flex items-center gap-2">
-                  <Gauge className="h-3.5 w-3.5 text-primary" /> {active.difficulty} Difficulty
                 </li>
                 <li className="flex items-center gap-2">
                   <Clock className="h-3.5 w-3.5 text-primary" /> {active.minutes} min Estimated Time
