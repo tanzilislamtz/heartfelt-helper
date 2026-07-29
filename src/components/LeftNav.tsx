@@ -1,7 +1,7 @@
-import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { Home, BookOpen, UserCheck, MessagesSquare, Timer, LogOut, ChevronRight } from "lucide-react";
+import { Link, useRouterState } from "@tanstack/react-router";
+import { Home, BookOpen, UserCheck, MessagesSquare, Timer, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getSession, signOut, type Session } from "@/lib/session";
+import { getSession, type Session } from "@/lib/session";
 
 const items = [
   { icon: Home, label: "Home", to: "/" as const, match: "home" as const },
@@ -14,7 +14,6 @@ const items = [
 
 export function LeftNav({ stickyClass = "sticky top-24" }: { stickyClass?: string } = {}) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const navigate = useNavigate();
   const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
