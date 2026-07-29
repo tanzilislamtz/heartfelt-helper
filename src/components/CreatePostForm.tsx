@@ -451,14 +451,12 @@ function SectionHeader({ title }: { title: string }) {
 
 function TitleInput({
   placeholder = "Give your post a clear, searchable title…",
-  hint = "A good title says exactly what your post is about — e.g. “Physics 1st paper: Newton's 3rd law explained simply”.",
 }: {
   placeholder?: string;
   hint?: string;
 }) {
   const [value, setValue] = useState("");
   const max = 120;
-  const strong = value.trim().length >= 20;
 
   return (
     <div className="mb-8">
@@ -472,11 +470,7 @@ function TitleInput({
           placeholder={placeholder}
           className="w-full border-none bg-transparent p-0 text-2xl font-bold leading-tight tracking-tight text-foreground placeholder:font-semibold placeholder:text-muted-foreground/40 focus:outline-none focus:ring-0 sm:text-3xl"
         />
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-border/70 pt-2.5">
-          <p className="flex min-w-0 items-center gap-1.5 text-[11px] text-muted-foreground">
-            <Sparkles className={`h-3 w-3 shrink-0 ${strong ? "text-primary" : "text-muted-foreground/60"}`} />
-            <span className="min-w-0">{strong ? "Nice — this title is clear and descriptive." : hint}</span>
-          </p>
+        <div className="mt-3 flex items-center justify-end border-t border-border/70 pt-2.5">
           <span
             className={`shrink-0 text-[11px] font-semibold tabular-nums ${
               value.length > max - 15 ? "text-danger" : "text-muted-foreground"
@@ -489,6 +483,7 @@ function TitleInput({
     </div>
   );
 }
+
 
 function ContentEditor({ placeholder }: { placeholder: string }) {
   return (
