@@ -1,7 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowLeft,
+  CheckCircle2,
+  ChevronDown,
   ChevronRight,
   Clock,
   FileText,
@@ -84,54 +87,129 @@ function ChapterPicker() {
             <h2 className="text-base font-semibold text-foreground">Chapters</h2>
             <span className="text-xs text-muted-foreground">{chapters.length} chapters</span>
           </div>
-          <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
-            <div className="divide-y divide-border">
-              {chapters.map((c, i) => (
-                <motion.div
-                  key={c.id}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.02 * i }}
-                >
-                  <Link
-                    to="/quiz/subject/$subjectId/$category/$chapterId"
-                    params={{ subjectId, category, chapterId: c.id }}
-                    className="group grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-4 transition hover:bg-muted/40 sm:gap-4"
-                  >
-                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-accent/50 text-xs font-semibold text-primary">
-                      {c.index}
-                    </span>
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold text-foreground">{c.name}</p>
-                      <p className="mt-0.5 inline-flex items-center gap-1 text-[11px] text-muted-foreground">
-                        <FileText className="h-3 w-3" /> {c.questions} Questions ·{" "}
-                        {c.topics.length} topics
-                      </p>
-                      <div className="mt-2 flex items-center gap-2 sm:hidden">
-                        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
-                          <div className="h-full rounded-full bg-primary" style={{ width: `${c.progress}%` }} />
-                        </div>
-                        <span className="text-[11px] tabular-nums text-muted-foreground">{c.progress}%</span>
-                      </div>
-                    </div>
-                    <div className="hidden shrink-0 items-center gap-3 sm:flex">
-                      <span className="text-[11px] tabular-nums text-muted-foreground">
-                        {c.progress}% Completed
-                      </span>
-                      <div className="h-1.5 w-28 overflow-hidden rounded-full bg-muted">
-                        <div className="h-full rounded-full bg-primary" style={{ width: `${c.progress}%` }} />
-                      </div>
-                      <ChevronRight className="h-4 w-4 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-primary" />
-                    </div>
-                    <ChevronRight className="h-4 w-4 text-muted-foreground sm:hidden" />
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
+          <div className="space-y-3">
+            {chapters.map((c, i) => (
+              <ChapterRow
+                key={c.id}
+                chapter={c}
+                index={i}
+                subjectId={subjectId}
+                category={category}
+                defaultOpen={i === 0}
+              />
+            ))}
           </div>
         </div>
       )}
     </section>
+  );
+}
+
+function ChapterRow({
+  chapter,
+  index,
+  subjectId,
+  category,
+  defaultOpen,
+}: {
+  chapter: ReturnType<typeof getChapters>[number];
+  index: number;
+  subjectId: string;
+  category: string;
+  defaultOpen: boolean;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+  const done = chapter.progress >= 100;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.02 * index }}
+      className={`overflow-hidden rounded-2xl border bg-surface shadow-sm transition ${
+        open ? "border-primary/40 shadow-md" : "border-border hover:border-primary/30"
+      }`}
+    >
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="grid w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-4 text-left sm:gap-4"
+      >
+        <span
+          className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl text-sm font-bold ${
+            done ? "bg-primary text-primary-foreground" : "bg-accent/50 text-primary"
+          }`}
+        >
+          {done ? <CheckCircle2 className="h-5 w-5" /> : chapter.index}
+        </span>
+        <div className="min-w-0">
+          <p className="truncate text-sm font-semibold text-foreground">{chapter.name}</p>
+          <p className="mt-0.5 inline-flex items-center gap-1 text-[11px] text-muted-foreground">
+            <FileText className="h-3 w-3" /> {chapter.questions} Questions · {chapter.topics.length} topics
+          </p>
+          <div className="mt-2 flex items-center gap-2 sm:hidden">
+            <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
+              <div className="h-full rounded-full bg-primary" style={{ width: `${chapter.progress}%` }} />
+            </div>
+            <span className="text-[11px] tabular-nums text-muted-foreground">{chapter.progress}%</span>
+          </div>
+        </div>
+        <div className="flex shrink-0 items-center gap-3">
+          <div className="hidden items-center gap-3 sm:flex">
+            <span className="text-[11px] tabular-nums text-muted-foreground">
+              {chapter.progress}% Completed
+            </span>
+            <div className="h-1.5 w-28 overflow-hidden rounded-full bg-muted">
+              <div className="h-full rounded-full bg-primary" style={{ width: `${chapter.progress}%` }} />
+            </div>
+          </div>
+          <ChevronDown
+            className={`h-4 w-4 text-muted-foreground transition-transform ${open ? "rotate-180 text-primary" : ""}`}
+          />
+        </div>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.22 }}
+            className="overflow-hidden border-t border-border bg-muted/20"
+          >
+            <div className="divide-y divide-border/70">
+              {chapter.topics.map((t) => (
+                <Link
+                  key={t.id}
+                  to="/quiz/subject/$subjectId/$category/$chapterId"
+                  params={{ subjectId, category, chapterId: chapter.id }}
+                  className="group grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 transition hover:bg-surface"
+                >
+                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary/60" />
+                  <div className="min-w-0">
+                    <p className="truncate text-[13px] font-medium text-foreground">{t.name}</p>
+                    <p className="text-[11px] text-muted-foreground">
+                      {t.questions} Questions · {t.minutes} min
+                    </p>
+                  </div>
+                  <span className="flex shrink-0 items-center gap-2">
+                    <span className="hidden h-1.5 w-20 overflow-hidden rounded-full bg-muted sm:block">
+                      <span
+                        className="block h-full rounded-full bg-primary"
+                        style={{ width: `${t.progress}%` }}
+                      />
+                    </span>
+                    <span className="text-[11px] tabular-nums text-muted-foreground">{t.progress}%</span>
+                    <ChevronRight className="h-4 w-4 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-primary" />
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
 
