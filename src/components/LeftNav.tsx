@@ -63,9 +63,10 @@ export function LeftNav({ stickyClass = "sticky top-24" }: { stickyClass?: strin
             </Link>
           );
         })}
+        </div>
 
-        {/* Profile + logout */}
-        <div className="mt-4 shrink-0 space-y-2 border-t border-border pt-4">
+        {/* Menu footer — profile */}
+        <div className="mt-3 shrink-0 border-t border-border pt-3">
           <Link
             to="/profile"
             className="group flex items-center gap-3 rounded-xl border border-border bg-surface p-2.5 transition hover:border-primary/40 hover:bg-muted"
@@ -81,18 +82,9 @@ export function LeftNav({ stickyClass = "sticky top-24" }: { stickyClass?: strin
             </span>
             <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-primary" />
           </Link>
-          <button
-            onClick={() => {
-              signOut();
-              navigate({ to: "/login" });
-            }}
-            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-destructive transition hover:bg-destructive/10"
-          >
-            <LogOut className="h-5 w-5" />
-            Log out
-          </button>
         </div>
       </nav>
+
 
     </aside>
   );
